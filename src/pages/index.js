@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import mapboxgl from 'mapbox-gl'
 import Layout from '../components/layout'
 import mapConfig from '../config/map'
 import unfetch from 'unfetch'
@@ -10,11 +9,14 @@ import TrackManager from '../lib/track-manager'
 
 import styles from './index.module.css'
 
-if (!window.fetch) {
-  window.fetch = unfetch
-}
+if (typeof window !== 'undefined') {
+  const mapboxgl = require('mapbox-gl')
 
-mapboxgl.accessToken = mapConfig.TOKEN
+  if (!window.fetch) {
+    window.fetch = unfetch
+  }
+  mapboxgl.accessToken = mapConfig.TOKEN
+}
 
 export default class IndexPage extends Component {
   componentDidMount() {

@@ -1,8 +1,14 @@
-import localStorageKey from '../config/local-storage-key';
+import localStorageKey from '../config/local-storage-key'
 
-const UPDATE = 'user-position/UPDATE';
+const UPDATE = 'user-position/UPDATE'
 
-const localStorage = window.localStorage;
+const localStorage =
+  typeof window !== 'undefined'
+    ? window.localStorage
+    : {
+        getItem: () => {},
+        setItem: () => {},
+      }
 
 /**
  * Reducer function for user position state.
@@ -12,10 +18,10 @@ const localStorage = window.localStorage;
  */
 export default function reducer(state = null, action = {}) {
   if (action.type === UPDATE) {
-    return action.position;
+    return action.position
   }
 
-  return state;
+  return state
 }
 
 /**
@@ -24,7 +30,7 @@ export default function reducer(state = null, action = {}) {
  * @return {object}  The UPDATE action
  */
 export function updateUserPosition(position) {
-  return {type: UPDATE, position};
+  return { type: UPDATE, position }
 }
 
 /**
@@ -33,25 +39,25 @@ export function updateUserPosition(position) {
  */
 export function userPositionMiddleware() {
   return next => action => {
-    next(action); // eslint-disable-line callback-return
+    next(action) // eslint-disable-line callback-return
 
-    if (action.type === UPDATE) {
-      const localState = JSON.parse(localStorage.getItem(localStorageKey));
+    if (typeof window !== 'undefined') {
+      if (action.type === UPDATE) {
+        const localState = JSON.parse(localStorage.getItem(localStorageKey))
 
-      localStorage.setItem(
-        'hvv-live-map',
-        JSON.stringify({
-          ...localState,
-          userPosition: action.position
-        })
-      );
+        localStorage.setItem(
+          'hvv-live-map',
+          JSON.stringify({
+            ...localState,
+            userPosition: action.position,
+          })
+        )
+      }
     }
 
-    return action;
-  };
+    return action
+  }
 }
-
-
 
 // WEBPACK FOOTER //
 // ./app/ducks/user-position.js

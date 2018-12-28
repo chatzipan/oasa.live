@@ -1,31 +1,40 @@
-import isMobile from '../config/is-mobile';
-import localStorageKey from '../config/local-storage-key';
-import VERSION from '../config/version';
+import isMobile from '../config/is-mobile'
+import localStorageKey from '../config/local-storage-key'
+import VERSION from '../config/version'
 
-const TOGGLE = 'active-types/TOGGLE';
+const TOGGLE = 'active-types/TOGGLE'
 
-const localStorage = window.localStorage;
+const localStorage =
+  typeof window !== 'undefined'
+    ? window.localStorage
+    : {
+        getItem: () => {},
+        setItem: () => {},
+      }
+
 const defaultInitialState = {
   bus: isMobile ? false : true,
   ferry: true,
   train: true,
-  subway: true
-};
+  subway: true,
+}
 
 /**
  * Updates the localstorage with given data.
  * @param {object} data  The data to store
  */
 function updateLocalStorage(data) {
-  const localState = JSON.parse(localStorage.getItem(localStorageKey));
+  if (typeof window !== 'undefined') {
+    const localState = JSON.parse(localStorage.getItem(localStorageKey))
 
-  localStorage.setItem(
-    localStorageKey,
-    JSON.stringify({
-      ...localState,
-      ...data
-    })
-  );
+    localStorage.setItem(
+      localStorageKey,
+      JSON.stringify({
+        ...localState,
+        ...data,
+      })
+    )
+  }
 }
 
 /**
@@ -33,26 +42,28 @@ function updateLocalStorage(data) {
  * @returns {object} -
  */
 function getInitialState() {
-  const storedState = JSON.parse(localStorage.getItem(localStorageKey));
-  if (!storedState || !storedState.activeTypes) {
-    updateLocalStorage({VERSION, activeTypes: defaultInitialState});
-    return getInitialState();
-  }
+  if (typeof window !== 'undefined') {
+    const storedState = JSON.parse(localStorage.getItem(localStorageKey))
+    if (!storedState || !storedState.activeTypes) {
+      updateLocalStorage({ VERSION, activeTypes: defaultInitialState })
+      return getInitialState()
+    }
 
-  const storedActiveTypes = storedState.activeTypes;
-  if (storedState.VERSION !== VERSION) {
-    updateLocalStorage({
-      VERSION,
-      activeTypes: {
-        ...storedActiveTypes,
-        ...defaultInitialState
-      }
-    });
+    const storedActiveTypes = storedState.activeTypes
+    if (storedState.VERSION !== VERSION) {
+      updateLocalStorage({
+        VERSION,
+        activeTypes: {
+          ...storedActiveTypes,
+          ...defaultInitialState,
+        },
+      })
 
-    return getInitialState();
-  }
+      return getInitialState()
+    }
 
-  return storedActiveTypes;
+    return storedActiveTypes
+  } else return {}
 }
 
 /**
@@ -64,11 +75,11 @@ function getInitialState() {
 export default function reducer(state = getInitialState(), action = {}) {
   switch (action.type) {
     case TOGGLE: {
-      const type = action.filterType;
-      return Object.assign({}, state, {[type]: !state[type]});
+      const type = action.filterType
+      return Object.assign({}, state, { [type]: !state[type] })
     }
     default:
-      return state;
+      return state
   }
 }
 
@@ -79,16 +90,16 @@ export default function reducer(state = getInitialState(), action = {}) {
  */
 export function activeTypesMiddleware(store) {
   return next => action => {
-    next(action); // eslint-disable-line callback-return
+    next(action) // eslint-disable-line callback-return
 
     if (action.type === TOGGLE) {
       updateLocalStorage({
-        activeTypes: {...store.getState().activeTypes}
-      });
+        activeTypes: { ...store.getState().activeTypes },
+      })
     }
 
-    return action;
-  };
+    return action
+  }
 }
 
 /**
@@ -97,10 +108,8 @@ export function activeTypesMiddleware(store) {
  * @return {object}  The action
  */
 export function toggleActiveType(filterType) {
-  return {type: TOGGLE, filterType};
+  return { type: TOGGLE, filterType }
 }
-
-
 
 // WEBPACK FOOTER //
 // ./app/ducks/active-types.js
