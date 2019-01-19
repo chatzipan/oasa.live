@@ -10,6 +10,7 @@ import { GET_BUS_LOCATION } from './api.js'
 export async function handler(event, context) {
   try {
     const staticData = path.join(process.cwd(), 'src/data/routeDetails.json')
+    console.log({ staticData })
     const data = JSON.parse(fs.readFileSync(staticData, 'utf8'))
 
     await Promise.map(
