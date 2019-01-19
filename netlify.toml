@@ -3,4 +3,3 @@
 [build]
   # Directory with the lambda functions to deploy to AWS.
   functions = "./lambda/"
-  command = "npm run build:lambda"
