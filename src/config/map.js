@@ -1,7 +1,10 @@
 import isMobile from './is-mobile'
 
-const center = [23.729897, 37.972178]
+// const center = [23.729897, 37.972178]
 const centerMobile = [9.998245480625798, 53.55753395688359]
+
+const center = [9.989597008298432, 53.56382171684223]
+
 const zoom = 13
 const zoomMobile = 12
 const radius = [[0, 0.5], [13, 6]]

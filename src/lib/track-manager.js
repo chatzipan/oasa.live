@@ -1,8 +1,7 @@
-// import * as animation from './animation'
+import * as animation from './animation'
 // import Filter from '../components/filter'
-// import PointGenerator from './point-generator'
+import PointGenerator from './point-generator'
 // import selectFilters from '../selectors/select-filters'
-// import store from '../store'
 // import types from '../../shared/types'
 
 const DEFAULT_INTERVAL = 60000
@@ -21,12 +20,9 @@ function fetchTracks(staleTypes) {
   // }, [])
 
   // return fetch(`/tracks?t=${vehicleTypes.join(',')}`).then(response => {
-  return fetch('http://telematics.oasa.gr/api/?act=webGetLines', {
-    mode: 'no-cors',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).then(response => response.text())
+  return fetch('/.netlify/functions/getRoutes').then(response =>
+    response.json()
+  )
 }
 
 /**
@@ -61,10 +57,9 @@ function fetchTracks(staleTypes) {
 export default class TrackManager {
   // filters = new Filter()
   lastRequestedTimes = {}
-  map
-  // pointGenerator = new PointGenerator()
+  pointGenerator = new PointGenerator()
   timer
-  tracks = new Map()
+  tracks = {}
 
   /**
    * Constructor.
@@ -72,7 +67,6 @@ export default class TrackManager {
    */
   constructor(map) {
     this.map = map
-
     // this.filters.on('change', this.refresh.bind(this))
   }
 
@@ -123,35 +117,38 @@ export default class TrackManager {
    */
   updateTracks(trackData) {
     // delete past tracks
-    this.tracks.forEach(track => {
+    Object.entries(this.tracks).forEach(([trackId, track]) => {
       if (track.endTime < Date.now) {
-        this.tracks.delete(track.id)
+        delete this.tracks[track.id]
       }
     })
 
     // add new tracks
-    trackData.forEach(track => this.tracks.set(track.id, track))
+    trackData.forEach(track => {
+      this.tracks[track.id] = track
+    })
   }
 
   /**
    * Processes a response.
    * @param  {object} data  The response data
    */
-  processResponse(data, data2) {
-    console.log({ data, data2 })
-    // const timeout = data.timeRange
+  processResponse(data) {
+    console.log('Fetched!')
+    console.log('data.oasa', data.oasa)
+    const timeout = data.timeRange
 
-    // this.setTimer(timeout)
-    // this.updateTracks(data.tracks)
+    this.setTimer(timeout)
+    this.updateTracks(data.tracks)
 
-    //const tracks = [...this.tracks.values()]
-    // this.pointGenerator.clear().setTracks(tracks)
+    const tracks = [...Object.values(this.tracks)]
+    this.pointGenerator.clear().setTracks(tracks)
 
-    // const getPoints = () => {
-    //   const bounds = this.map.getBounds().toArray()
-    //   return this.pointGenerator.getPoints(bounds)
-    // }
+    const getPoints = () => {
+      const bounds = this.map.getBounds().toArray()
+      return this.pointGenerator.getPoints(bounds)
+    }
 
-    // animation.startLoop(getPoints, this.map)
+    animation.startLoop(getPoints, this.map)
   }
 }

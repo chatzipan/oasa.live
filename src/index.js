@@ -21,6 +21,3 @@ createMap(map => {
   journeyManager.refresh()
   geoLocation.refresh()
 })
-
-// WEBPACK FOOTER //
-// ./app/index.js

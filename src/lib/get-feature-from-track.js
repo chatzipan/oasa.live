@@ -1,42 +1,39 @@
 // @flow
-import turf from '@turf/helpers';
-import cheapRuler from 'cheap-ruler';
+import * as turf from '@turf/helpers'
+import cheapRuler from 'cheap-ruler'
 
-import type {CoordinateType} from '../../types/bounds';
-import type {FilterType} from '../../types/filter';
-import type {Feature as FeatureType} from 'geojson-flow';
-import type {TrackType} from '../../types/track';
+// import type {CoordinateType} from '../../types/bounds';
+// import type {FilterType} from '../../types/filter';
+// import type {Feature as FeatureType} from 'geojson-flow';
+// import type {TrackType} from '../../types/track';
 
-import getIcon from './get-icon';
-import getColors from './get-colors';
-import mapConfig from '../config/map';
+import getIcon from './get-icon'
+import getColors from './get-colors'
+import mapConfig from '../config/map'
 
-const ruler = cheapRuler(mapConfig.CENTER[1]);
+const ruler = cheapRuler(mapConfig.CENTER[1])
 
 /*
  * Get the current line subsegment given a driven distance.
  */
-function getSubSegment(
-  line: Array<CoordinateType>,
-  dist: number
-): Array<CoordinateType> {
-  let sum = 0;
+function getSubSegment(line, dist) {
+  let sum = 0
 
   if (dist <= 0) {
-    return [line[0], line[1]];
+    return [line[0], line[1]]
   }
 
   for (let i = 0; i < line.length - 1; i++) {
-    const p0 = line[i];
-    const p1 = line[i + 1];
-    const d = ruler.distance(p0, p1);
-    sum += d;
+    const p0 = line[i]
+    const p1 = line[i + 1]
+    const d = ruler.distance(p0, p1)
+    sum += d
     if (sum > dist) {
-      return [p0, p1];
+      return [p0, p1]
     }
   }
 
-  return [line[0], line[line.length - 1]];
+  return [line[0], line[line.length - 1]]
 }
 
 /**
@@ -45,16 +42,16 @@ function getSubSegment(
  * @param  {object} selectedTrack  The currently selected track
  * @return {number}  The opacity value
  */
-function getOpacity(track: TrackType, selectedTrack: TrackType): number {
+function getOpacity(track, selectedTrack) {
   if (!selectedTrack) {
-    return 1;
+    return 1
   }
 
   if (track.routeName !== selectedTrack.routeName) {
-    return 0.4;
+    return 0.4
   }
 
-  return 1;
+  return 1
 }
 
 /**
@@ -63,8 +60,8 @@ function getOpacity(track: TrackType, selectedTrack: TrackType): number {
  * @param  {object} filters  The current filters
  * @return {boolean}  False if segment should not be rendered, else true
  */
-function shouldShow(track: TrackType, filters: FilterType): boolean {
-  return filters.type[track.type];
+function shouldShow(track, filters) {
+  return filters.type[track.type]
 }
 
 /**
@@ -74,27 +71,24 @@ function shouldShow(track: TrackType, filters: FilterType): boolean {
  * @param  {object} filters  The current filters
  * @return {boolean} -
  */
-function isValidTrack(
-  track: TrackType,
-  now: number,
-  filters: FilterType
-): boolean {
-  const isGeometryMissing = !track.line;
+function isValidTrack(track, now, filters) {
+  const isGeometryMissing = !track.line
   if (isGeometryMissing) {
-    return false;
+    return false
   }
 
-  const isFiltered = !shouldShow(track, filters);
+  const isFiltered = !shouldShow(track, filters)
+
   if (isFiltered) {
-    return false;
+    return false
   }
 
-  const isActive = track.startTime <= now && track.endTime > now;
+  const isActive = track.startTime <= now && track.endTime > now
   if (!isActive) {
-    return false;
+    return false
   }
 
-  return true;
+  return true
 }
 
 /**
@@ -107,29 +101,30 @@ function isValidTrack(
  * @return {object}  A GeoJSON Point feature
  */
 export default function getFeatureFromTrack(
-  track: TrackType,
-  now: number,
-  filters: FilterType,
-  selectedTrack: TrackType
-): FeatureType | null {
+  track,
+  now,
+  filters,
+  selectedTrack
+) {
   if (!isValidTrack(track, now, filters)) {
-    return null;
+    return null
   }
 
-  const driven = now - track.startTime;
-  const timeSpan = track.endTime - track.startTime;
-  const fraction = driven / timeSpan;
-  const distanceDriven = track.lineDistance * fraction;
+  const driven = now - track.startTime
+  const timeSpan = track.endTime - track.startTime
+  const fraction = driven / timeSpan
+  const distanceDriven = track.lineDistance * fraction
   const point = turf.point(
     ruler.along(track.line.geometry.coordinates, distanceDriven)
-  );
-
+  )
+  // console.log(fraction)
+  // console.log(point.geometry.coordinates[0], point.geometry.coordinates[1])
   if (!point) {
-    return null;
+    return null
   }
 
-  const [color, strokeColor] = getColors(track, selectedTrack);
-  const opacity = getOpacity(track, selectedTrack);
+  const [color, strokeColor] = getColors(track, selectedTrack)
+  const opacity = getOpacity(track, selectedTrack)
 
   point.properties = {
     bearing: undefined, // eslint-disable-line no-undefined
@@ -143,22 +138,17 @@ export default function getFeatureFromTrack(
     routeName: track.routeName,
     strokeWidth: 2,
     strokeColor,
-    type: track.type
-  };
+    type: track.type,
+  }
 
   if (selectedTrack !== null && track.id === selectedTrack.id) {
     const subSegment = getSubSegment(
       track.line.geometry.coordinates,
       distanceDriven
-    );
-    point.properties.bearing = ruler.bearing(...subSegment) + 180;
-    point.properties.icon = getIcon(track).name;
+    )
+    point.properties.bearing = ruler.bearing(...subSegment) + 180
+    point.properties.icon = getIcon(track).name
   }
 
-  return point;
+  return point
 }
-
-
-
-// WEBPACK FOOTER //
-// ./app/lib/get-feature-from-track.js

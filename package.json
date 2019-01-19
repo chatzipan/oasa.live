@@ -8,6 +8,8 @@
     "@turf/helpers": "^6.1.4",
     "@turf/inside": "^5.0.0",
     "@turf/turf": "^5.1.6",
+    "bluebird": "^3.5.3",
+    "cheap-ruler": "^2.5.1",
     "classnames": "^2.2.6",
     "gatsby": "^2.0.53",
     "gatsby-image": "^2.0.20",
@@ -19,8 +21,12 @@
     "gatsby-plugin-sharp": "^2.0.14",
     "gatsby-source-filesystem": "^2.0.8",
     "gatsby-transformer-sharp": "^2.1.8",
+    "http-proxy-middleware": "^0.19.1",
     "mapbox-gl": "^0.52.0",
+    "netlify-lambda": "^1.1.1",
+    "node-fetch": "^2.3.0",
     "prop-types": "^15.6.2",
+    "ramda": "^0.26.1",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
     "react-helmet": "^5.2.0",
@@ -31,9 +37,12 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "gatsby build",
+    "start": "npm run develop & npm run start:lambda",
+    "start:lambda": "netlify-lambda serve ./src/lambda",
     "develop": "gatsby develop",
-    "start": "npm run develop",
+    "build": "gatsby build",
+    "build:lambda": "netlify-lambda build ./src/lambda",
+    "fetch-route-data": "node ./src/lambda/updateStaticData.js",
     "format": "prettier --write \"src/**/*.js\"",
     "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\""
   },
@@ -46,9 +55,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gatsbyjs/gatsby-starter-default"
+    "url": "https://github.com/chatzipan/oasa.live"
   },
   "bugs": {
-    "url": "https://github.com/gatsbyjs/gatsby/issues"
+    "url": "https://github.com/chatzipan/oasa.live/issues"
   }
 }

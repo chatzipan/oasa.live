@@ -1,11 +1,6 @@
 // @flow
-import type {FilterType} from '../../types/filter';
+// import type { FilterType } from '../../types/filter'
 
-export default function(state: any): FilterType {
-  return {type: state.activeTypes};
+export default function(state) {
+  return { type: state.activeTypes }
 }
-
-
-
-// WEBPACK FOOTER //
-// ./app/selectors/select-filters.js

@@ -1,8 +1,8 @@
 // @flow
-import type {TrackType} from '../../types/track';
-import type {CircleColorType} from '../../types/color';
+// import type {TrackType} from '../../types/track';
+// import type {CircleColorType} from '../../types/color';
 
-import colors, {defaultColors, selectedStrokeColor} from '../config/colors';
+import colors, { defaultColors, selectedStrokeColor } from '../config/colors'
 
 /**
  * Get the color for a track circle.
@@ -10,32 +10,24 @@ import colors, {defaultColors, selectedStrokeColor} from '../config/colors';
  * @param  {object} selectedTrack  The currently selected track
  * @return {array}  The fill and stroke colors
  */
-export default function(
-  track: TrackType,
-  selectedTrack: TrackType
-): CircleColorType {
-  let trackColors = null;
-  const typeColors = colors[track.type];
+export default function(track, selectedTrack) {
+  let trackColors = null
+  const typeColors = colors[track.type]
 
   if (Array.isArray(typeColors)) {
-    trackColors = typeColors;
+    trackColors = typeColors
   } else {
-    trackColors = typeColors[track.routeName];
+    trackColors = typeColors[track.routeName]
   }
 
   if (!Array.isArray(trackColors)) {
-    return defaultColors;
+    return defaultColors
   }
 
-  const isSelectedTrack = selectedTrack && selectedTrack.id === track.id;
+  const isSelectedTrack = selectedTrack && selectedTrack.id === track.id
   if (isSelectedTrack) {
-    return [trackColors[0], selectedStrokeColor];
+    return [trackColors[0], selectedStrokeColor]
   }
 
-  return trackColors;
+  return trackColors
 }
-
-
-
-// WEBPACK FOOTER //
-// ./app/lib/get-colors.js

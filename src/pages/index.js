@@ -5,6 +5,8 @@ import unfetch from 'unfetch'
 
 import createMap from '../lib/map'
 import TrackManager from '../lib/track-manager'
+import store from '../store'
+
 // import GeoLocation from '../components/geo-location'
 
 import styles from './index.module.css'
@@ -21,7 +23,7 @@ if (typeof window !== 'undefined') {
 export default class IndexPage extends Component {
   componentDidMount() {
     this.map = createMap(this.container, map => {
-      const journeyManager = new TrackManager(map /*store*/)
+      const journeyManager = new TrackManager(map, store)
       //const geoLocation = new GeoLocation(map)
       //const details = new Details() // eslint-disable-line
       //const track = new Track(map) // eslint-disable-line
