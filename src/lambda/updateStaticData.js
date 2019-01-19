@@ -11,7 +11,7 @@ const {
   GET_ROUTES_PER_LINE,
 } = require('./api.js')
 
-const filepath = path.join(process.cwd(), 'src/lambda/data/')
+const filepath = path.join(process.cwd(), 'src/data/')
 
 const fetch = async url => {
   const response = await node_fetch(url)
@@ -97,7 +97,6 @@ const fetchLocations = async () => {
   console.log('Updated route locations successfully!')
 }
 
-
 ;(async () => {
   try {
     console.log('Fetching route data from OASA API.')
@@ -105,7 +104,6 @@ const fetchLocations = async () => {
     // await fetchRoutes()
     // await fetchRouteDetails()
     await fetchLocations()
-
   } catch (err) {
     console.log(err) // output to netlify function log
   }
