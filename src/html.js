@@ -16,12 +16,16 @@ export default class HTML extends React.Component {
             href="https://api.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css"
             rel="stylesheet"
           />
+          <link
+            href="https://fonts.googleapis.com/css?family=Rubik:300,400,700"
+            rel="stylesheet"
+          />
           {this.props.headComponents}
         </head>
         <body {...this.props.bodyAttributes}>
           {this.props.preBodyComponents}
           <div
-            key={`body`}
+            key="body"
             id="___gatsby"
             dangerouslySetInnerHTML={{ __html: this.props.body }}
           />

@@ -1,6 +1,4 @@
 // @flow
-// import type {TrackType} from '../../types/track';
-// import type {CircleColorType} from '../../types/color';
 
 import colors, { defaultColors, selectedStrokeColor } from '../config/colors'
 

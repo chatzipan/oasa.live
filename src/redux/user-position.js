@@ -2,13 +2,13 @@ import localStorageKey from '../config/local-storage-key'
 
 const UPDATE = 'user-position/UPDATE'
 
+const mockStorage = {
+  getItem: () => {},
+  setItem: () => {},
+}
+
 const localStorage =
-  typeof window !== 'undefined'
-    ? window.localStorage
-    : {
-        getItem: () => {},
-        setItem: () => {},
-      }
+  typeof window !== 'undefined' ? window.localStorage : mockStorage
 
 /**
  * Reducer function for user position state.
@@ -46,7 +46,7 @@ export function userPositionMiddleware() {
         const localState = JSON.parse(localStorage.getItem(localStorageKey))
 
         localStorage.setItem(
-          'hvv-live-map',
+          localStorageKey,
           JSON.stringify({
             ...localState,
             userPosition: action.position,
@@ -58,6 +58,3 @@ export function userPositionMiddleware() {
     return action
   }
 }
-
-// WEBPACK FOOTER //
-// ./app/ducks/user-position.js

@@ -1,1 +1,1 @@
-export default 'hvv-live-map'
+export default 'athens-live-map'

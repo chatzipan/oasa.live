@@ -5,9 +5,6 @@ import rbush from 'rbush'
 
 import getFeatureFromTrack from './get-feature-from-track'
 import mapConfig from '../config/map'
-import selectFilters from '../selectors/select-filters'
-import selectSelectedTrack from '../selectors/select-selected-track'
-import store from '../store'
 
 const ruler = cheapRuler(mapConfig.CENTER[1])
 
@@ -50,21 +47,11 @@ function getTrackBounds(track) {
  */
 export default class PointGenerator {
   points = new Map()
-  store = store
   tracks = []
   tree = rbush(4)
 
-  /**
-   * Set the tracks of the point generator.
-   * @param {Array<TrackType>} tracks  The tracks
-   * @returns {PointGenerator}  The point generator instance
-   */
-  setTracks(tracks) {
-    this.tracks = tracks
-    const trackBboxes = this.tracks.map(getTrackBounds)
-    this.tree.load(trackBboxes)
-
-    return this
+  constructor(selectedTrack) {
+    this.selectedTrack = selectedTrack
   }
 
   /**
@@ -97,12 +84,15 @@ export default class PointGenerator {
    * @returns {Array<FeatureType>}  The points
    */
   getPoints(currentBounds) {
-    const state = store.getState()
-    const filters = selectFilters(state)
-    const selectedTrack = selectSelectedTrack(state)
+    const selectedTrack = this.selectedTrack
+    const now = new Date()
+    const localOffset = now.getTimezoneOffset()
+    const athensOffset = -120
+    const offsetDiff = localOffset - athensOffset
+    now.setMinutes(now.getMinutes() + offsetDiff)
 
-    const now = Date.now()
     const idsInBounds = this.getIdsInBounds(currentBounds)
+
     for (let i = 0; i < this.tracks.length; i++) {
       const track = this.tracks[i]
 
@@ -110,7 +100,7 @@ export default class PointGenerator {
       if (!idsInBounds.has(track.id)) {
         continue
       }
-      const feature = getFeatureFromTrack(track, now, filters, selectedTrack)
+      const feature = getFeatureFromTrack(track, now.getTime(), selectedTrack)
 
       if (feature && inBounds(feature, currentBounds)) {
         this.points.set(track.id, feature)
@@ -123,5 +113,18 @@ export default class PointGenerator {
     this.points.forEach(point => points.push(point))
 
     return points
+  }
+
+  /**
+   * Set the tracks of the point generator.
+   * @param {Array<TrackType>} tracks  The tracks
+   * @returns {PointGenerator}  The point generator instance
+   */
+  setTracks(tracks) {
+    this.tracks = tracks
+    const trackBboxes = this.tracks.map(getTrackBounds)
+    this.tree.load(trackBboxes)
+
+    return this
   }
 }

@@ -1,4 +1,4 @@
-const SELECT = 'selected-track/SELECT';
+const SELECT = 'selected-track/SELECT'
 
 /**
  * Reducer function for selected track state.
@@ -8,10 +8,10 @@ const SELECT = 'selected-track/SELECT';
  */
 export default function(state = null, action = {}) {
   if (action.type === SELECT) {
-    return action.track ? {...action.track} : null;
+    return action.track ? { ...action.track } : null
   }
 
-  return state;
+  return state
 }
 
 /**
@@ -20,10 +20,5 @@ export default function(state = null, action = {}) {
  * @return {object}  The SELECT action
  */
 export function selectTrack(track) {
-  return {type: SELECT, track};
+  return { type: SELECT, track }
 }
-
-
-
-// WEBPACK FOOTER //
-// ./app/ducks/selected-track.js

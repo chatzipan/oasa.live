@@ -1,7 +1,7 @@
 import localStorageKey from '../config/local-storage-key'
 import inside from '@turf/inside'
 import boundingBox from '../config/bounding-box'
-import turf from '@turf/helpers'
+import * as turf from '@turf/turf'
 
 /**
  * State selector for the user position.
@@ -9,6 +9,7 @@ import turf from '@turf/helpers'
  * @return {array|null}  A [lng, lat] position or null
  */
 export default function(state) {
+  console.log('select-position', state)
   const { userPosition } = state
 
   if (!userPosition) {

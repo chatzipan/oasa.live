@@ -13,13 +13,15 @@ const state = {
 function requestAnimation(event, getPoints, map) {
   if (event.dataType === 'source') {
     map.getSource(mapConfig.VEHICLE_SOURCE_ID).off('data', state.onData)
-    state.animationId = requestAnimationFrame(() => animate(getPoints, map))
+    state.animationId = window.requestAnimationFrame(() =>
+      animate(getPoints, map)
+    )
   }
 }
 
 function cancelFrame(map) {
   map.getSource(mapConfig.VEHICLE_SOURCE_ID).off('data', state.onData)
-  cancelAnimationFrame(state.animationId)
+  window.cancelAnimationFrame(state.animationId)
 }
 
 function animate(getPoints, map) {

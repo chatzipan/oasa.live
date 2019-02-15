@@ -1,7 +1,3 @@
-// @flow
-// import type {TrackType} from '../../types/track';
-// import type {IconType} from '../../types/icon';
-
 import iconConfig, { defaultIcon } from '../config/icons'
 
 /*

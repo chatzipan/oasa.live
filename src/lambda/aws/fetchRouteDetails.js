@@ -1,0 +1,54 @@
+const Promise = require('bluebird')
+
+const { fetch } = require('../helpers/fetch.js')
+const { transformStop } = require('../helpers/transform.js')
+const { fetchFromS3, uploadToS3 } = require('../helpers/s3.js')
+const { checkForDiff } = require('../helpers/diff.js')
+const sleep = require('../helpers/sleep.js')
+const { GET_ROUTE_DETAILS } = require('../api.js')
+
+const fetchRouteDetails = async () => {
+  console.log('Fetching routes details')
+  console.time('fetch route details')
+  const routeList = JSON.parse(await fetchFromS3('routeList.json'))
+  const routePaths = {}
+  const routeStops = {}
+
+  await Promise.map(
+    Object.keys(routeList),
+    async route => {
+      const { details, stops } = await fetch(`${GET_ROUTE_DETAILS}${route}`)
+      /* eslint-disable no-alert, camelcase */
+      routePaths[route] = details.map(({ routed_x, routed_y }) => [
+        /* eslint-enable no-alert, camelcase */
+        parseFloat(routed_x),
+        parseFloat(routed_y),
+      ])
+      routeStops[route] = stops.map(transformStop)
+    },
+    { concurrency: 1 }
+  )
+
+  const pathDiff = checkForDiff('routePaths.json', routePaths)
+  const stopsDiff = checkForDiff('routeStops.json', routeStops)
+  if (pathDiff) {
+    await uploadToS3('routePaths.json', routePaths)
+    console.log('Diff found: ', routePaths)
+    console.log('Updated route paths successfully!')
+  } else {
+    console.log('Skipping...')
+  }
+
+  if (stopsDiff) {
+    console.log('Diff found: ', stopsDiff)
+    await uploadToS3('routeStops.json', routeStops)
+    console.log('Updated route stops successfully!')
+  } else {
+    console.log('Skipping...')
+  }
+
+  console.timeEnd('fetch route details')
+  await sleep(10)
+}
+
+module.exports = fetchRouteDetails

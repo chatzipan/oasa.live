@@ -1,8 +1,3 @@
-const version = process.env.VERSION;
+const version = process.env.VERSION
 
-export default version;
-
-
-
-// WEBPACK FOOTER //
-// ./app/config/version.js
+export default version
