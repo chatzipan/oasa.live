@@ -12,7 +12,7 @@ const initialState = {}
 export default function(state = initialState, { payload = {}, type }) {
   switch (type) {
     case FETCH_LOCATIONS_SUCCESS: {
-      return payload.locations
+      return payload
     }
     default: {
       return state

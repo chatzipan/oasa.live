@@ -2,15 +2,11 @@ import { fetchFromS3 } from '../helpers/s3.js'
 
 export async function handler(event, context) {
   try {
-    const lines = JSON.parse(await fetchFromS3('linesList.json'))
-    const coordinates = JSON.parse(await fetchFromS3('routePaths.json'))
-    const routeDetails = JSON.parse(await fetchFromS3('routeList.json'))
     const locations = JSON.parse(await fetchFromS3('routeLocations.json'))
-    const data = { coordinates, lines, routeDetails, locations }
 
     return {
       statusCode: 200,
-      body: JSON.stringify(data),
+      body: JSON.stringify(locations),
     }
   } catch (err) {
     console.log(err)

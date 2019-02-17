@@ -5,6 +5,8 @@ import rbush from 'rbush'
 
 import getFeatureFromTrack from './get-feature-from-track'
 import mapConfig from '../config/map'
+import store from '../redux/store'
+import selectSelectedTrack from '../selectors/select-selected-track'
 
 const ruler = cheapRuler(mapConfig.CENTER[1])
 
@@ -84,7 +86,7 @@ export default class PointGenerator {
    * @returns {Array<FeatureType>}  The points
    */
   getPoints(currentBounds) {
-    const selectedTrack = this.selectedTrack
+    const selectedTrack = selectSelectedTrack(store.getState())
     const now = new Date()
     const localOffset = now.getTimezoneOffset()
     const athensOffset = -120

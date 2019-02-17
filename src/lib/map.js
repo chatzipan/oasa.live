@@ -31,7 +31,6 @@ function onMapClick(event, map, selectTrack) {
   const features = map.queryRenderedFeatures(event.point, {
     layers: [mapConfig.VEHICLE_LAYER_ID],
   })
-
   selectTrack(features[0] || null)
 }
 

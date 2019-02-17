@@ -18,15 +18,18 @@ const beforeLayer = mapConfig.SHADOW_LAYER_ID
 
 class SelectedTrack extends React.Component {
   /**
-   * @prop {Set<string>} layers  The set of available track layers
-   */
-  layers = new Set()
-
-  /**
    * @prop {string|null} currentLayerId  The id of the currently active track
    *  layer
    */
   currentLayerId = null
+  /**
+   * @prop {Set<string>} layers  The set of available track layers
+   */
+  layers = new Set()
+
+  state = {
+    secondsToLastPos: 0,
+  }
 
   constructor(props) {
     super(props)
@@ -43,9 +46,13 @@ class SelectedTrack extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.selectedTrack !== prevProps.selectedTrack) {
-      if (this.props.selectedTrack) {
+    const { selectedTrack } = this.props
+    if (selectedTrack !== prevProps.selectedTrack) {
+      clearInterval(this.interval)
+      if (selectedTrack) {
         this.showTrack()
+        this.secondsToLastPos()
+        this.interval = setInterval(this.secondsToLastPos, 1000)
       } else {
         this.clearTrack()
       }
@@ -135,25 +142,55 @@ class SelectedTrack extends React.Component {
     })
   }
 
+  secondsToLastPos = () => {
+    const { timestamp } = this.props.selectedTrack.properties
+    const now = new Date()
+    const localOffset = now.getTimezoneOffset()
+    const athensOffset = -120
+    const offsetDiff = localOffset - athensOffset
+    now.setMinutes(now.getMinutes() + offsetDiff)
+
+    const secondsToLastPos = Math.round((now.getTime() - timestamp) / 1000)
+    this.setState({ secondsToLastPos })
+  }
+
+  timeToLastPosition = () => {
+    const { secondsToLastPos } = this.state
+    const minutes = Math.floor(secondsToLastPos / 60)
+    const seconds = secondsToLastPos % 60
+
+    return `${minutes}:${seconds.toString().padStart(2, '0')} ago`
+  }
+
   render() {
-    const { selectedTrack } = this.props
-    const classNames = cx(styles.bar, {
-      [styles.hidden]: !selectedTrack,
-    })
-    if (!selectedTrack) return <div className={classNames} />
-    const { name, descr } = JSON.parse(selectedTrack.properties.details)
+    const { selectedTrack: selected } = this.props
+    const classNames = cx(styles.bar, { [styles.hidden]: !selected })
+    if (!selected) return <div className={classNames} />
+
+    const { name, descr } = JSON.parse(selected.properties.details)
+    const lastSeen = this.timeToLastPosition()
 
     return (
       <div className={classNames}>
-        <div>
-          <div className={styles.label}>Route</div>
-          <div className={cx(styles.info, styles.infoRoute)}>{name}</div>
-        </div>
-        <div>
-          <div className={cx(styles.label, styles.labelDestination)}>
-            Next Destination
+        <div className={styles.row}>
+          <div className={styles.routeId}>
+            <div className={styles.label}>Line</div>
+            <div className={styles.info}>{name}</div>
           </div>
-          <div className={cx(styles.info, styles.infoDestination)}>{descr}</div>
+          <div className={styles.routeName}>
+            <div className={styles.label}>Route</div>
+            <div className={styles.info}>{descr}</div>
+          </div>
+        </div>
+        <div className={styles.row}>
+          <div className={styles.lastSeen}>
+            <div className={styles.label}>Last Seen</div>
+            <div className={styles.info}>{lastSeen}</div>
+          </div>
+          <div className={styles.destination}>
+            <div className={styles.label}>Next Stop</div>
+            <div className={styles.info}>{descr}</div>
+          </div>
         </div>
       </div>
     )

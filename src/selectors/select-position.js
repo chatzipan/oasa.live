@@ -9,7 +9,6 @@ import * as turf from '@turf/turf'
  * @return {array|null}  A [lng, lat] position or null
  */
 export default function(state) {
-  console.log('select-position', state)
   const { userPosition } = state
 
   if (!userPosition) {

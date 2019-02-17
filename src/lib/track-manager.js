@@ -1,7 +1,8 @@
 import * as animation from './animation'
 import PointGenerator from './point-generator'
+import store from '../redux/store'
 
-const DEFAULT_INTERVAL = 60000
+const DEFAULT_INTERVAL = 20000
 
 /**
  * Fetches track data
@@ -20,17 +21,60 @@ function fetchTracks() {
 export default class TrackManager {
   lastRequestedTimes = {}
   timer
-  tracks = {}
 
   /**
    * Constructor.
    * @param  {mapbox.Map} map  The map instance
    */
-  constructor(map, { routes, fetchedLocations, selectedTrack }) {
+  constructor(map, { routes, fetchedLocations, selectTrack }) {
     this.map = map
     this.routes = routes
     this.fetchedLocations = fetchedLocations
-    this.pointGenerator = new PointGenerator(selectedTrack)
+    this.selectTrack = selectTrack
+    this.pointGenerator = new PointGenerator()
+  }
+
+  /**
+   * Transform an object of locations to a map point array
+   * @param  {data} Object  The locations object
+   */
+  getPointData = data => {
+    const { details, lines, coordinates } = this.routes
+
+    return Object.entries(data).map(([vehicleNum, location]) => {
+      const { CS_LAT, CS_LNG, ROUTE_CODE, timestamp } = location
+      const { distance, descr, line } = details[ROUTE_CODE]
+
+      return {
+        details: { descr, name: lines[line].id },
+        delay: 2,
+        timestamp,
+        id: vehicleNum,
+        journeyId: ROUTE_CODE,
+        line: {
+          geometry: {
+            type: 'LineString',
+            coordinates: coordinates[ROUTE_CODE],
+          },
+          properties: {},
+          type: 'Feature',
+        },
+        distance,
+        distanceCovered: location.covered,
+        currentLocation: {
+          type: 'Point',
+          coordinates: [parseFloat(CS_LNG), parseFloat(CS_LAT)],
+        },
+        nextDestination: '',
+        routeName: details[ROUTE_CODE].line,
+        type: 'bus',
+      }
+    })
+  }
+
+  getPointsInViewport = () => {
+    const bounds = this.map.getBounds().toArray()
+    return this.pointGenerator.getPoints(bounds)
   }
 
   /**
@@ -41,59 +85,16 @@ export default class TrackManager {
     console.error('Failed to fetch tracks: ', statusText)
     this.setTimer()
   }
-
   /**
    * Processes a response.
    * @param  {object} data  The response data
    */
   processResponse = data => {
-    this.fetchedLocations(data)
-    const { details, lines, coordinates } = this.routes
-
-    const points = Object.entries(data.locations).map(
-      ([vehicleNum, location]) => {
-        const { CS_LAT, CS_LNG, ROUTE_CODE, timestamp } = location
-        const { distance, descr, line } = details[ROUTE_CODE]
-
-        return {
-          details: { descr, name: lines[line].id },
-          delay: 2,
-          timestamp,
-          id: vehicleNum,
-          journeyId: ROUTE_CODE,
-          line: {
-            geometry: {
-              type: 'LineString',
-              coordinates: coordinates[ROUTE_CODE],
-            },
-            properties: {},
-            type: 'Feature',
-          },
-          distance,
-          distanceCovered: location.covered,
-          currentLocation: {
-            type: 'Point',
-            coordinates: [parseFloat(CS_LNG), parseFloat(CS_LAT)],
-          },
-          nextDestination: '',
-          routeName: data.routeDetails[ROUTE_CODE].line,
-          type: 'bus',
-        }
-      }
-    )
-
+    this.updateSelectedTrack(data)
+    const points = this.getPointData(data)
     this.setTimer()
-    this.updateTracks(points)
-
-    const tracks = [...Object.values(this.tracks)]
-    this.pointGenerator.clear().setTracks(tracks)
-
-    const getPoints = () => {
-      const bounds = this.map.getBounds().toArray()
-      return this.pointGenerator.getPoints(bounds)
-    }
-
-    animation.startLoop(getPoints, this.map)
+    this.pointGenerator.clear().setTracks(Object.values(points))
+    animation.startLoop(this.getPointsInViewport, this.map)
   }
 
   /**
@@ -118,12 +119,20 @@ export default class TrackManager {
   }
 
   /**
-   * Update the internal track data.
-   * @param  {array.<object>} trackData  The new tracks
+   * Updates the selected route in the store
    */
-  updateTracks(trackData) {
-    trackData.forEach(track => {
-      this.tracks[track.id] = track
-    })
+  updateSelectedTrack = data => {
+    const selectedTrack = store.getState().selectedTrack
+    if (selectedTrack) {
+      const selectedTrackLocation = data[selectedTrack.properties.id]
+      selectedTrackLocation &&
+        this.selectTrack({
+          ...selectedTrack,
+          properties: {
+            ...selectedTrack.properties,
+            timestamp: selectedTrackLocation.timestamp,
+          },
+        })
+    }
   }
 }

@@ -80,6 +80,8 @@ const getFeature = coordinates => ({
 
 const fetchLocations = async () => {
   console.log('Fetching locations.')
+  console.time('fetch locations time')
+
   const schedules = await getActiveSchedules()
   const linesList = JSON.parse(await fetchFromS3('linesList.json'))
   const coordinates = JSON.parse(await fetchFromS3('routePaths.json'))
@@ -120,6 +122,7 @@ const fetchLocations = async () => {
   )
 
   await uploadToS3('routeLocations.json', routeLocations)
+  console.timeEnd('fetch locations time')
   console.log('Updated route locations successfully!')
 }
 

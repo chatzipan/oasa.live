@@ -106,6 +106,7 @@ export default function getFeatureFromTrack(track, now, selectedTrack) {
     strokeWidth: 2,
     details: track.details,
     strokeColor,
+    timestamp: track.timestamp,
     type: track.type,
   }
 

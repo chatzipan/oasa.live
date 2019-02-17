@@ -7,13 +7,15 @@ const { uploadToS3 } = require('../helpers/s3.js')
 const { transformLine } = require('../helpers/transform.js')
 const { GET_LINES, GET_SCHEDULE_CODES_BY_LINE } = require('../api.js')
 
-// We use proxy linse for some lines (such as deviations in case of sport events,
-// that have not their own schedules in database
+// We use proxy lines for some lines (such as deviations in case of sport events,
+// farmer's markets) that don't have own schedules in database
 const proxyLines = {
-  1190: 846,
-  1188: 1056,
-  1186: 994,
   1184: 833,
+  1186: 994,
+  1188: 1056,
+  1190: 846,
+  1196: 846,
+  1195: 977,
 }
 
 const fetchLines = async () => {
@@ -37,7 +39,7 @@ const fetchLineScheduleCodes = async linesList => {
     async line => {
       const lineCode = proxyLines[line] || line
       const schedules = await fetch(`${GET_SCHEDULE_CODES_BY_LINE}${lineCode}`)
-
+      !schedules && console.log(linesList[line])
       linesList[line].sdcs = schedules.map(({ sdc_code }) => sdc_code) // eslint-disable-line  camelcase
       schedules.forEach(schedule => {
         scheduleCodes[schedule.sdc_code] = schedule

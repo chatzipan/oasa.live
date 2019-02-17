@@ -19,4 +19,4 @@ const reducers = combineReducers({
 
 const enhancer = composeEnhancers(applyMiddleware(userPositionMiddleware))
 
-export default () => createStore(reducers, enhancer)
+export default createStore(reducers, enhancer)

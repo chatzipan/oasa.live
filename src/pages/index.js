@@ -33,7 +33,7 @@ class IndexPage extends Component {
   }
 
   componentDidMount() {
-    fetch('/.netlify/functions/getLocations')
+    fetch('/.netlify/functions/getStaticData')
       .then(response => response.json())
       .then(this.props.fetchedRouteData)
       .then(this.createMap)
