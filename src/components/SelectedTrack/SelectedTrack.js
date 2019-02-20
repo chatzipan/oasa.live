@@ -157,9 +157,9 @@ class SelectedTrack extends React.Component {
   timeToLastPosition = () => {
     const { secondsToLastPos } = this.state
     const minutes = Math.floor(secondsToLastPos / 60)
-    const seconds = secondsToLastPos % 60
+    const seconds = (secondsToLastPos % 60).toString().padStart(2, '0')
 
-    return `${minutes}:${seconds.toString().padStart(2, '0')} ago`
+    return `${minutes}:${seconds} ago`
   }
 
   render() {
@@ -179,7 +179,9 @@ class SelectedTrack extends React.Component {
           </div>
           <div className={styles.routeName}>
             <div className={styles.label}>Route</div>
-            <div className={styles.info}>{descr}</div>
+            <div className={styles.info} title={descr}>
+              {descr}
+            </div>
           </div>
         </div>
         <div className={styles.row}>
@@ -189,7 +191,9 @@ class SelectedTrack extends React.Component {
           </div>
           <div className={styles.destination}>
             <div className={styles.label}>Next Stop</div>
-            <div className={styles.info}>{descr}</div>
+            <div className={styles.info} title={descr}>
+              {descr}
+            </div>
           </div>
         </div>
       </div>

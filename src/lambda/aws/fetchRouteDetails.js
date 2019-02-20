@@ -29,8 +29,8 @@ const fetchRouteDetails = async () => {
     { concurrency: 1 }
   )
 
-  const pathDiff = checkForDiff('routePaths.json', routePaths)
-  const stopsDiff = checkForDiff('routeStops.json', routeStops)
+  const pathDiff = await checkForDiff('routePaths.json', routePaths)
+  const stopsDiff = await checkForDiff('routeStops.json', routeStops)
   if (pathDiff) {
     await uploadToS3('routePaths.json', routePaths)
     console.log('Diff found: ', routePaths)

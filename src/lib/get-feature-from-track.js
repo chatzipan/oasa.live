@@ -77,10 +77,9 @@ export default function getFeatureFromTrack(track, now, selectedTrack) {
     return null
   }
 
-  const routeDuration = 25
   const distanceCovered = track.distanceCovered
   const timeSpan = now - track.timestamp
-  const speed = track.distance / (routeDuration * 60 * 1000)
+  const speed = track.speed
   const diff = timeSpan * speed
   const distanceDriven = distanceCovered + diff
   const point = turf.point(

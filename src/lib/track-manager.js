@@ -42,13 +42,17 @@ export default class TrackManager {
     const { details, lines, coordinates } = this.routes
 
     return Object.entries(data).map(([vehicleNum, location]) => {
-      const { CS_LAT, CS_LNG, ROUTE_CODE, timestamp } = location
-      const { distance, descr, line } = details[ROUTE_CODE]
+      const { CS_LAT, CS_LNG, ROUTE_CODE, timestamp, speed } = location
+      const { descr, line } = details[ROUTE_CODE]
 
       return {
-        details: { descr, name: lines[line].id },
+        currentLocation: {
+          type: 'Point',
+          coordinates: [parseFloat(CS_LNG), parseFloat(CS_LAT)],
+        },
         delay: 2,
-        timestamp,
+        details: { descr, name: lines[line].id },
+        distanceCovered: location.covered,
         id: vehicleNum,
         journeyId: ROUTE_CODE,
         line: {
@@ -59,14 +63,10 @@ export default class TrackManager {
           properties: {},
           type: 'Feature',
         },
-        distance,
-        distanceCovered: location.covered,
-        currentLocation: {
-          type: 'Point',
-          coordinates: [parseFloat(CS_LNG), parseFloat(CS_LAT)],
-        },
         nextDestination: '',
         routeName: details[ROUTE_CODE].line,
+        speed,
+        timestamp,
         type: 'bus',
       }
     })

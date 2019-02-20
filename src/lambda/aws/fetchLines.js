@@ -48,7 +48,7 @@ const fetchLineScheduleCodes = async linesList => {
     { concurrency: 1 }
   )
 
-  const diff = checkForDiff('scheduleCodes.json', scheduleCodes)
+  const diff = await checkForDiff('scheduleCodes.json', scheduleCodes)
   if (diff) {
     console.log('Diff found: ', diff)
     await uploadToS3('scheduleCodes.json', scheduleCodes)
