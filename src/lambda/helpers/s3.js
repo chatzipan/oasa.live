@@ -1,8 +1,4 @@
 const AWS = require('aws-sdk')
-console.log({
-  AWS_ACCESS_KEYID: process.env.AWS_ACCESS_KEYID,
-  AWS_SECRET_ACCESSKEY: process.env.AWS_SECRET_ACCESSKEY,
-})
 
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEYID,
