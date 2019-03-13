@@ -17,18 +17,14 @@ const transformRoute = route => ({
 })
 
 const transformStop = stop => ({
-  code: stop.StopCode,
+  c: stop.StopCode,
   id: stop.StopID,
-  descr: stop.StopDescr,
-  descr_en: stop.StopDescrEng,
-  street: stop.StopStreet,
-  street_en: stop.StopStreetEng,
-  heading: stop.StopHeading,
+  d: stop.StopDescr,
+  d_en: stop.StopDescrEng,
+  s: stop.StopStreet,
+  s_en: stop.StopStreetEng,
   lat: stop.StopLat,
   lng: stop.StopLng,
-  order: stop.RouteStopOrder,
-  type: stop.StopType,
-  amea: stop.StopAmea,
 })
 
 module.exports = {

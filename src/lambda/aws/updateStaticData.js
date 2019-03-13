@@ -22,6 +22,7 @@ const fetchStatic = async (_lines, _schedules, _routes, _details) => {
     failed += 5
     console.log(err)
     await sleep(failed)
+
     fetchStatic(lines, schedules, routes, details)
   }
 }
