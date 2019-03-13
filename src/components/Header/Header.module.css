@@ -1,0 +1,16 @@
+.wrapper {
+  display: flex;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
+  padding: 3vw;
+  color: white;
+}
+
+.header {
+  margin: 0;
+  font-size: 19px;
+}
