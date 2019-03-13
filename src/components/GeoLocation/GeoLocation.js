@@ -68,7 +68,6 @@ class GeoLocation extends Component {
    * @param  {Error} positionError  The error
    */
   onPositionError = positionError => {
-    console.error(positionError)
     this.props.updateUserPosition(null)
   }
 
@@ -102,9 +101,9 @@ class GeoLocation extends Component {
 
     const urlPosition = getPositionFromUrl()
 
-    if (/* isMobile  && */ !urlPosition) {
+    if (!urlPosition) {
       this.map.setCenter(userPosition)
-    } else if (urlPosition) {
+    } else {
       this.map.jumpTo(urlPosition)
     }
   }

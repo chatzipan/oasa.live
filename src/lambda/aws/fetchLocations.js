@@ -98,8 +98,9 @@ const getRouteSpeed = (route, schedules, covered) => {
   const { distance, line, type } = route
   const scheduleType = routeTypeScheduleMap[type]
   const routeSchedules = schedules[line][scheduleType]
-
+  if (covered < 0.05) return 0 // 50m of covered, consider still not started
   if (!routeSchedules) {
+    // Bus could still get signal much after its last schedule
     return DEFAULT_SPEED
   }
 
@@ -129,13 +130,22 @@ const getRouteSpeed = (route, schedules, covered) => {
 const fetchLocations = async () => {
   console.log('Fetching locations.')
   console.time('fetch locations time')
-
-  const currentSchedules = await getCurrentSchedules()
-  const linesList = JSON.parse(await fetchFromS3('linesList.json'))
-  const coordinates = JSON.parse(await fetchFromS3('routePaths.json'))
-  const routeDetails = JSON.parse(await fetchFromS3('routeList.json'))
   const routes = new Set()
   const routeLocations = {}
+  const [
+    currentSchedules,
+    _linesList,
+    _coordinates,
+    _routeDetails,
+  ] = await Promise.all([
+    getCurrentSchedules(),
+    fetchFromS3('linesList.json'),
+    fetchFromS3('routePaths.json'),
+    fetchFromS3('routeList.json'),
+  ])
+  const coordinates = JSON.parse(_coordinates)
+  const linesList = JSON.parse(_linesList)
+  const routeDetails = JSON.parse(_routeDetails)
 
   Object.keys(currentSchedules).forEach(line => {
     const _routes = linesList[line].routes
@@ -162,16 +172,21 @@ const fetchLocations = async () => {
           const start = turf.point(track.geometry.coordinates[0])
           const sliced = lineSlice(start, current, track)
           const covered = length(sliced)
-          const speed =
-            covered > 0.01
-              ? getRouteSpeed(routeDetails[route], currentSchedules, covered)
-              : 0
+          const speed = getRouteSpeed(
+            routeDetails[route],
+            currentSchedules,
+            covered
+          )
 
-          routeLocations[location['VEH_NO']] = { ...location, covered, speed }
+          routeLocations[location['VEH_NO']] = {
+            ...location,
+            covered,
+            speed,
+          }
         })
       }
     },
-    { concurrency: 3 }
+    { concurrency: 5 }
   )
 
   await uploadToS3('routeLocations.json', routeLocations)

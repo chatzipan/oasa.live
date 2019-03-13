@@ -27,14 +27,15 @@ function loadIcons() {
  * @param  {Event} event  The mapbox-gl click event
  * @param  {mapboxgl.Map} map  The map instance
  */
-function onMapClick(event, map, selectTrack) {
-  const features = map.queryRenderedFeatures(event.point, {
-    layers: [mapConfig.VEHICLE_LAYER_ID],
+function onMapClick(event, map, selectFeature) {
+  const selectedFeature = map.queryRenderedFeatures(event.point, {
+    layers: [mapConfig.VEHICLE_LAYER_ID, mapConfig.STOPS_LAYER_ID],
   })
-  selectTrack(features[0] || null)
+
+  selectFeature(selectedFeature[0] || null)
 }
 
-export default function(container, selectTrack) {
+export default function(container, selectFeature) {
   return new Promise((resolve, reject) => {
     const map = new mapboxgl.Map({
       center: mapConfig.CENTER,
@@ -57,6 +58,27 @@ export default function(container, selectTrack) {
         type: 'line',
         id: mapConfig.LINE_LAYER_ID,
         paint: { 'line-color': '#8f0' },
+      })
+
+      // Stops
+      map.addSource(mapConfig.STOPS_SOURCE_ID, {
+        type: 'geojson',
+        data: emptyCollection,
+      })
+
+      map.addLayer({
+        source: mapConfig.STOPS_SOURCE_ID,
+        id: mapConfig.STOPS_LAYER_ID,
+        type: 'circle',
+        minzoom: mapConfig.SYMBOL_MIN_ZOOM,
+        paint: {
+          'circle-color': { type: 'identity', property: 'color' },
+          'circle-stroke-width': { type: 'identity', property: 'strokeWidth' },
+          'circle-stroke-color': { type: 'identity', property: 'strokeColor' },
+          'circle-radius': mapConfig.STOP_CIRCLE_RADIUS,
+          'circle-opacity': { type: 'identity', property: 'opacity' },
+          'circle-stroke-opacity': { type: 'identity', property: 'opacity' },
+        },
       })
 
       // Vehicle circles
@@ -105,7 +127,7 @@ export default function(container, selectTrack) {
         minzoom: mapConfig.SYMBOL_MIN_ZOOM,
         type: 'symbol',
         layout: {
-          'text-field': '{routeName}',
+          'text-field': '{name}',
           'text-anchor': 'top',
           'text-offset': [0, 0.75],
         },
@@ -143,7 +165,7 @@ export default function(container, selectTrack) {
         },
       })
 
-      map.on('click', event => onMapClick(event, map, selectTrack))
+      map.on('click', event => onMapClick(event, map, selectFeature))
 
       loadIcons()
         .then(icons => {
@@ -168,6 +190,7 @@ export default function(container, selectTrack) {
           })
           map.setFilter(mapConfig.SELECTED_LAYER_ID, ['has', 'bearing'])
           map.setFilter(mapConfig.VEHICLE_LAYER_ID, ['!has', 'bearing'])
+          map.setFilter(mapConfig.STOPS_LAYER_ID, ['!has', 'bearing'])
           map.setFilter(mapConfig.LABEL_LAYER_ID, ['!has', 'bearing'])
           map.setFilter(mapConfig.SHADOW_LAYER_ID, ['!has', 'bearing'])
           resolve(map)

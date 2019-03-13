@@ -2,11 +2,24 @@ const proxy = require('http-proxy-middleware')
 
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Default Starter`,
-    description: `Kick off your next, great Gatsby project with this default
-    starter.This barebones starter ships with the main Gatsby configuration
-    files you might need.`,
-    author: `@gatsbyjs`,
+    title: 'Athens live bus telematics',
+    description: `A live map of real-time bus information of Athens, Greece.
+      Data are taken from OASA API. The project does not take 
+      responsibility for the accuracy of location data provided by OASA.`,
+    keywords: [
+      'telematics',
+      'Athens',
+      'bus',
+      'traffic',
+      'live',
+      'real-time',
+      'mapbox',
+      'react',
+      'τηλεματική',
+      'λεωφορεία',
+      'ΟΑΣΑ',
+    ],
+    author: `https://github.com/chatzipan`,
   },
   developMiddleware: app => {
     app.use(

@@ -5,8 +5,8 @@ const { checkFileExists, fetchFromS3 } = require('./s3.js')
 const getDiffMsg = ({ kind, path, index, item, lhs, rhs }) => {
   const where = path && path.join(' - ')
   const msgs = {
-    N: `Addetion in ${path}, value ${rhs}`,
-    D: `Deleteion in ${path}, value ${lhs}`,
+    N: `Addetion in ${path}, value ${JSON.stringify(rhs)}`,
+    D: `Deletion in ${path}, value ${JSON.stringify(lhs)}`,
     E: `Edition in ${path}, new value "${rhs}" instead of old value "${lhs}"`,
     A: `Change in ${path}: ${item && getItemMsg(item)}`,
   }

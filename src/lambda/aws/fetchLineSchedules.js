@@ -86,6 +86,7 @@ const fetchLineSchedules = async () => {
   )
   console.timeEnd('fetch line schedules')
   await sleep(5)
+  return true
 }
 
 module.exports = fetchLineSchedules

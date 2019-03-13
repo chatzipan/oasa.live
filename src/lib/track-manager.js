@@ -1,6 +1,7 @@
 import * as animation from './animation'
 import PointGenerator from './point-generator'
 import store from '../redux/store'
+import mapConfig from '../config/map'
 
 const DEFAULT_INTERVAL = 20000
 
@@ -26,12 +27,13 @@ export default class TrackManager {
    * Constructor.
    * @param  {mapbox.Map} map  The map instance
    */
-  constructor(map, { routes, fetchedLocations, selectTrack }) {
+  constructor(map, { routes, fetchedLocations, selectFeature }) {
     this.map = map
     this.routes = routes
     this.fetchedLocations = fetchedLocations
-    this.selectTrack = selectTrack
+    this.selectFeature = selectFeature
     this.pointGenerator = new PointGenerator()
+    this.stopsSource = this.map.getSource(mapConfig.STOPS_SOURCE_ID)
   }
 
   /**
@@ -42,7 +44,7 @@ export default class TrackManager {
     const { details, lines, coordinates } = this.routes
 
     return Object.entries(data).map(([vehicleNum, location]) => {
-      const { CS_LAT, CS_LNG, ROUTE_CODE, timestamp, speed } = location
+      const { CS_LAT, CS_LNG, ROUTE_CODE, speed, timestamp } = location
       const { descr, line } = details[ROUTE_CODE]
 
       return {
@@ -51,10 +53,9 @@ export default class TrackManager {
           coordinates: [parseFloat(CS_LNG), parseFloat(CS_LAT)],
         },
         delay: 2,
-        details: { descr, name: lines[line].id },
+        descr,
         distanceCovered: location.covered,
         id: vehicleNum,
-        journeyId: ROUTE_CODE,
         line: {
           geometry: {
             type: 'LineString',
@@ -63,11 +64,12 @@ export default class TrackManager {
           properties: {},
           type: 'Feature',
         },
-        nextDestination: '',
+        name: lines[line].id,
+        routeCode: ROUTE_CODE,
         routeName: details[ROUTE_CODE].line,
         speed,
         timestamp,
-        type: 'bus',
+        type: '_bus',
       }
     })
   }
@@ -85,6 +87,7 @@ export default class TrackManager {
     console.error('Failed to fetch tracks: ', statusText)
     this.setTimer()
   }
+
   /**
    * Processes a response.
    * @param  {object} data  The response data
@@ -118,21 +121,57 @@ export default class TrackManager {
     this.timer = setTimeout(this.refresh, timeout)
   }
 
+  renderStops(selectedTrack) {
+    // TODO: requestanimationframe
+    const stops = Object.values(this.routes.stops).map(stop => {
+      const selected = selectedTrack && stop.id === selectedTrack.properties.id
+      return {
+        code: stop.code,
+        geometry: {
+          coordinates: [stop.lng, stop.lat],
+          type: 'Point',
+        },
+        properties: {
+          bearing: undefined,
+          code: stop.code,
+          color: '#00ad9f',
+          descr: stop.descr,
+          descr_en: stop.descr_en,
+          icon: undefined,
+          id: stop.id,
+          opacity: 1,
+          strokeColor: '#00897e',
+          strokeWidth: selected ? 4 : 1,
+          type: 'stop',
+        },
+        type: 'Feature',
+      }
+    })
+
+    this.stopsSource.setData({
+      type: 'FeatureCollection',
+      features: stops,
+    })
+  }
+
   /**
    * Updates the selected route in the store
    */
   updateSelectedTrack = data => {
     const selectedTrack = store.getState().selectedTrack
-    if (selectedTrack) {
-      const selectedTrackLocation = data[selectedTrack.properties.id]
-      selectedTrackLocation &&
-        this.selectTrack({
-          ...selectedTrack,
-          properties: {
-            ...selectedTrack.properties,
-            timestamp: selectedTrackLocation.timestamp,
-          },
-        })
+    const selectedTrackLocation =
+      selectedTrack && data[selectedTrack.properties.id]
+
+    if (!selectedTrackLocation) {
+      return
     }
+
+    this.selectFeature({
+      ...selectedTrack,
+      properties: {
+        ...selectedTrack.properties,
+        timestamp: selectedTrackLocation.timestamp,
+      },
+    })
   }
 }

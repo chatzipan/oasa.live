@@ -9,14 +9,24 @@ const FETCH_ROUTE_DATA_SUCCESS = 'fetch-data/FETCH_ROUTE_DATA_SUCCESS'
 
 const initialState = {}
 
+const normalizeStops = stops =>
+  Object.values(stops).reduce((acc, routeStops) => {
+    routeStops.forEach(stop => {
+      acc[stop.code] = stop
+    })
+    return acc
+  }, {})
+
 export default function(state = initialState, { payload = {}, type }) {
   switch (type) {
     case FETCH_ROUTE_DATA_SUCCESS: {
       return {
         ...state,
+        coordinates: payload.coordinates,
         details: payload.routeDetails,
         lines: payload.lines,
-        coordinates: payload.coordinates,
+        routeStops: payload.stops,
+        stops: normalizeStops(payload.stops),
       }
     }
     default: {

@@ -1,7 +1,7 @@
 :root {
   --primary-color: #fff;
   --label-color: rgba(0, 0, 0, 0.5);
-  --info-color: #333;
+  --value-color: #333;
   --menu-corners: 5px;
 }
 
@@ -19,8 +19,10 @@
   transform: translate(-50%, 0%);
   transition: transform 200ms ease;
   padding: 1vw 2vw;
-  touch-action: none;
-  pointer-events: none;
+  /* 
+  * touch-action: none;
+  * pointer-events: none;
+  */
 
   @media screen and (max-width: 680px) {
     width: calc(100% - 16px);
@@ -37,28 +39,41 @@
   font-size: 12px;
 }
 
-.info {
+.value {
   font-size: 17px;
-  color: var(--info-color);
+  color: var(--value-color);
+
+  @media screen and (max-width: 680px) {
+    font-size: 14px;
+  }
+
+  &.bus {
+    font-size: 14px;
+  }
 }
 
 .label,
-.info {
+.value {
   line-height: 1.3;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .row {
   display: flex;
+
   &:first-child {
-    margin-bottom: 1vw;
+    margin-bottom: 1.3vw;
 
     @media screen and (max-width: 680px) {
       margin-bottom: 2vw;
     }
+  }
+
+  &.bus {
+    margin-bottom: 1.3vw;
+  }
+
+  &.stops .label {
+    margin-bottom: 0.3vw;
   }
 }
 
@@ -72,9 +87,42 @@
   width: 77%;
 }
 
+.stopName {
+  width: 30%;
+  & .value {
+    font-size: 14px;
+  }
+}
+
+.arrivals {
+  width: 70%;
+}
+
+.line {
+  width: 10%;
+  padding-left: 2px;
+}
+
+.lineDescr {
+  width: 78%;
+  padding: 0 15px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.arrivalTime {
+  width: 12%;
+}
+
+.arrivalsTable {
+  max-height: 100px;
+  overflow: scroll;
+}
+
 :global(.mapboxgl-ctrl--with-bottom-bar) {
   @media screen and (max-width: 680px) {
-    transform: translateY(-65px);
+    transform: translateY(-110px);
   }
 }
 

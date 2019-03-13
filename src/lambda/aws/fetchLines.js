@@ -39,8 +39,12 @@ const fetchLineScheduleCodes = async linesList => {
     async line => {
       const lineCode = proxyLines[line] || line
       const schedules = await fetch(`${GET_SCHEDULE_CODES_BY_LINE}${lineCode}`)
-      !schedules && console.log(linesList[line])
+      if (!schedules) {
+        console.log(linesList[line], `${GET_SCHEDULE_CODES_BY_LINE}${lineCode}`)
+        return
+      }
       linesList[line].sdcs = schedules.map(({ sdc_code }) => sdc_code) // eslint-disable-line  camelcase
+
       schedules.forEach(schedule => {
         scheduleCodes[schedule.sdc_code] = schedule
       })
@@ -59,6 +63,8 @@ const fetchLineScheduleCodes = async linesList => {
   }
   console.timeEnd('fetch lines and line schedule codes time')
   await sleep(5)
+
+  return true
 }
 
 module.exports = fetchLines

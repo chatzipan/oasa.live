@@ -1,4 +1,7 @@
 const Promise = require('bluebird')
+const turf = require('@turf/helpers')
+const lineSlice = require('@turf/line-slice')
+const length = require('@turf/length').default
 
 const { fetch } = require('../helpers/fetch.js')
 const { transformStop } = require('../helpers/transform.js')
@@ -7,6 +10,29 @@ const { checkForDiff } = require('../helpers/diff.js')
 const sleep = require('../helpers/sleep.js')
 const { GET_ROUTE_DETAILS } = require('../api.js')
 
+const getDistanceFromStart = (stop, coordinates) => {
+  const { lng, lat } = stop
+  const path = {
+    geometry: {
+      type: 'LineString',
+      coordinates,
+    },
+    properties: {},
+    type: 'Feature',
+  }
+  const stopPoint = {
+    type: 'Point',
+    coordinates: [lng, lat],
+  }
+  const start = turf.point(coordinates[0])
+  const sliced = lineSlice(start, stopPoint, path)
+  const distanceFromStart = length(sliced)
+
+  return {
+    ...stop,
+    distanceFromStart,
+  }
+}
 const fetchRouteDetails = async () => {
   console.log('Fetching routes details')
   console.time('fetch route details')
@@ -19,18 +45,21 @@ const fetchRouteDetails = async () => {
     async route => {
       const { details, stops } = await fetch(`${GET_ROUTE_DETAILS}${route}`)
       /* eslint-disable no-alert, camelcase */
-      routePaths[route] = details.map(({ routed_x, routed_y }) => [
+      const routePath = details.map(({ routed_x, routed_y }) => [
         /* eslint-enable no-alert, camelcase */
         parseFloat(routed_x),
         parseFloat(routed_y),
       ])
-      routeStops[route] = stops.map(transformStop)
+      routePaths[route] = routePath
+      routeStops[route] = stops
+        .map(transformStop)
+        .map(stop => getDistanceFromStart(stop, routePath))
     },
     { concurrency: 1 }
   )
-
   const pathDiff = await checkForDiff('routePaths.json', routePaths)
   const stopsDiff = await checkForDiff('routeStops.json', routeStops)
+
   if (pathDiff) {
     await uploadToS3('routePaths.json', routePaths)
     console.log('Diff found: ', routePaths)
@@ -48,7 +77,7 @@ const fetchRouteDetails = async () => {
   }
 
   console.timeEnd('fetch route details')
-  await sleep(10)
+  return true
 }
 
 module.exports = fetchRouteDetails

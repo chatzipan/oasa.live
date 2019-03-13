@@ -1,7 +1,4 @@
 import localStorageKey from '../config/local-storage-key'
-import inside from '@turf/inside'
-import boundingBox from '../config/bounding-box'
-import * as turf from '@turf/turf'
 
 /**
  * State selector for the user position.
@@ -18,10 +15,6 @@ export default function(state) {
       return storedPositon.userPosition
     }
 
-    return null
-  }
-
-  if (!inside(turf.point(userPosition), boundingBox)) {
     return null
   }
 

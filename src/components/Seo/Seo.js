@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 import { StaticQuery, graphql } from 'gatsby'
 
-function SEO({ description, lang, meta, keywords, title }) {
+function SEO({ description, lang, meta }) {
   return (
     <StaticQuery
       query={detailsQuery}
@@ -15,8 +15,7 @@ function SEO({ description, lang, meta, keywords, title }) {
             htmlAttributes={{
               lang,
             }}
-            title={title}
-            titleTemplate={`%s | ${data.site.siteMetadata.title}`}
+            title={data.site.siteMetadata.title}
             meta={[
               {
                 name: `description`,
@@ -24,7 +23,7 @@ function SEO({ description, lang, meta, keywords, title }) {
               },
               {
                 property: `og:title`,
-                content: title,
+                content: data.site.siteMetadata.title,
               },
               {
                 property: `og:description`,
@@ -44,7 +43,7 @@ function SEO({ description, lang, meta, keywords, title }) {
               },
               {
                 name: `twitter:title`,
-                content: title,
+                content: data.site.siteMetadata.title,
               },
               {
                 name: `twitter:description`,
@@ -53,10 +52,10 @@ function SEO({ description, lang, meta, keywords, title }) {
             ]
               .concat(
                 /* eslint-disable indent */
-                keywords.length > 0
+                data.site.siteMetadata.keywords.length > 0
                   ? {
                       name: 'keywords',
-                      content: keywords.join(', '),
+                      content: data.site.siteMetadata.keywords.join(', '),
                     }
                   : []
                 /* eslint-enable indent */
@@ -80,7 +79,7 @@ SEO.propTypes = {
   lang: PropTypes.string,
   meta: PropTypes.array,
   keywords: PropTypes.arrayOf(PropTypes.string),
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
 }
 
 export default SEO
@@ -92,6 +91,7 @@ const detailsQuery = graphql`
         title
         description
         author
+        keywords
       }
     }
   }

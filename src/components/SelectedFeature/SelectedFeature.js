@@ -3,9 +3,10 @@ import cx from 'classnames'
 import { connect } from 'react-redux'
 
 import getColors from '../../lib/get-colors'
+import getAthensTime from '../../lib/get-athens-time'
 import mapConfig from '../../config/map'
 
-import styles from './SelectedTrack.module.css'
+import styles from './SelectedFeature.module.css'
 
 const emptyCollection = {
   type: 'FeatureCollection',
@@ -16,7 +17,7 @@ const lineSourceId = mapConfig.TRACK_LINE_SOURCE_ID
 const lineLayerId = mapConfig.TRACK_LINE_LAYER_ID
 const beforeLayer = mapConfig.SHADOW_LAYER_ID
 
-class SelectedTrack extends React.Component {
+class SelectedFeature extends React.Component {
   /**
    * @prop {string|null} currentLayerId  The id of the currently active track
    *  layer
@@ -28,6 +29,7 @@ class SelectedTrack extends React.Component {
   layers = new Set()
 
   state = {
+    arrivals: null,
     secondsToLastPos: 0,
   }
 
@@ -47,12 +49,16 @@ class SelectedTrack extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { selectedTrack } = this.props
+
     if (selectedTrack !== prevProps.selectedTrack) {
       clearInterval(this.interval)
-      if (selectedTrack) {
+      if (selectedTrack && selectedTrack.properties.type === '_bus') {
         this.showTrack()
         this.secondsToLastPos()
         this.interval = setInterval(this.secondsToLastPos, 1000)
+      } else if (selectedTrack && selectedTrack.properties.type === 'stop') {
+        this.fetchStopArrivals(selectedTrack.properties.code)
+        this.clearTrack()
       } else {
         this.clearTrack()
       }
@@ -71,6 +77,36 @@ class SelectedTrack extends React.Component {
     this.mapboxControls.forEach(control => {
       control.classList.remove('mapboxgl-ctrl--with-bottom-bar')
     })
+  }
+
+  getNextStop = () => {
+    const {
+      selectedTrack: {
+        properties: { distanceCovered, routeCode, speed, timestamp },
+      },
+      stops,
+    } = this.props
+    const now = getAthensTime()
+    const timeSpan = now - timestamp
+    const diff = timeSpan * speed
+    const distanceDriven = distanceCovered + diff
+    const routeStops = stops[routeCode]
+    const nextStop = routeStops.find(
+      stop => stop.distanceFromStart > distanceDriven
+    )
+
+    return nextStop ? nextStop.descr : ''
+  }
+  /**
+   * Fetches track data
+   *
+   * @return {Promise}  Resolves with the stop arrivals
+   */
+  fetchStopArrivals = async code => {
+    const arrivals = await fetch(
+      `/.netlify/functions/getStopArrivals?stopCode=${code}`
+    ).then(response => response.json())
+    this.setState({ arrivals })
   }
 
   /**
@@ -105,6 +141,18 @@ class SelectedTrack extends React.Component {
     this.currentLayerId = id
   }
 
+  secondsToLastPos = () => {
+    const { timestamp } = this.props.selectedTrack.properties
+    const now = new Date()
+    const localOffset = now.getTimezoneOffset()
+    const athensOffset = -120
+    const offsetDiff = localOffset - athensOffset
+    now.setMinutes(now.getMinutes() + offsetDiff)
+
+    const secondsToLastPos = Math.round((now.getTime() - timestamp) / 1000)
+    this.setState({ secondsToLastPos })
+  }
+
   /**
    * Updates the selected journey track.
    * @param  {object} properties  Properties of the selected feature
@@ -115,7 +163,7 @@ class SelectedTrack extends React.Component {
       selectedTrack: { properties },
     } = this.props
 
-    if (!properties.journeyId) {
+    if (!properties.routeCode) {
       return
     }
 
@@ -129,7 +177,7 @@ class SelectedTrack extends React.Component {
           properties: {},
           geometry: {
             type: 'LineString',
-            coordinates: coordinates[properties.journeyId],
+            coordinates: coordinates[properties.routeCode],
           },
         },
       ],
@@ -142,18 +190,6 @@ class SelectedTrack extends React.Component {
     })
   }
 
-  secondsToLastPos = () => {
-    const { timestamp } = this.props.selectedTrack.properties
-    const now = new Date()
-    const localOffset = now.getTimezoneOffset()
-    const athensOffset = -120
-    const offsetDiff = localOffset - athensOffset
-    now.setMinutes(now.getMinutes() + offsetDiff)
-
-    const secondsToLastPos = Math.round((now.getTime() - timestamp) / 1000)
-    this.setState({ secondsToLastPos })
-  }
-
   timeToLastPosition = () => {
     const { secondsToLastPos } = this.state
     const minutes = Math.floor(secondsToLastPos / 60)
@@ -162,24 +198,19 @@ class SelectedTrack extends React.Component {
     return `${minutes}:${seconds} ago`
   }
 
-  render() {
-    const { selectedTrack: selected } = this.props
-    const classNames = cx(styles.bar, { [styles.hidden]: !selected })
-    if (!selected) return <div className={classNames} />
-
-    const { name, descr } = JSON.parse(selected.properties.details)
-    const lastSeen = this.timeToLastPosition()
+  renderRouteInfo = () => {
+    const { descr, name } = this.props.selectedTrack.properties
 
     return (
-      <div className={classNames}>
+      <>
         <div className={styles.row}>
           <div className={styles.routeId}>
             <div className={styles.label}>Line</div>
-            <div className={styles.info}>{name}</div>
+            <div className={styles.value}>{name}</div>
           </div>
           <div className={styles.routeName}>
             <div className={styles.label}>Route</div>
-            <div className={styles.info} title={descr}>
+            <div className={styles.value} title={descr}>
               {descr}
             </div>
           </div>
@@ -187,26 +218,89 @@ class SelectedTrack extends React.Component {
         <div className={styles.row}>
           <div className={styles.lastSeen}>
             <div className={styles.label}>Last Seen</div>
-            <div className={styles.info}>{lastSeen}</div>
+            <div className={styles.value}>{this.timeToLastPosition()}</div>
           </div>
           <div className={styles.destination}>
             <div className={styles.label}>Next Stop</div>
-            <div className={styles.info} title={descr}>
-              {descr}
+            <div className={styles.value} title={this.getNextStop()}>
+              {this.getNextStop()}
             </div>
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  /* eslint-disable camelcase */
+  renderStopArrivals = () =>
+    this.state.arrivals.map(({ route_code, veh_code, btime2 }, i) => {
+      const { descr, line } = this.props.details[route_code]
+      const { id } = this.props.lines[line]
+
+      return (
+        <div className={cx(styles.row, styles.value, styles.bus)} key={i}>
+          <div className={styles.line}>{id}</div>
+          <div className={styles.lineDescr} title={descr}>
+            {descr}
+          </div>
+          <div className={styles.arrivalTime}>{`${btime2}'`}</div>
+        </div>
+      )
+    })
+
+  /* eslint-enable camelcase */
+  renderStopInfo = () => {
+    const { descr } = this.props.selectedTrack.properties
+    const { arrivals } = this.state
+
+    return (
+      <div className={cx(styles.row, styles.stops)}>
+        <div className={styles.stopName}>
+          <div className={styles.label}>Stop Name</div>
+          <div className={styles.value} title={descr}>
+            {descr}
+          </div>
+        </div>
+        <div className={styles.arrivals}>
+          <div className={cx(styles.row, styles.label)}>
+            <div className={styles.line}>Line</div>
+            <div className={styles.lineDescr}>Name</div>
+            <div className={styles.arrivalTime}>When</div>
+          </div>
+          <div className={styles.arrivalsTable}>
+            {arrivals && this.renderStopArrivals()}
           </div>
         </div>
       </div>
     )
   }
+
+  render() {
+    const { selectedTrack: selected } = this.props
+    const classNames = cx(styles.bar, { [styles.hidden]: !selected })
+    if (!selected) return <div className={classNames} />
+    const { type } = this.props.selectedTrack.properties
+
+    return (
+      <div className={styles.bar}>
+        {type === '_bus' ? this.renderRouteInfo() : this.renderStopInfo()}
+      </div>
+    )
+  }
 }
 
-const mapStateToProps = ({ routes: { coordinates }, selectedTrack }) => ({
-  coordinates,
+const mapStateToProps = ({
+  routes: { coordinates, details, lines, routeStops },
   selectedTrack,
+}) => ({
+  coordinates,
+  details,
+  lines,
+  selectedTrack,
+  stops: routeStops,
 })
 
 export default connect(
   mapStateToProps,
   null
-)(SelectedTrack)
+)(SelectedFeature)

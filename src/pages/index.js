@@ -6,15 +6,14 @@ import GeoLocation from '../components/GeoLocation'
 import Header from '../components/Header'
 import Layout from '../components/Layout'
 import SEO from '../components/Seo'
-import SelectedTrack from '../components/SelectedTrack'
+import SelectedFeature from '../components/SelectedFeature'
 
 import mapConfig from '../config/map'
 import createMap from '../lib/map'
 import TrackManager from '../lib/track-manager'
 
-import { fetchedLocations } from '../redux/locations'
 import { fetchedRouteData } from '../redux/routes'
-import { selectTrack } from '../redux/selected-track'
+import { selectFeature } from '../redux/selected-feature'
 
 import styles from './index.module.css'
 
@@ -39,13 +38,27 @@ class IndexPage extends Component {
       .then(this.createMap)
   }
 
+  componentDidUpdate(prevProps) {
+    const { selectedTrack } = this.props
+
+    if (selectedTrack !== prevProps.selectedTrack) {
+      if (selectedTrack && selectedTrack.properties.type === 'stop') {
+        this.trackManager.renderStops(selectedTrack)
+      } else {
+        this.trackManager.renderStops()
+      }
+    }
+  }
+
   componentWillUnmount() {
     this.map.remove()
   }
 
   createMap = async () => {
-    this.map = await createMap(this.container, this.props.selectTrack)
-    new TrackManager(this.map, this.props).refresh()
+    this.map = await createMap(this.mapRoot, this.props.selectFeature)
+    this.trackManager = new TrackManager(this.map, this.props)
+    this.trackManager.refresh()
+    this.trackManager.renderStops()
 
     this.setState({
       map: this.map,
@@ -54,7 +67,7 @@ class IndexPage extends Component {
   }
 
   createRef = x => {
-    this.container = x
+    this.mapRoot = x
   }
 
   render() {
@@ -62,16 +75,17 @@ class IndexPage extends Component {
 
     return (
       <Layout>
-        <SEO title="Home" keywords={['gatsby', 'application', `react`]} />
+        <SEO />
         <Header>{map && <GeoLocation map={map} />}</Header>
         <div className={styles.map} ref={this.createRef} />
-        {map && <SelectedTrack map={map} />}
+        {map && <SelectedFeature map={map} />}
       </Layout>
     )
   }
 }
 
-const mapStateToProps = ({ routes, selectedTrack }) => ({
+const mapStateToProps = ({ mapCenter, routes, selectedTrack }) => ({
+  mapCenter,
   routes,
   selectedTrack,
 })
@@ -79,8 +93,7 @@ const mapStateToProps = ({ routes, selectedTrack }) => ({
 export default connect(
   mapStateToProps,
   {
-    selectTrack,
     fetchedRouteData,
-    fetchedLocations,
+    selectFeature,
   }
 )(IndexPage)

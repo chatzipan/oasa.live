@@ -48,6 +48,7 @@ const fetchRoutes = async () => {
   await uploadToS3('linesList.json', linesList)
   console.timeEnd('fetch routes')
   await sleep(10)
+  return true
 }
 
 module.exports = fetchRoutes

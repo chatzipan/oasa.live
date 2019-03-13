@@ -1,7 +1,11 @@
 const iconConfig = [
   {
-    name: 'bus',
+    name: '_bus',
     path: 'images/arrows/bus.png',
+  },
+  {
+    name: 'stop',
+    path: 'images/arrows/default.png',
   },
 ]
 

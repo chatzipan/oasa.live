@@ -5,6 +5,7 @@ import rbush from 'rbush'
 
 import getFeatureFromTrack from './get-feature-from-track'
 import mapConfig from '../config/map'
+import getAthensTime from '../lib/get-athens-time'
 import store from '../redux/store'
 import selectSelectedTrack from '../selectors/select-selected-track'
 
@@ -86,12 +87,9 @@ export default class PointGenerator {
    * @returns {Array<FeatureType>}  The points
    */
   getPoints(currentBounds) {
-    const selectedTrack = selectSelectedTrack(store.getState())
-    const now = new Date()
-    const localOffset = now.getTimezoneOffset()
-    const athensOffset = -120
-    const offsetDiff = localOffset - athensOffset
-    now.setMinutes(now.getMinutes() + offsetDiff)
+    const selected = selectSelectedTrack(store.getState())
+    const selectedTrack = selected && selected.type === '_bus' ? selected : null
+    const now = getAthensTime()
 
     const idsInBounds = this.getIdsInBounds(currentBounds)
 
@@ -102,7 +100,7 @@ export default class PointGenerator {
       if (!idsInBounds.has(track.id)) {
         continue
       }
-      const feature = getFeatureFromTrack(track, now.getTime(), selectedTrack)
+      const feature = getFeatureFromTrack(track, now, selectedTrack)
 
       if (feature && inBounds(feature, currentBounds)) {
         this.points.set(track.id, feature)

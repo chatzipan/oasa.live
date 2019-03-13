@@ -1,2 +1,1 @@
-export { default as bus } from './bus.png'
-export { default as standard } from './default.png'
+export { default as _bus } from './bus.png'
