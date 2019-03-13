@@ -2,4 +2,4 @@
 # unless otherwise overridden by more specific contexts.  
 [build]
   # Directory with the lambda functions to deploy to AWS.
-  functions = "./lambda/"
+  functions = "./lambda"
