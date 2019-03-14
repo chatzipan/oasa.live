@@ -1,5 +1,5 @@
 const colorConfig = {
-  _bus: ['#F0008C', '#B00468'],
+  bus: ['#F0008C', '#B00468'],
 }
 
 export const defaultColors = ['#1A1919', '#575757']

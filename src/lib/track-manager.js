@@ -69,7 +69,7 @@ export default class TrackManager {
         routeName: details[ROUTE_CODE].line,
         speed,
         timestamp,
-        type: '_bus',
+        type: 'bus',
       }
     })
   }

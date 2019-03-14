@@ -51,7 +51,7 @@ class SelectedFeature extends React.Component {
       }
 
       switch (selectedTrack.properties.type) {
-        case '_bus':
+        case 'bus':
           this.showTrack()
           this.secondsToLastPos()
           this.interval = setInterval(this.secondsToLastPos, 1000)
@@ -273,7 +273,7 @@ class SelectedFeature extends React.Component {
 
     return (
       <div className={styles.bar}>
-        {type === '_bus' ? this.renderRouteInfo() : this.renderStopInfo()}
+        {type === 'bus' ? this.renderRouteInfo() : this.renderStopInfo()}
       </div>
     )
   }
