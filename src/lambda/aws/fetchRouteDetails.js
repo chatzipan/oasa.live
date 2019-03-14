@@ -7,7 +7,6 @@ const { fetch } = require('../helpers/fetch.js')
 const { transformStop } = require('../helpers/transform.js')
 const { fetchFromS3, uploadToS3 } = require('../helpers/s3.js')
 const { checkForDiff } = require('../helpers/diff.js')
-const sleep = require('../helpers/sleep.js')
 const { GET_ROUTE_DETAILS } = require('../api.js')
 
 const getDistanceFromStart = (stop, coordinates) => {
@@ -30,7 +29,7 @@ const getDistanceFromStart = (stop, coordinates) => {
 
   return {
     ...stop,
-    distanceFromStart,
+    dfs: distanceFromStart,
   }
 }
 const fetchRouteDetails = async () => {

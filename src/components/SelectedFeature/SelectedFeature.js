@@ -52,19 +52,33 @@ class SelectedFeature extends React.Component {
 
     if (selectedTrack !== prevProps.selectedTrack) {
       clearInterval(this.interval)
-      if (selectedTrack && selectedTrack.properties.type === '_bus') {
-        this.showTrack()
-        this.secondsToLastPos()
-        this.interval = setInterval(this.secondsToLastPos, 1000)
-      } else if (selectedTrack && selectedTrack.properties.type === 'stop') {
-        this.fetchStopArrivals(selectedTrack.properties.code)
-        this.clearTrack()
-      } else {
-        this.clearTrack()
+      this.clearTrack()
+
+      if (!selectedTrack) {
+        return
+      }
+
+      switch (selectedTrack.properties.type) {
+        case '_bus':
+          this.showTrack()
+          this.secondsToLastPos()
+          this.interval = setInterval(this.secondsToLastPos, 1000)
+          this.moveMapControls()
+          break
+        case 'stop':
+          this.moveMapControls()
+          this.fetchStopArrivals(selectedTrack.properties.code)
+          break
       }
     }
   }
 
+  moveMapControls = () => {
+    const { type } = this.props.selectedTrack.properties
+    this.mapboxControls.forEach(control => {
+      control.classList.add(`selected-bar-open-${type.replace('_', '')}`)
+    })
+  }
   /**
    * Clears the selected journey track.
    */
@@ -75,7 +89,10 @@ class SelectedFeature extends React.Component {
       this.map.getLayer(beforeLayer).setLayoutProperty('visibility', 'visible')
     }
     this.mapboxControls.forEach(control => {
-      control.classList.remove('mapboxgl-ctrl--with-bottom-bar')
+      control.classList.remove(
+        'selected-bar-open-bus',
+        'selected-bar-open-stop'
+      )
     })
   }
 
@@ -91,11 +108,9 @@ class SelectedFeature extends React.Component {
     const diff = timeSpan * speed
     const distanceDriven = distanceCovered + diff
     const routeStops = stops[routeCode]
-    const nextStop = routeStops.find(
-      stop => stop.distanceFromStart > distanceDriven
-    )
+    const nextStop = routeStops.find(stop => stop.dfs > distanceDriven)
 
-    return nextStop ? nextStop.descr : ''
+    return nextStop ? nextStop.d : ''
   }
   /**
    * Fetches track data
@@ -185,9 +200,6 @@ class SelectedFeature extends React.Component {
 
     lineSource.setData(geoJson)
     this.renderTrack(lineColor[0])
-    this.mapboxControls.forEach(control => {
-      control.classList.add('mapboxgl-ctrl--with-bottom-bar')
-    })
   }
 
   timeToLastPosition = () => {
@@ -200,7 +212,7 @@ class SelectedFeature extends React.Component {
 
   renderRouteInfo = () => {
     const { descr, name } = this.props.selectedTrack.properties
-
+    const nextStop = this.getNextStop()
     return (
       <>
         <div className={styles.row}>
@@ -222,8 +234,8 @@ class SelectedFeature extends React.Component {
           </div>
           <div className={styles.destination}>
             <div className={styles.label}>Next Stop</div>
-            <div className={styles.value} title={this.getNextStop()}>
-              {this.getNextStop()}
+            <div className={styles.value} title={nextStop}>
+              {nextStop}
             </div>
           </div>
         </div>
@@ -268,7 +280,7 @@ class SelectedFeature extends React.Component {
             <div className={styles.arrivalTime}>When</div>
           </div>
           <div className={styles.arrivalsTable}>
-            {arrivals && this.renderStopArrivals()}
+            {arrivals ? this.renderStopArrivals() : 'No planned arrivals'}
           </div>
         </div>
       </div>

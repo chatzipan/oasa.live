@@ -133,10 +133,10 @@ export default class TrackManager {
         },
         properties: {
           bearing: undefined,
-          code: stop.code,
+          code: stop.c,
           color: '#00ad9f',
-          descr: stop.descr,
-          descr_en: stop.descr_en,
+          descr: stop.d,
+          descr_en: stop.d_en,
           icon: undefined,
           id: stop.id,
           opacity: 1,

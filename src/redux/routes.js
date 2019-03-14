@@ -12,7 +12,7 @@ const initialState = {}
 const normalizeStops = stops =>
   Object.values(stops).reduce((acc, routeStops) => {
     routeStops.forEach(stop => {
-      acc[stop.code] = stop
+      acc[stop.c] = stop
     })
     return acc
   }, {})

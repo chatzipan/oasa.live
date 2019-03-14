@@ -21,8 +21,6 @@ const transformStop = stop => ({
   id: stop.StopID,
   d: stop.StopDescr,
   d_en: stop.StopDescrEng,
-  s: stop.StopStreet,
-  s_en: stop.StopStreetEng,
   lat: stop.StopLat,
   lng: stop.StopLng,
 })
