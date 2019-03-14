@@ -4,6 +4,8 @@ import store from '../redux/store'
 import mapConfig from '../config/map'
 
 const DEFAULT_INTERVAL = 20000
+const locationsUrl =
+  'https://s3.eu-central-1.amazonaws.com/oasa/routeLocations.json'
 
 /**
  * Fetches track data
@@ -11,9 +13,7 @@ const DEFAULT_INTERVAL = 20000
  * @return {Promise}  Resolves with the track data
  */
 function fetchTracks() {
-  return fetch('/.netlify/functions/getLocations').then(response =>
-    response.json()
-  )
+  return fetch(locationsUrl).then(response => response.json())
 }
 
 /**

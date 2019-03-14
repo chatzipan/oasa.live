@@ -26,16 +26,21 @@ if (typeof window !== 'undefined') {
   mapboxgl.accessToken = mapConfig.TOKEN
 }
 
+const s3 = 'https://s3.eu-central-1.amazonaws.com/oasa/'
+const files = [
+  'linesList.json',
+  'routePaths.json',
+  'routeList.json',
+  'routeStops.json',
+]
+
 class IndexPage extends Component {
   state = {
     map: null,
   }
 
   componentDidMount() {
-    fetch('/.netlify/functions/getStaticData')
-      .then(response => response.json())
-      .then(this.props.fetchedRouteData)
-      .then(this.createMap)
+    this.fetchStaticData()
   }
 
   componentDidUpdate(prevProps) {
@@ -68,6 +73,21 @@ class IndexPage extends Component {
 
   createRef = x => {
     this.mapRoot = x
+  }
+
+  fetchStaticData = async () => {
+    const [lines, coordinates, routeDetails, stops] = await Promise.all(
+      files.map(filename => fetch(`${s3}${filename}`).then(r => r.json()))
+    )
+
+    this.props.fetchedRouteData({
+      stops,
+      coordinates,
+      lines,
+      routeDetails,
+    })
+
+    this.createMap()
   }
 
   render() {

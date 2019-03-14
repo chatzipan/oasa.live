@@ -118,9 +118,9 @@ class SelectedFeature extends React.Component {
    * @return {Promise}  Resolves with the stop arrivals
    */
   fetchStopArrivals = async code => {
-    const arrivals = await fetch(
-      `/.netlify/functions/getStopArrivals?stopCode=${code}`
-    ).then(response => response.json())
+    const oasaUrl = `/.netlify/functions/getStopArrivals?stopCode=${code}`
+    const arrivals = await fetch(oasaUrl).then(response => response.json())
+
     this.setState({ arrivals })
   }
 
