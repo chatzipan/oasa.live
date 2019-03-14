@@ -22,7 +22,7 @@
 
   @media screen and (max-width: 680px) {
     width: calc(100% - 16px);
-    padding: 3vw 4vw;
+    padding: 16px 20px 35px;
   }
 }
 
@@ -86,6 +86,7 @@
   width: 30%;
   & .value {
     font-size: 14px;
+    line-height: 1.3;
   }
 }
 
@@ -94,23 +95,23 @@
 }
 
 .line {
-  width: 11%;
+  width: 15%;
   padding-left: 2px;
 }
 
 .lineDescr {
-  width: 77%;
-  padding: 0 15px;
+  width: 68%;
+  padding: 0 5px;
 }
 
 .arrivalTime {
-  width: 12%;
+  width: 17%;
   text-align: center;
 }
 
 .arrivalsTable {
   font-size: 14px;
-  height: 100px;
+  max-height: 100px;
   overflow-y: scroll;
   line-height: 1.3;
 
@@ -126,21 +127,9 @@
   }
 }
 
-:global(.selected-bar-open-bus) {
-  @media screen and (max-width: 680px) {
-    transform: translateY(-110px);
-  }
-}
-
-:global(.selected-bar-open-stop) {
-  @media screen and (max-width: 680px) {
-    transform: translateY(-145px);
-  }
-}
-
 :global(.mapboxgl-ctrl-bottom-left) {
   @media screen and (max-width: 680px) {
-    left: 0;
+    left: 16px;
   }
 }
 
@@ -149,5 +138,8 @@
     transform: rotate(-90deg);
     bottom: 130px;
     right: -116px;
+  }
+  @media screen and (max-width: 680px) {
+    right: 11px;
   }
 }

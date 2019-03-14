@@ -35,15 +35,7 @@ class SelectedFeature extends React.Component {
 
   constructor(props) {
     super(props)
-    const mapboxControlLeft = document.querySelector(
-      '.mapboxgl-ctrl-bottom-left'
-    )
-    const mapboxControlRight = document.querySelector(
-      '.mapboxgl-ctrl-bottom-right'
-    )
-
     this.map = props.map
-    this.mapboxControls = [mapboxControlLeft, mapboxControlRight]
     this.map.addSource(lineSourceId, { type: 'geojson', data: emptyCollection })
   }
 
@@ -63,22 +55,14 @@ class SelectedFeature extends React.Component {
           this.showTrack()
           this.secondsToLastPos()
           this.interval = setInterval(this.secondsToLastPos, 1000)
-          this.moveMapControls()
           break
         case 'stop':
-          this.moveMapControls()
           this.fetchStopArrivals(selectedTrack.properties.code)
           break
       }
     }
   }
 
-  moveMapControls = () => {
-    const { type } = this.props.selectedTrack.properties
-    this.mapboxControls.forEach(control => {
-      control.classList.add(`selected-bar-open-${type.replace('_', '')}`)
-    })
-  }
   /**
    * Clears the selected journey track.
    */
@@ -88,12 +72,6 @@ class SelectedFeature extends React.Component {
     if (this.map.getLayer(beforeLayer)) {
       this.map.getLayer(beforeLayer).setLayoutProperty('visibility', 'visible')
     }
-    this.mapboxControls.forEach(control => {
-      control.classList.remove(
-        'selected-bar-open-bus',
-        'selected-bar-open-stop'
-      )
-    })
   }
 
   getNextStop = () => {
