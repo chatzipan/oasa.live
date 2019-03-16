@@ -36,7 +36,6 @@ class SelectedFeature extends React.Component {
   constructor(props) {
     super(props)
     this.map = props.map
-    this.map.addSource(lineSourceId, { type: 'geojson', data: emptyCollection })
   }
 
   componentDidUpdate(prevProps) {

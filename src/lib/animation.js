@@ -19,13 +19,14 @@ function requestAnimation(event, getPoints, map) {
   }
 }
 
-function cancelFrame(map) {
+export function cancelFrame(map) {
   map.getSource(mapConfig.VEHICLE_SOURCE_ID).off('data', state.onData)
   window.cancelAnimationFrame(state.animationId)
 }
 
 function animate(getPoints, map) {
   const source = map.getSource(mapConfig.VEHICLE_SOURCE_ID)
+  if (!source) return
   // The `data` event fires when the source data was successfully updated,
   // this is when we want to queue up the next animation frame. This prevents
   // requesting frames when the last ones effects aren't done (rendered) yet.

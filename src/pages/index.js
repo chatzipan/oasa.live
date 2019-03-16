@@ -10,7 +10,7 @@ import SelectedFeature from '../components/SelectedFeature'
 import Sidebar from '../components/Sidebar'
 
 import mapConfig from '../config/map'
-import createMap from '../lib/map'
+import createMap, { addMapLayers } from '../lib/map'
 import TrackManager from '../lib/track-manager'
 
 import { fetchedRouteData } from '../redux/routes'
@@ -37,6 +37,7 @@ const files = [
 ]
 
 class IndexPage extends Component {
+  styleHasChanged = false
   state = {
     isNightMode: false,
     language: 'greek',
@@ -49,8 +50,17 @@ class IndexPage extends Component {
     this.initEventHandlers()
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const { selectedTrack } = this.props
+    const { isNightMode } = this.state
+
+    if (isNightMode !== prevState.isNightMode) {
+      const mapStyle = isNightMode
+        ? mapConfig.STYLE_NIGHT_MODE
+        : mapConfig.STYLE
+
+      this.map = this.map.setStyle(mapStyle, { diff: false })
+    }
 
     if (selectedTrack !== prevProps.selectedTrack) {
       if (selectedTrack && selectedTrack.properties.type === 'stop') {
@@ -68,13 +78,26 @@ class IndexPage extends Component {
   createMap = async () => {
     this.map = await createMap(this.mapRoot, this.props.selectFeature)
     this.trackManager = new TrackManager(this.map, this.props)
-    this.trackManager.refresh()
+    this.trackManager.fetchTracks()
     this.trackManager.renderStops()
+
+    this.map.on('styledata', async event => {
+      if (this.styleHasChanged) {
+        this.styleHasChanged = false
+        await addMapLayers(this.map, this.props.selectFeature)
+        this.trackManager.resumeAnimation()
+        this.trackManager.renderStops(this.props.selectedTrack)
+      }
+
+    })
+
+    this.map.on('styledataloading', event => {
+      this.styleHasChanged = true
+    })
 
     this.setState({
       map: this.map,
     })
-    // const sidebar = new Sidebar() // eslint-disable-line
   }
 
   createRef = x => {

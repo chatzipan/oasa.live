@@ -14,6 +14,7 @@ const symbolMinZoomMobile = 14
 const config = {
   TOKEN:
     'pk.eyJ1IjoidmNoYXR6aXBhbiIsImEiOiJjanEyd283djQxZDRqM3hwZG1temZycG9nIn0.oDOXX_UawW4lPyJ1bBWQew',
+  STYLE_NIGHT_MODE: 'mapbox://styles/mapbox/dark-v9',
   STYLE: 'mapbox://styles/vchatzipan/cjsp550it1py21ftnadogfqv8', // light
 
   VEHICLE_SOURCE_ID: 'vehicles-src',

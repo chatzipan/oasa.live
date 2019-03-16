@@ -33,7 +33,6 @@ export default class TrackManager {
     this.fetchedLocations = fetchedLocations
     this.selectFeature = selectFeature
     this.pointGenerator = new PointGenerator()
-    this.stopsSource = this.map.getSource(mapConfig.STOPS_SOURCE_ID)
   }
 
   /**
@@ -100,14 +99,17 @@ export default class TrackManager {
     animation.startLoop(this.getPointsInViewport, this.map)
   }
 
+  resumeAnimation = () => {
+    animation.startLoop(this.getPointsInViewport, this.map)
+  }
+
   /**
    * Refrehes the data.
    */
-  refresh = () => {
+  fetchTracks = () =>
     fetchTracks()
       .then(this.processResponse)
       .catch(this.handleError)
-  }
 
   /**
    * Sets a timer for the data refreshal.
@@ -118,11 +120,12 @@ export default class TrackManager {
       clearTimeout(this.timer)
     }
 
-    this.timer = setTimeout(this.refresh, timeout)
+    this.timer = setTimeout(this.fetchTracks, timeout)
   }
 
-  renderStops(selectedTrack) {
-    // TODO: requestanimationframe
+  renderStops = (selectedTrack) => {
+    this.stopsSource = this.map.getSource(mapConfig.STOPS_SOURCE_ID)
+
     const stops = Object.values(this.routes.stops).map(stop => {
       const selected = selectedTrack && stop.id === selectedTrack.properties.id
       return {
@@ -148,9 +151,11 @@ export default class TrackManager {
       }
     })
 
-    this.stopsSource.setData({
-      type: 'FeatureCollection',
-      features: stops,
+    window.requestAnimationFrame(() => {
+      this.stopsSource.setData({
+        type: 'FeatureCollection',
+        features: stops,
+      })
     })
   }
 
