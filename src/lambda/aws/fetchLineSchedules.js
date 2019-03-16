@@ -2,12 +2,12 @@ const Promise = require('bluebird')
 const setwith = require('lodash.setwith')
 const { hasPath } = require('ramda')
 
-const { isDateFormat } = require('../common/utils.js')
-const { fetch } = require('../common/fetch.js')
-const { fetchFromS3, uploadToS3 } = require('../common/s3.js')
-const sleep = require('../common/sleep.js')
-const { GET_SCHEDULES_BY_LINE } = require('../api.js')
-const { scheduleWeekDays } = require('./constants.js')
+const { isDateFormat } = require('./helpers/utils')
+const { fetch } = require('./helpers/fetch')
+const { fetchFromS3, uploadToS3 } = require('./helpers/s3')
+const sleep = require('./helpers/sleep')
+const { GET_SCHEDULES_BY_LINE } = require('./helpers/api')
+const { scheduleWeekDays } = require('./constants')
 
 const allSchedules = { 0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {} }
 

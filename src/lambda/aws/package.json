@@ -1,0 +1,17 @@
+{
+  "name": "aws",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@turf/helpers": "^6.1.4",
+    "@turf/length": "^6.0.2",
+    "@turf/line-slice": "^5.1.5",
+    "aws-sdk": "^2.422.0",
+    "bluebird": "^3.5.3",
+    "deep-diff": "^1.0.2",
+    "isomorphic-fetch": "^2.2.1",
+    "lodash.setwith": "^4.3.2",
+    "ramda": "^0.26.1"
+  }
+}

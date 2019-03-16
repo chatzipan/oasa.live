@@ -1,5 +1,5 @@
-const { fetch } = require('../common/fetch.js')
-const { GET_STOP_ARRIVALS } = require('../common/api.js')
+const { fetch } = require('../aws/helpers/fetch.js')
+const { GET_STOP_ARRIVALS } = require('../aws/helpers/api.js')
 
 export async function handler(event, context) {
   try {

@@ -4,9 +4,9 @@ const turf = require('@turf/helpers')
 const lineSlice = require('@turf/line-slice')
 const length = require('@turf/length').default
 
-const { fetch } = require('../helpers/fetch.js')
-const { fetchFromS3, uploadToS3 } = require('../helpers/s3.js')
-const { GET_BUS_LOCATION } = require('../api.js')
+const { fetch } = require('./helpers/fetch')
+const { fetchFromS3, uploadToS3 } = require('./helpers/s3')
+const { GET_BUS_LOCATION } = require('./helpers/api')
 
 const weekDays = [
   'Monday',

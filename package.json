@@ -12,7 +12,7 @@
     "start": "npm run develop & npm run start:lambda",
     "start:lambda": "netlify-lambda serve ./src/lambda/netlify",
     "develop": "gatsby develop",
-    "deploy-lambda": "./deploy-lambda.sh",
+    "deploy-lambda": "./scripts/deploy-lambda.sh updateLocations && ./scripts/deploy-lambda.sh updateStaticData",
     "build": "gatsby build && yarn run build:lambda",
     "build:lambda": "netlify-lambda build ./src/lambda/netlify",
     "fetch-static-data": "node ./src/lambda/aws/updateStaticData.js",

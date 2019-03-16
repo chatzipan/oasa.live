@@ -1,11 +1,11 @@
 const Promise = require('bluebird')
 
-const { fetch } = require('../common/fetch.js')
-const { checkForDiff } = require('../common/diff.js')
-const sleep = require('../common/sleep.js')
-const { uploadToS3 } = require('../common/s3.js')
-const { transformLine } = require('../common/transform.js')
-const { GET_LINES, GET_SCHEDULE_CODES_BY_LINE } = require('../api.js')
+const { fetch } = require('./helpers/fetch')
+const { checkForDiff } = require('./helpers/diff')
+const sleep = require('./helpers/sleep')
+const { uploadToS3 } = require('./helpers/s3')
+const { transformLine } = require('./helpers/transform')
+const { GET_LINES, GET_SCHEDULE_CODES_BY_LINE } = require('./helpers/api')
 
 // We use proxy lines for some lines (such as deviations in case of sport events,
 // farmer's markets) that don't have own schedules in database

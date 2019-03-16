@@ -1,10 +1,9 @@
-const fetchLocations = require('./fetchLocations.js')
+const fetchLocations = require('./fetchLocations')
 
-const fetchLive = async () => {
-  await fetchLocations()
+exports.handler = async event => {
+  try {
+    await fetchLocations()
+  } catch (err) {
+    console.log(err)
+  }
 }
-
-;(async () => {
-  await fetchLive()
-  setInterval(fetchLive, 60 * 1000)
-})()

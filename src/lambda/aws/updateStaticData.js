@@ -1,8 +1,8 @@
-const fetchLines = require('./fetchLines.js')
-const fetchRoutes = require('./fetchRoutes.js')
-const fetchLineSchedules = require('./fetchLineSchedules.js')
-const fetchRouteDetails = require('./fetchRouteDetails.js')
-const sleep = require('../common/sleep.js')
+const fetchLines = require('./fetchLines')
+const fetchRoutes = require('./fetchRoutes')
+const fetchLineSchedules = require('./fetchLineSchedules')
+const fetchRouteDetails = require('./fetchRouteDetails')
+const sleep = require('./helpers/sleep')
 
 let failed = 0
 
@@ -27,6 +27,10 @@ const fetchStatic = async (_lines, _schedules, _routes, _details) => {
   }
 }
 
-;(async () => {
-  await fetchStatic()
-})()
+exports.handler = async event => {
+  try {
+    await fetchStatic()
+  } catch (err) {
+    console.log(err)
+  }
+}

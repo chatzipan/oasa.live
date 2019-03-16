@@ -3,11 +3,11 @@ const turf = require('@turf/helpers')
 const lineSlice = require('@turf/line-slice')
 const length = require('@turf/length').default
 
-const { fetch } = require('../common/fetch.js')
-const { transformStop } = require('../common/transform.js')
-const { fetchFromS3, uploadToS3 } = require('../common/s3.js')
-const { checkForDiff } = require('../common/diff.js')
-const { GET_ROUTE_DETAILS } = require('../api.js')
+const { fetch } = require('./helpers/fetch')
+const { transformStop } = require('./helpers/transform')
+const { fetchFromS3, uploadToS3 } = require('./helpers/s3')
+const { checkForDiff } = require('./helpers/diff')
+const { GET_ROUTE_DETAILS } = require('./helpers/api')
 
 const getDistanceFromStart = (stop, coordinates) => {
   const { lng, lat } = stop
