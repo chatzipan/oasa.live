@@ -1,5 +1,5 @@
 const { fetch } = require('../common/fetch.js')
-const { GET_STOP_ARRIVALS } = require('../api.js')
+const { GET_STOP_ARRIVALS } = require('../common/api.js')
 
 export async function handler(event, context) {
   try {
