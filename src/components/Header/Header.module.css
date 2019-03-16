@@ -1,16 +1,67 @@
+:root {
+  --info-color: #333;
+  --top-bar-background: #fff;
+}
+
 .wrapper {
   display: flex;
-  position: absolute;
+  align-items: center;
+  position: fixed;
   top: 0;
   right: 0;
   left: 0;
-  z-index: 1;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
+  z-index: 2;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, #111 100%);
   padding: 3vw;
   color: white;
+
+  @media screen and (max-width: 680px) {
+    height: 56px;
+  }
+
+  &.isMenuOpen {
+    @media screen and (max-width: 680px) {
+      background: none;
+      background-color: var(--top-bar-background);
+      color: var(--info-color);
+    }
+  }
 }
 
 .header {
   margin: 0;
   font-size: 19px;
+  font-weight: 600;
+  line-height: inherit;
+}
+
+.button {
+  display: flex;
+  cursor: pointer;
+  margin-left: 8px;
+  pointer-events: all;
+  border: none;
+  color: currentColor;
+  background: none;
+
+  &:focus,
+  &:active {
+    outline: none;
+  }
+
+  @media screen and (max-width: 680px) {
+    display: none;
+  }
+  & svg {
+    fill: currentColor;
+  }
+
+  &.more {
+    display: none;
+    height: 26px;
+
+    @media screen and (max-width: 680px) {
+      display: block;
+    }
+  }
 }
