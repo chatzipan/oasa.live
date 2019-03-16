@@ -6,6 +6,8 @@ import getColors from '../../lib/get-colors'
 import getAthensTime from '../../lib/get-athens-time'
 import mapConfig from '../../config/map'
 
+import translations from '../../../translations'
+
 import styles from './SelectedFeature.module.css'
 
 const emptyCollection = {
@@ -180,25 +182,29 @@ class SelectedFeature extends React.Component {
   }
 
   timeToLastPosition = () => {
+    const {lang} = this.props
+    const t = translations[lang]
     const { secondsToLastPos } = this.state
     const minutes = Math.floor(secondsToLastPos / 60)
     const seconds = (secondsToLastPos % 60).toString().padStart(2, '0')
+    const ago = t['AGO']
+    const copy = lang === 'en' ? `${minutes}:${seconds} ${ago}` : `${ago} ${minutes}:${seconds}`
 
-    return `${minutes}:${seconds} ago`
+    return copy
   }
 
-  renderRouteInfo = () => {
+  renderRouteInfo = t => {
     const { descr, name } = this.props.selectedTrack.properties
     const nextStop = this.getNextStop()
     return (
       <>
         <div className={styles.row}>
           <div className={styles.routeId}>
-            <div className={styles.label}>Line</div>
+            <div className={styles.label}>{t['LINE']}</div>
             <div className={styles.value}>{name}</div>
           </div>
           <div className={styles.routeName}>
-            <div className={styles.label}>Route</div>
+            <div className={styles.label}>{t['ROUTE']}</div>
             <div className={styles.value} title={descr}>
               {descr}
             </div>
@@ -206,11 +212,11 @@ class SelectedFeature extends React.Component {
         </div>
         <div className={styles.row}>
           <div className={styles.lastSeen}>
-            <div className={styles.label}>Last Seen</div>
+            <div className={styles.label}>{t['LAST_SEEN']}</div>
             <div className={styles.value}>{this.timeToLastPosition()}</div>
           </div>
           <div className={styles.destination}>
-            <div className={styles.label}>Next Stop</div>
+            <div className={styles.label}>{t['NEXT_STOP']}</div>
             <div className={styles.value} title={nextStop}>
               {nextStop}
             </div>
@@ -238,26 +244,26 @@ class SelectedFeature extends React.Component {
     })
 
   /* eslint-enable camelcase */
-  renderStopInfo = () => {
+  renderStopInfo = t => {
     const { descr } = this.props.selectedTrack.properties
     const { arrivals } = this.state
 
     return (
       <div className={cx(styles.row, styles.stops)}>
         <div className={styles.stopName}>
-          <div className={styles.label}>Stop Name</div>
+          <div className={styles.label}>{t['STOP_NAME']}</div>
           <div className={styles.value} title={descr}>
             {descr}
           </div>
         </div>
         <div className={styles.arrivals}>
           <div className={cx(styles.row, styles.label)}>
-            <div className={styles.line}>Line</div>
-            <div className={styles.lineDescr}>Name</div>
-            <div className={styles.arrivalTime}>When</div>
+            <div className={styles.line}>{t['LINE']}</div>
+            <div className={styles.lineDescr}>{t['ROUTE']}</div>
+            <div className={styles.arrivalTime}>{t['WHEN']}</div>
           </div>
           <div className={styles.arrivalsTable}>
-            {arrivals ? this.renderStopArrivals() : 'No planned arrivals'}
+            {arrivals ? this.renderStopArrivals() : t['NO_ARRIVALS']}
           </div>
         </div>
       </div>
@@ -265,6 +271,7 @@ class SelectedFeature extends React.Component {
   }
 
   render() {
+    const t = translations[this.props.lang]
     const { selectedTrack: selected } = this.props
     const classNames = cx(styles.bar, { [styles.hidden]: !selected })
     if (!selected) return <div className={classNames} />
@@ -272,7 +279,7 @@ class SelectedFeature extends React.Component {
 
     return (
       <div className={styles.bar}>
-        {type === 'bus' ? this.renderRouteInfo() : this.renderStopInfo()}
+        {type === 'bus' ? this.renderRouteInfo(t) : this.renderStopInfo(t)}
       </div>
     )
   }

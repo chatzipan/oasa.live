@@ -3,6 +3,8 @@ import cx from 'classnames'
 import Select from '@material-ui/core/NativeSelect'
 import Switch from '@material-ui/core/Switch'
 
+import translations from '../../../translations'
+
 import styles from './Sidebar.module.css'
 import InfoIcon from '../../assets/svgs/info.svg'
 
@@ -12,11 +14,12 @@ import InfoIcon from '../../assets/svgs/info.svg'
 const Sidebar = ({
   isNightMode,
   isOpen,
-  language,
+  lang,
   onClick,
   onLanguageChange,
   onNightModeChange,
 }) => {
+  const t = translations[lang]
   const classNames = cx(styles.sidebar, {
     [styles.hidden]: !isOpen,
   })
@@ -30,28 +33,18 @@ const Sidebar = ({
         </button>
       </div>
       <div className={styles.infotext}>
-        <p>
-          Check up on Athens' public transport and see if your bus is on time.
-        </p>
-        <p>
-          The map displays the current positions of public transport vehicles in
-          and around Athens and provides you with information on current delays.
-        </p>
-        <p>
-          This project does not take responsibility for the accuracy of location
-          data provided by OASA.
-        </p>
+        <p dangerouslySetInnerHTML={{__html: t['MENU_INFO']}}/>
       </div>
       <div className={styles.options}>
         <div className={styles.language}>
-          <p className={styles.label}>Choose Language:</p>
+          <p className={styles.label}>{t['CHOOSE_LANG']}</p>
           <Select
-            value={language}
-            onChange={onLanguageChange}
             inputProps={{ name: 'language' }}
+            onChange={onLanguageChange}
+            value={lang}
           >
-            <option value="greek">Ελληνικά</option>
-            <option value="english">English</option>
+            <option value="gr">Ελληνικά</option>
+            <option value="en">English</option>
           </Select>
         </div>
         <div className={styles.nightmode}>

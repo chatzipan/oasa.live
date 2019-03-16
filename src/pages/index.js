@@ -40,7 +40,7 @@ class IndexPage extends Component {
   styleHasChanged = false
   state = {
     isNightMode: false,
-    language: 'greek',
+    language: 'gr',
     map: null,
     sidebarOpen: false,
   }
@@ -157,13 +157,13 @@ class IndexPage extends Component {
         <Sidebar
           isNightMode={isNightMode}
           isOpen={sidebarOpen}
-          language={language}
+          lang={language}
           onClick={this.toggleSidebar}
           onLanguageChange={this.handleLanguageChange}
           onNightModeChange={this.handleNightModeChange}
         />
         <div className={styles.map} ref={this.createRef} />
-        {map && <SelectedFeature map={map} />}
+        {map && <SelectedFeature lang={language} map={map}/>}
       </Layout>
     )
   }

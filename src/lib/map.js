@@ -70,7 +70,7 @@ export function addMapLayers(map, selectFeature) {
         'circle-color': { type: 'identity', property: 'color' },
         'circle-stroke-width': { type: 'identity', property: 'strokeWidth' },
         'circle-stroke-color': { type: 'identity', property: 'strokeColor' },
-        'circle-radius': mapConfig.STOP_CIRCLE_RADIUS,
+        'circle-radius': { type: 'identity', property: 'radius' },
         'circle-opacity': { type: 'identity', property: 'opacity' },
         'circle-stroke-opacity': { type: 'identity', property: 'opacity' },
       },

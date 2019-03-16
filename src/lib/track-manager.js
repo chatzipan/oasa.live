@@ -137,7 +137,7 @@ export default class TrackManager {
         properties: {
           bearing: undefined,
           code: stop.c,
-          color: '#00ad9f',
+          color: selected ? '#ccff00' : '#00ad9f',
           descr: stop.d,
           descr_en: stop.d_en,
           icon: undefined,
@@ -145,6 +145,7 @@ export default class TrackManager {
           opacity: 1,
           strokeColor: '#00897e',
           strokeWidth: selected ? 4 : 1,
+          radius: selected ? 6: 4,
           type: 'stop',
         },
         type: 'Feature',

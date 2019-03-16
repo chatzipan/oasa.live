@@ -16,7 +16,7 @@
   color: white;
 
   @media screen and (max-width: 680px) {
-    height: 56px;
+    height: 78px;
   }
 
   &.isMenuOpen {

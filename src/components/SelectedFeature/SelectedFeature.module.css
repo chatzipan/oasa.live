@@ -74,12 +74,12 @@
 
 .routeId,
 .lastSeen {
-  width: 23%;
+  width: 26%;
 }
 
 .routeName,
 .destination {
-  width: 77%;
+  width: 74%;
 }
 
 .stopName {
@@ -95,12 +95,12 @@
 }
 
 .line {
-  width: 15%;
+  width: 17%;
   padding-left: 2px;
 }
 
 .lineDescr {
-  width: 68%;
+  width: 66%;
   padding: 0 5px;
 }
 
