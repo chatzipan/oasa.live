@@ -1,10 +1,10 @@
 const { indexBy, flatten, prop, reject } = require('ramda')
 const Promise = require('bluebird')
-const { fetch } = require('../helpers/fetch.js')
-const { fetchFromS3, uploadToS3 } = require('../helpers/s3.js')
-const { transformRoute } = require('../helpers/transform.js')
-const { checkForDiff } = require('../helpers/diff.js')
-const sleep = require('../helpers/sleep.js')
+const { fetch } = require('../common/fetch.js')
+const { fetchFromS3, uploadToS3 } = require('../common/s3.js')
+const { transformRoute } = require('../common/transform.js')
+const { checkForDiff } = require('../common/diff.js')
+const sleep = require('../common/sleep.js')
 const { GET_ROUTES_BY_LINE } = require('../api.js')
 
 const fetchRoutes = async () => {

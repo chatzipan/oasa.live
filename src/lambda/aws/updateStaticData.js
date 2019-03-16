@@ -2,7 +2,7 @@ const fetchLines = require('./fetchLines.js')
 const fetchRoutes = require('./fetchRoutes.js')
 const fetchLineSchedules = require('./fetchLineSchedules.js')
 const fetchRouteDetails = require('./fetchRouteDetails.js')
-const sleep = require('../helpers/sleep.js')
+const sleep = require('../common/sleep.js')
 
 let failed = 0
 

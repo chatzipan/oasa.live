@@ -1,10 +1,10 @@
 const Promise = require('bluebird')
 
-const { fetch } = require('../helpers/fetch.js')
-const { checkForDiff } = require('../helpers/diff.js')
-const sleep = require('../helpers/sleep.js')
-const { uploadToS3 } = require('../helpers/s3.js')
-const { transformLine } = require('../helpers/transform.js')
+const { fetch } = require('../common/fetch.js')
+const { checkForDiff } = require('../common/diff.js')
+const sleep = require('../common/sleep.js')
+const { uploadToS3 } = require('../common/s3.js')
+const { transformLine } = require('../common/transform.js')
 const { GET_LINES, GET_SCHEDULE_CODES_BY_LINE } = require('../api.js')
 
 // We use proxy lines for some lines (such as deviations in case of sport events,
