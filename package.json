@@ -16,7 +16,7 @@
     "build": "gatsby build && yarn run build:lambda",
     "build:lambda": "netlify-lambda build ./src/lambda/netlify",
     "fetch-static-data": "node ./src/lambda/aws/updateStaticData.js",
-    "fetch-locations": "node ./src/lambda/aws/updateLocations.js",
+    "fetch-locations": "node ./src/lambda/aws/updateLocationsLocal.js",
     "format": "prettier --write \"src/**/*.js\"",
     "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\""
   },

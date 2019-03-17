@@ -41,7 +41,15 @@ class SelectedFeature extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { selectedTrack } = this.props
+    const { isNightMode, selectedTrack } = this.props
+
+    if (
+      isNightMode !== prevProps.isNightMode &&
+      selectedTrack &&
+      selectedTrack.properties.type === 'bus'
+    ) {
+      this.showTrack()
+    }
 
     if (selectedTrack !== prevProps.selectedTrack) {
       clearInterval(this.interval)
@@ -109,8 +117,7 @@ class SelectedFeature extends React.Component {
    */
   renderTrack(color) {
     const id = `${lineLayerId}-${color}`
-
-    if (!this.layers.has(id)) {
+    if (!this.layers.has(id) || !this.map.getLayer(this.currentLayerId)) {
       this.map.addLayer(
         {
           source: lineSourceId,
@@ -138,10 +145,6 @@ class SelectedFeature extends React.Component {
   secondsToLastPos = () => {
     const { timestamp } = this.props.selectedTrack.properties
     const now = new Date()
-    const localOffset = now.getTimezoneOffset()
-    const athensOffset = -120
-    const offsetDiff = localOffset - athensOffset
-    now.setMinutes(now.getMinutes() + offsetDiff)
 
     const secondsToLastPos = Math.round((now.getTime() - timestamp) / 1000)
     this.setState({ secondsToLastPos })
@@ -182,13 +185,16 @@ class SelectedFeature extends React.Component {
   }
 
   timeToLastPosition = () => {
-    const {lang} = this.props
+    const { lang } = this.props
     const t = translations[lang]
     const { secondsToLastPos } = this.state
     const minutes = Math.floor(secondsToLastPos / 60)
     const seconds = (secondsToLastPos % 60).toString().padStart(2, '0')
     const ago = t['AGO']
-    const copy = lang === 'en' ? `${minutes}:${seconds} ${ago}` : `${ago} ${minutes}:${seconds}`
+    const copy =
+      lang === 'en'
+        ? `${minutes}:${seconds} ${ago}`
+        : `${ago} ${minutes}:${seconds}`
 
     return copy
   }

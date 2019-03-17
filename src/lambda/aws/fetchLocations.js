@@ -167,7 +167,10 @@ const fetchLocations = async () => {
             ],
           }
           location.timestamp = Date.parse(
-            location.CS_DATE.replace('PM', ' PM').replace('AM', ' AM')
+            location.CS_DATE.replace('PM', ' PM GMT+0200').replace(
+              'AM',
+              ' AM GMT+0200'
+            )
           )
           const start = turf.point(track.geometry.coordinates[0])
           const sliced = lineSlice(start, current, track)

@@ -123,7 +123,7 @@ export default class TrackManager {
     this.timer = setTimeout(this.fetchTracks, timeout)
   }
 
-  renderStops = (selectedTrack) => {
+  renderStops = selectedTrack => {
     this.stopsSource = this.map.getSource(mapConfig.STOPS_SOURCE_ID)
 
     const stops = Object.values(this.routes.stops).map(stop => {
@@ -145,7 +145,7 @@ export default class TrackManager {
           opacity: 1,
           strokeColor: '#00897e',
           strokeWidth: selected ? 4 : 1,
-          radius: selected ? 6: 4,
+          radius: selected ? 6 : 4,
           type: 'stop',
         },
         type: 'Feature',

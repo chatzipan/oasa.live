@@ -89,7 +89,7 @@ export default class PointGenerator {
   getPoints(currentBounds) {
     const selected = selectSelectedTrack(store.getState())
     const selectedTrack = selected && selected.type === 'bus' ? selected : null
-    const now = getAthensTime()
+    const now = new Date().getTime()
 
     const idsInBounds = this.getIdsInBounds(currentBounds)
 

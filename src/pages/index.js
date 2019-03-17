@@ -88,7 +88,6 @@ class IndexPage extends Component {
         this.trackManager.resumeAnimation()
         this.trackManager.renderStops(this.props.selectedTrack)
       }
-
     })
 
     this.map.on('styledataloading', event => {
@@ -163,7 +162,13 @@ class IndexPage extends Component {
           onNightModeChange={this.handleNightModeChange}
         />
         <div className={styles.map} ref={this.createRef} />
-        {map && <SelectedFeature lang={language} map={map}/>}
+        {map && (
+          <SelectedFeature
+            isNightMode={isNightMode}
+            lang={language}
+            map={map}
+          />
+        )}
       </Layout>
     )
   }
