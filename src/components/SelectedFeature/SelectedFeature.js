@@ -3,7 +3,6 @@ import cx from 'classnames'
 import { connect } from 'react-redux'
 
 import getColors from '../../lib/get-colors'
-import getAthensTime from '../../lib/get-athens-time'
 import mapConfig from '../../config/map'
 
 import translations from '../../../translations'

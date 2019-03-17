@@ -5,7 +5,6 @@ import rbush from 'rbush'
 
 import getFeatureFromTrack from './get-feature-from-track'
 import mapConfig from '../config/map'
-import getAthensTime from '../lib/get-athens-time'
 import store from '../redux/store'
 import selectSelectedTrack from '../selectors/select-selected-track'
 
