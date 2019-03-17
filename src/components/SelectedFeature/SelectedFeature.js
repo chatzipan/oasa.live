@@ -106,7 +106,17 @@ class SelectedFeature extends React.Component {
    */
   fetchStopArrivals = async code => {
     const oasaUrl = `/.netlify/functions/getStopArrivals?stopCode=${code}`
-    const arrivals = await fetch(oasaUrl).then(response => response.json())
+    let arrivals = null
+    try {
+      const response = await fetch(oasaUrl)
+
+      if (!response.ok) {
+        throw new Error(response.msg)
+      }
+      arrivals = await response.json()
+    } catch (e) {
+      console.log('Error:', e)
+    }
 
     this.setState({ arrivals })
   }
