@@ -90,7 +90,7 @@ class SelectedFeature extends React.Component {
       },
       stops,
     } = this.props
-    const now = getAthensTime()
+    const now = new Date().getTime()
     const timeSpan = now - timestamp
     const diff = timeSpan * speed
     const distanceDriven = distanceCovered + diff
