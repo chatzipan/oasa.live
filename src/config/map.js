@@ -7,8 +7,8 @@ const zoom = 14
 const zoomMobile = 13
 const radius = [[0, 0.5], [13, 6]]
 const stopRadius = [[0, 0.5], [9, 4]]
-const stopRadiusMobile = [[4, 2], [6, 5], [7, 5]]
-const radiusMobile = [[6, 3], [6, 3], [8, 6]]
+const stopRadiusMobile = [[8, 4], [10, 7], [11, 8]]
+const radiusMobile = [[12, 6], [12, 6], [14, 9]]
 const symbolMinZoom = 15
 const symbolMinZoomMobile = 14
 const config = {
@@ -34,7 +34,6 @@ const config = {
 
   SHADOW_LAYER_ID: 'shadow-layer',
   STATIONS_LAYER_ID: 'rail-station-label',
-
   CIRCLE_RADIUS: { stops: isMobile ? radiusMobile : radius },
   STOP_CIRCLE_RADIUS: { stops: isMobile ? stopRadiusMobile : stopRadius },
   SYMBOL_MIN_ZOOM: isMobile ? symbolMinZoomMobile : symbolMinZoom,
@@ -42,5 +41,6 @@ const config = {
   CENTER: isMobile ? centerMobile : center,
   ZOOM: isMobile ? zoomMobile : zoom,
 }
+console.log({ isMobile })
 
 export default config

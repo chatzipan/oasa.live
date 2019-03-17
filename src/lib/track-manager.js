@@ -2,6 +2,7 @@ import * as animation from './animation'
 import PointGenerator from './point-generator'
 import store from '../redux/store'
 import mapConfig from '../config/map'
+import isMobile from '../config/is-mobile'
 
 const DEFAULT_INTERVAL = 20000
 const locationsUrl =
@@ -125,7 +126,8 @@ export default class TrackManager {
 
   renderStops = selectedTrack => {
     this.stopsSource = this.map.getSource(mapConfig.STOPS_SOURCE_ID)
-
+    const radius = isMobile ? 7 : 3
+    const radiusSelected = isMobile ? 8 : 4
     const stops = Object.values(this.routes.stops).map(stop => {
       const selected = selectedTrack && stop.id === selectedTrack.properties.id
       return {
@@ -145,7 +147,7 @@ export default class TrackManager {
           opacity: 1,
           strokeColor: '#00897e',
           strokeWidth: selected ? 4 : 1,
-          radius: selected ? 6 : 4,
+          radius: selected ? radiusSelected : radius,
           type: 'stop',
         },
         type: 'Feature',
