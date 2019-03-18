@@ -41,6 +41,5 @@ const config = {
   CENTER: isMobile ? centerMobile : center,
   ZOOM: isMobile ? zoomMobile : zoom,
 }
-console.log({ isMobile })
 
 export default config

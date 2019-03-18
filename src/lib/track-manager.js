@@ -126,8 +126,8 @@ export default class TrackManager {
 
   renderStops = selectedTrack => {
     this.stopsSource = this.map.getSource(mapConfig.STOPS_SOURCE_ID)
-    const radius = isMobile ? 7 : 3
-    const radiusSelected = isMobile ? 8 : 4
+    const radius = isMobile ? 7 : 4
+    const radiusSelected = isMobile ? 8 : 5
     const stops = Object.values(this.routes.stops).map(stop => {
       const selected = selectedTrack && stop.id === selectedTrack.properties.id
       return {
