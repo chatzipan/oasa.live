@@ -2,14 +2,24 @@ const _fetch = require('isomorphic-fetch')
 
 const fetch = async url => {
   try {
-    const response = await _fetch(url)
+    const response = await withTimeout(_fetch(url), 1500)
     if (!response.ok) {
-      console.log(response) // output to netlify function log // NOT res.status >= 200 && res.status < 300
+      console.log(response)
     }
     return await response.json()
   } catch (e) {
-    console.log(e)
+    console.log('URL:' + url, 'error: ', e)
+    throw new Error(e)
   }
+}
+
+function withTimeout(promise, ms) {
+  return new Promise(function(resolve, reject) {
+    setTimeout(function() {
+      reject(new Error('timeout'))
+    }, ms)
+    promise.then(resolve, reject)
+  })
 }
 
 module.exports = {

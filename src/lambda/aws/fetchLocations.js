@@ -130,6 +130,8 @@ const getRouteSpeed = (route, schedules, covered) => {
 const fetchLocations = async () => {
   console.log('Fetching locations.')
   console.time('fetch locations time')
+  let fetchErrors = 0
+  let fetchSuccesses = 0
   const routes = new Set()
   const routeLocations = {}
   const [
@@ -155,8 +157,16 @@ const fetchLocations = async () => {
   await Promise.map(
     [...routes],
     async route => {
-      const locations = await fetch(`${GET_BUS_LOCATION}${route}`)
+      let locations = null
+      try {
+        locations = await fetch(`${GET_BUS_LOCATION}${route}`)
+      } catch (e) {
+        locations = null
+        fetchErrors += 1
+      }
+
       if (locations) {
+        fetchSuccesses += 1
         locations.forEach(location => {
           const track = getFeature(coordinates[route])
           const current = {
@@ -194,6 +204,8 @@ const fetchLocations = async () => {
 
   await uploadToS3('routeLocations.json', routeLocations)
   console.timeEnd('fetch locations time')
+  console.log('Total fetch errors: ', fetchErrors)
+  console.log('Total fetch successes: ', fetchSuccesses)
   console.log('Updated route locations successfully!')
 }
 
