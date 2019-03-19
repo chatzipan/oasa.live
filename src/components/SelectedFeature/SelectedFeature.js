@@ -13,7 +13,6 @@ const emptyCollection = {
   type: 'FeatureCollection',
   features: [],
 }
-
 const lineSourceId = mapConfig.TRACK_LINE_SOURCE_ID
 const lineLayerId = mapConfig.TRACK_LINE_LAYER_ID
 const beforeLayer = mapConfig.SHADOW_LAYER_ID
@@ -31,6 +30,7 @@ class SelectedFeature extends React.Component {
 
   state = {
     arrivals: null,
+    loading: false,
     secondsToLastPos: 0,
   }
 
@@ -51,7 +51,8 @@ class SelectedFeature extends React.Component {
     }
 
     if (selectedTrack !== prevProps.selectedTrack) {
-      clearInterval(this.interval)
+      clearInterval(this.positionInterval)
+      clearInterval(this.stopInterval)
       this.clearTrack()
 
       if (!selectedTrack) {
@@ -62,10 +63,11 @@ class SelectedFeature extends React.Component {
         case 'bus':
           this.showTrack()
           this.secondsToLastPos()
-          this.interval = setInterval(this.secondsToLastPos, 1000)
+          this.positionInterval = setInterval(this.secondsToLastPos, 1000)
           break
         case 'stop':
-          this.fetchStopArrivals(selectedTrack.properties.code)
+          this.stopInterval = setInterval(this.fetchStopArrivals, 15000)
+          this.fetchStopArrivals()
           break
       }
     }
@@ -95,17 +97,20 @@ class SelectedFeature extends React.Component {
     const distanceDriven = distanceCovered + diff
     const routeStops = stops[routeCode]
     const nextStop = routeStops.find(stop => stop.dfs > distanceDriven)
+    const stopNames = { gr: nextStop.d, en: nextStop.d_en }
 
-    return nextStop ? nextStop.d : ''
+    return nextStop ? stopNames[this.props.lang] : ''
   }
   /**
    * Fetches track data
    *
    * @return {Promise}  Resolves with the stop arrivals
    */
-  fetchStopArrivals = async code => {
-    const oasaUrl = `/.netlify/functions/getStopArrivals?stopCode=${code}`
+  fetchStopArrivals = async () => {
+    const stopCode = this.props.selectedTrack.properties.code
+    const oasaUrl = `/.netlify/functions/getStopArrivals?stopCode=${stopCode}`
     let arrivals = null
+    this.setState({ arrivals, loading: true })
     try {
       const response = await fetch(oasaUrl)
 
@@ -117,7 +122,7 @@ class SelectedFeature extends React.Component {
       console.log('Error:', e)
     }
 
-    this.setState({ arrivals })
+    this.setState({ arrivals, loading: false })
   }
 
   /**
@@ -158,6 +163,8 @@ class SelectedFeature extends React.Component {
     const secondsToLastPos = Math.round((now.getTime() - timestamp) / 1000)
     this.setState({ secondsToLastPos })
   }
+
+  isGreek = () => this.props.lang === 'gr'
 
   /**
    * Updates the selected journey track.
@@ -209,7 +216,7 @@ class SelectedFeature extends React.Component {
   }
 
   renderRouteInfo = t => {
-    const { descr, name } = this.props.selectedTrack.properties
+    const { descr, descrEn, name } = this.props.selectedTrack.properties
     const nextStop = this.getNextStop()
     return (
       <>
@@ -221,7 +228,7 @@ class SelectedFeature extends React.Component {
           <div className={styles.routeName}>
             <div className={styles.label}>{t['ROUTE']}</div>
             <div className={styles.value} title={descr}>
-              {descr}
+              {this.isGreek() ? descr : descrEn}
             </div>
           </div>
         </div>
@@ -242,33 +249,48 @@ class SelectedFeature extends React.Component {
   }
 
   /* eslint-disable camelcase */
+  renderLoading = () => {
+    return [1, 2].map((line, i) => (
+      <div
+        className={cx(styles.row, styles.value, styles.bus, styles.loading)}
+        key={i}
+      >
+        <div className={styles.line} />
+        <div className={styles.lineDescr} />
+        <div className={styles.arrivalTime} />
+      </div>
+    ))
+  }
+
   renderStopArrivals = () =>
     this.state.arrivals.map(({ route_code, veh_code, btime2 }, i) => {
-      const { descr, line } = this.props.details[route_code]
+      const { descr, descr_en: descrEn, line } = this.props.details[route_code]
       const { id } = this.props.lines[line]
 
       return (
         <div className={cx(styles.row, styles.value, styles.bus)} key={i}>
-          <div className={styles.line}>{id}</div>
+          <div className={cx(styles.line, styles.value)}>{id}</div>
           <div className={styles.lineDescr} title={descr}>
-            {descr}
+            {this.isGreek() ? descr : descrEn}
           </div>
-          <div className={styles.arrivalTime}>{`${btime2}'`}</div>
+          <div
+            className={cx(styles.arrivalTime, styles.value)}
+          >{`${btime2}'`}</div>
         </div>
       )
     })
 
   /* eslint-enable camelcase */
   renderStopInfo = t => {
-    const { descr } = this.props.selectedTrack.properties
-    const { arrivals } = this.state
+    const { descr, descr_en: descrEn } = this.props.selectedTrack.properties
+    const { arrivals, loading } = this.state
 
     return (
       <div className={cx(styles.row, styles.stops)}>
         <div className={styles.stopName}>
           <div className={styles.label}>{t['STOP_NAME']}</div>
           <div className={styles.value} title={descr}>
-            {descr}
+            {this.isGreek() ? descr : descrEn}
           </div>
         </div>
         <div className={styles.arrivals}>
@@ -278,7 +300,11 @@ class SelectedFeature extends React.Component {
             <div className={styles.arrivalTime}>{t['WHEN']}</div>
           </div>
           <div className={styles.arrivalsTable}>
-            {arrivals ? this.renderStopArrivals() : t['NO_ARRIVALS']}
+            {loading
+              ? this.renderLoading()
+              : arrivals
+              ? this.renderStopArrivals()
+              : t['NO_ARRIVALS']}
           </div>
         </div>
       </div>

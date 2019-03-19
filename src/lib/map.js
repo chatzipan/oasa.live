@@ -40,7 +40,7 @@ function onMapClick(event, map, selectFeature) {
  * @param  {Event} event  The mapbox-gl click event
  * @param  {mapboxgl.Map} map  The map instance
  */
-export function addMapLayers(map, selectFeature) {
+export function addMapLayers(map, selectFeature, language) {
   return new Promise((resolve, reject) => {
     // Line segments
     map.addSource(mapConfig.LINE_SOURCE_ID, {
@@ -73,6 +73,28 @@ export function addMapLayers(map, selectFeature) {
         'circle-radius': { type: 'identity', property: 'radius' },
         'circle-opacity': { type: 'identity', property: 'opacity' },
         'circle-stroke-opacity': { type: 'identity', property: 'opacity' },
+      },
+    })
+
+    // Stop labels
+    map.addLayer({
+      source: mapConfig.STOPS_SOURCE_ID,
+      id: mapConfig.STOPS_LABEL_LAYER_ID,
+      minzoom: mapConfig.SYMBOL_MIN_ZOOM + 1,
+      type: 'symbol',
+      layout: {
+        'text-field': language === 'gr' ? '{descr}' : '{descr_en}',
+        'text-anchor': 'top',
+        'text-offset': [0, 0.5],
+      },
+      paint: {
+        'text-color': {
+          type: 'identity',
+          property: 'strokeColor',
+        },
+        'text-halo-color': '#00ad9f',
+        'text-halo-width': 0,
+        'text-opacity': { type: 'identity', property: 'opacity' },
       },
     })
 
@@ -203,7 +225,7 @@ export function addMapLayers(map, selectFeature) {
   })
 }
 
-export default function(container, selectFeature) {
+export default function(container, selectFeature, language) {
   return new Promise((resolve, reject) => {
     const map = new mapboxgl.Map({
       center: mapConfig.CENTER,
@@ -215,7 +237,7 @@ export default function(container, selectFeature) {
     map.touchZoomRotate.disableRotation()
 
     map.on('load', async () => {
-      await addMapLayers(map, selectFeature)
+      await addMapLayers(map, selectFeature, language)
       resolve(map)
     })
   })

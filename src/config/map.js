@@ -19,6 +19,7 @@ const config = {
 
   VEHICLE_SOURCE_ID: 'vehicles-src',
   STOPS_SOURCE_ID: 'stops-src',
+  STOPS_LABEL_LAYER_ID: 'stops-label-layer',
   GEOLOCATION_SOURCE_ID: 'geo-location-source',
 
   STOPS_LAYER_ID: 'stops-layer',

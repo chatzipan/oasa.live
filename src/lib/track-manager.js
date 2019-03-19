@@ -45,7 +45,7 @@ export default class TrackManager {
 
     return Object.entries(data).map(([vehicleNum, location]) => {
       const { CS_LAT, CS_LNG, ROUTE_CODE, speed, timestamp } = location
-      const { descr, line } = details[ROUTE_CODE]
+      const { descr, descr_en: descrEn, line } = details[ROUTE_CODE]
 
       return {
         currentLocation: {
@@ -54,6 +54,7 @@ export default class TrackManager {
         },
         delay: 2,
         descr,
+        descrEn,
         distanceCovered: location.covered,
         id: vehicleNum,
         line: {

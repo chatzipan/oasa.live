@@ -31,17 +31,12 @@ function getPositionFromUrl() {
  * The GeoLocation module. Managing the user position.
  */
 class GeoLocation extends Component {
-  /**
-   * Create the GeoLocation instance.
-   * @param  {mapbox.Map} map  The map instance
-   */
-  constructor(props) {
-    super(props)
-    this.map = props.map
-    this.refresh()
-  }
-
   componentDidUpdate(prevProps) {
+    if (!prevProps.map && this.props.map) {
+      this.map = this.props.map
+      this.getCurrentPosition()
+    }
+
     if (this.props.userPosition !== prevProps.userPosition) {
       this.onPositionChange()
     }
@@ -80,7 +75,7 @@ class GeoLocation extends Component {
     this.props.updateUserPosition([longitude, latitude])
   }
 
-  refresh = () => {
+  getCurrentPosition = () => {
     navigator.geolocation.getCurrentPosition(
       this.onPositionSuccess,
       this.onPositionError,
@@ -110,7 +105,7 @@ class GeoLocation extends Component {
 
   render() {
     return (
-      <button className={styles.geoLocation} onClick={this.refresh}>
+      <button className={styles.geoLocation} onClick={this.getCurrentPosition}>
         <GeoLocationIcon />
       </button>
     )

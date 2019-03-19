@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import unfetch from 'unfetch'
 import { connect } from 'react-redux'
 
-import GeoLocation from '../components/GeoLocation'
 import Header from '../components/Header'
 import Layout from '../components/Layout'
 import SEO from '../components/Seo'
@@ -76,7 +75,11 @@ class IndexPage extends Component {
   }
 
   createMap = async () => {
-    this.map = await createMap(this.mapRoot, this.props.selectFeature)
+    this.map = await createMap(
+      this.mapRoot,
+      this.props.selectFeature,
+      this.state.language
+    )
     this.trackManager = new TrackManager(this.map, this.props)
     this.trackManager.fetchTracks()
     this.trackManager.renderStops()
@@ -84,7 +87,11 @@ class IndexPage extends Component {
     this.map.on('styledata', async event => {
       if (this.styleHasChanged) {
         this.styleHasChanged = false
-        await addMapLayers(this.map, this.props.selectFeature)
+        await addMapLayers(
+          this.map,
+          this.props.selectFeature,
+          this.state.language
+        )
         this.trackManager.resumeAnimation()
         this.trackManager.renderStops(this.props.selectedTrack)
       }
@@ -150,9 +157,11 @@ class IndexPage extends Component {
     return (
       <Layout>
         <SEO />
-        <Header isMenuOpen={sidebarOpen} onClick={this.toggleSidebar}>
-          {map && <GeoLocation map={map} />}
-        </Header>
+        <Header
+          isMenuOpen={sidebarOpen}
+          map={map}
+          onClick={this.toggleSidebar}
+        />
         <Sidebar
           isNightMode={isNightMode}
           isOpen={sidebarOpen}

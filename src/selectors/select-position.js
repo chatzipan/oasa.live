@@ -1,5 +1,13 @@
 import localStorageKey from '../config/local-storage-key'
 
+const mockStorage = {
+  getItem: () => {},
+  setItem: () => {},
+}
+
+const localStorage =
+  typeof window !== 'undefined' ? window.localStorage : mockStorage
+
 /**
  * State selector for the user position.
  * @param  {object} state  The state object
@@ -8,7 +16,7 @@ import localStorageKey from '../config/local-storage-key'
 export default function(state) {
   const { userPosition } = state
 
-  if (!userPosition) {
+  if (!userPosition && typeof window !== 'undefined') {
     const storedPositon = JSON.parse(localStorage.getItem(localStorageKey))
 
     if (storedPositon) {

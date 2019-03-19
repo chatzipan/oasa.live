@@ -129,7 +129,7 @@ const getRouteSpeed = (route, schedules, covered) => {
 
 const fetchLocations = async () => {
   console.log('Fetching locations.')
-  console.time('fetch locations time')
+  console.time('AWS_LOG: fetch locations time')
   let fetchErrors = 0
   let fetchSuccesses = 0
   const routes = new Set()
@@ -199,13 +199,14 @@ const fetchLocations = async () => {
         })
       }
     },
-    { concurrency: 5 }
+    { concurrency: 4 }
   )
 
   await uploadToS3('routeLocations.json', routeLocations)
-  console.timeEnd('fetch locations time')
-  console.log('Total fetch errors: ', fetchErrors)
-  console.log('Total fetch successes: ', fetchSuccesses)
+  console.timeEnd('AWS: fetch locations time')
+  console.log('AWS: Total fetch errors: ', fetchErrors)
+  console.log('AWS: Total fetch successes: ', fetchSuccesses)
+  console.log('AWS_LOG: Total fetchs: ', fetchSuccesses + fetchErrors)
   console.log('Updated route locations successfully!')
 }
 

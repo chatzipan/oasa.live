@@ -97,6 +97,7 @@ export default function getFeatureFromTrack(track, now, selectedTrack) {
     color,
     delay: track.delay,
     descr: track.descr,
+    descrEn: track.descrEn,
     distanceCovered: track.distanceCovered,
     id: track.id,
     icon: undefined,
@@ -117,7 +118,8 @@ export default function getFeatureFromTrack(track, now, selectedTrack) {
       distanceDriven
     )
     point.properties.bearing = ruler.bearing(...subSegment) + 180
-    point.properties.icon = getIcon(track).name === 'bus' ? '_bus' : getIcon(track).name
+    point.properties.icon =
+      getIcon(track).name === 'bus' ? '_bus' : getIcon(track).name
   }
 
   return point
