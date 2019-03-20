@@ -11,6 +11,7 @@ import Sidebar from '../components/Sidebar'
 import mapConfig from '../config/map'
 import createMap, { addMapLayers } from '../lib/map'
 import TrackManager from '../lib/track-manager'
+import { getCookie, setCookie } from '../lib/cookies'
 
 import { fetchedRouteData } from '../redux/routes'
 import { selectFeature } from '../redux/selected-feature'
@@ -38,8 +39,8 @@ const files = [
 class IndexPage extends Component {
   styleHasChanged = false
   state = {
-    isNightMode: false,
-    language: 'gr',
+    isNightMode: getCookie('isNightMode') === 'true' || false,
+    language: getCookie('language') || 'gr',
     map: null,
     sidebarOpen: false,
   }
@@ -78,7 +79,8 @@ class IndexPage extends Component {
     this.map = await createMap(
       this.mapRoot,
       this.props.selectFeature,
-      this.state.language
+      this.state.language,
+      this.state.isNightMode
     )
     this.trackManager = new TrackManager(this.map, this.props)
     this.trackManager.fetchTracks()
@@ -137,12 +139,16 @@ class IndexPage extends Component {
     this.setState({
       language: e.target.value,
     })
+    setCookie('language', e.target.value, 30)
   }
 
   handleNightModeChange = () => {
+    const isNightMode = !this.state.isNightMode
     this.setState({
-      isNightMode: !this.state.isNightMode,
+      isNightMode,
     })
+
+    setCookie('isNightMode', isNightMode, 30)
   }
 
   toggleSidebar = () => {

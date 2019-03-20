@@ -225,13 +225,15 @@ export function addMapLayers(map, selectFeature, language) {
   })
 }
 
-export default function(container, selectFeature, language) {
+export default function(container, selectFeature, language, isNightMode) {
   return new Promise((resolve, reject) => {
+    const style = isNightMode ? mapConfig.STYLE_NIGHT_MODE : mapConfig.STYLE
+
     const map = new mapboxgl.Map({
       center: mapConfig.CENTER,
       zoom: mapConfig.ZOOM,
       container,
-      style: mapConfig.STYLE,
+      style,
     })
 
     map.touchZoomRotate.disableRotation()

@@ -33,7 +33,7 @@ const Sidebar = ({
         </button>
       </div>
       <div className={styles.infotext}>
-        <p dangerouslySetInnerHTML={{__html: t['MENU_INFO']}}/>
+        <p dangerouslySetInnerHTML={{ __html: t['MENU_INFO'] }} />
       </div>
       <div className={styles.options}>
         <div className={styles.language}>
