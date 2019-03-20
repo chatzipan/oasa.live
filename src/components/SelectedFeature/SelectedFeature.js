@@ -251,13 +251,10 @@ class SelectedFeature extends React.Component {
   /* eslint-disable camelcase */
   renderLoading = () => {
     return [1, 2].map((line, i) => (
-      <div
-        className={cx(styles.row, styles.value, styles.bus, styles.loading)}
-        key={i}
-      >
-        <div className={styles.line} />
-        <div className={styles.lineDescr} />
-        <div className={styles.arrivalTime} />
+      <div className={cx(styles.row, styles.value, styles.bus)} key={i}>
+        <div className={cx(styles.line, styles.loading)} />
+        <div className={cx(styles.lineDescr, styles.loading)} />
+        <div className={cx(styles.arrivalTime, styles.loading)} />
       </div>
     ))
   }

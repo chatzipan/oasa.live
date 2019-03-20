@@ -46,7 +46,8 @@
   &.bus {
     font-size: 14px;
 
-    &.loading {
+    & .loading {
+      margin: 0 5px;
       background: #eee;
       height: 14px;
     }
