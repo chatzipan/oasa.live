@@ -34,7 +34,7 @@ class GeoLocation extends Component {
   componentDidUpdate(prevProps) {
     if (!prevProps.map && this.props.map) {
       this.map = this.props.map
-      this.getCurrentPosition()
+      this.props.userPosition && this.renderPosition(this.props.userPosition)
     }
 
     if (this.props.userPosition !== prevProps.userPosition) {
@@ -54,7 +54,7 @@ class GeoLocation extends Component {
     this.lastPosition = userPosition
 
     if (userPosition) {
-      this.renderPosition(userPosition)
+      this.map && this.renderPosition(userPosition)
     }
   }
 
