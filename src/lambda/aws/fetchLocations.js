@@ -5,10 +5,11 @@ const lineSlice = require('@turf/line-slice')
 const length = require('@turf/length').default
 
 const { fetch } = require('./helpers/fetch')
+const { median } = require('./helpers/utils')
 const { fetchFromS3, uploadToS3 } = require('./helpers/s3')
 const { GET_BUS_LOCATION } = require('./helpers/api')
 
-const weekDays = [
+const WEEKDAYS = [
   'Monday',
   'Tuesday',
   'Wednesday',
@@ -17,10 +18,12 @@ const weekDays = [
   'Saturday',
   'Sunday',
 ]
+const ROUTES_MEDIAN = 2162
 const routeTypeScheduleMap = {
   1: 'go',
   2: 'come',
 }
+
 const getTimeInAthens = dateObj =>
   dateObj.toLocaleString('en-GB', {
     timeZone: 'Europe/Athens',
@@ -33,7 +36,7 @@ const getTimeInAthens = dateObj =>
 const getDayParts = time => {
   const [_day, _hour] = time.split(' ')
   const [hour, minutes] = _hour.split(':')
-  const day = weekDays.indexOf(_day)
+  const day = WEEKDAYS.indexOf(_day)
   return { day, hour, minutes }
 }
 const getNextSchedule = (now, diff) => {
@@ -129,33 +132,40 @@ const getRouteSpeed = (route, schedules, covered) => {
 
 const fetchLocations = async () => {
   console.log('Fetching locations.')
-  console.time('AWS_LOG: fetch locations time')
+  console.time('AWS: fetch locations time')
   let fetchErrors = 0
   let fetchSuccesses = 0
   const routes = new Set()
-  const routeLocations = {}
   const [
     currentSchedules,
     _linesList,
     _coordinates,
     _routeDetails,
+    _routeLocations,
   ] = await Promise.all([
     getCurrentSchedules(),
     fetchFromS3('linesList.json'),
     fetchFromS3('routePaths.json'),
     fetchFromS3('routeList.json'),
+    fetchFromS3('routeLocations.json'),
   ])
   const coordinates = JSON.parse(_coordinates)
   const linesList = JSON.parse(_linesList)
   const routeDetails = JSON.parse(_routeDetails)
+  const routeLocations = JSON.parse(_routeLocations)
+  const isEvenMinute = new Date().getMinutes() % 2
 
   Object.keys(currentSchedules).forEach(line => {
     const _routes = linesList[line].routes
     _routes.forEach(route => routes.add(route))
   })
+  console.log('AWS: routes median: ', median([...routes]))
+  const routesToFetch = [...routes].filter(route =>
+    isEvenMinute ? route > ROUTES_MEDIAN : route < ROUTES_MEDIAN
+  )
 
   await Promise.map(
-    [...routes],
+    routesToFetch,
     async route => {
       let locations = null
       try {
@@ -199,14 +209,14 @@ const fetchLocations = async () => {
         })
       }
     },
-    { concurrency: 4 }
+    { concurrency: 5 }
   )
 
   await uploadToS3('routeLocations.json', routeLocations)
   console.timeEnd('AWS: fetch locations time')
   console.log('AWS: Total fetch errors: ', fetchErrors)
   console.log('AWS: Total fetch successes: ', fetchSuccesses)
-  console.log('AWS_LOG: Total fetchs: ', fetchSuccesses + fetchErrors)
+  console.log('AWS: Total fetchs: ', fetchSuccesses + fetchErrors)
   console.log('Updated route locations successfully!')
 }
 

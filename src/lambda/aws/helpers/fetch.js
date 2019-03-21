@@ -2,7 +2,7 @@ const _fetch = require('isomorphic-fetch')
 
 const fetch = async url => {
   try {
-    const response = await withTimeout(_fetch(url), 1500)
+    const response = await withTimeout(_fetch(url), 1250)
     if (!response.ok) {
       console.log(response)
     }
