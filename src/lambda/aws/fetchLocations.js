@@ -130,6 +130,10 @@ const getRouteSpeed = (route, schedules, covered) => {
   return speed
 }
 
+const getRequestsFilter = route => {
+  const isEvenMinute = new Date().getMinutes() % 2
+  return isEvenMinute ? route > ROUTES_MEDIAN : route < ROUTES_MEDIAN
+}
 const fetchLocations = async () => {
   console.log('Fetching locations.')
   console.time('AWS: fetch locations time')
@@ -153,16 +157,19 @@ const fetchLocations = async () => {
   const linesList = JSON.parse(_linesList)
   const routeDetails = JSON.parse(_routeDetails)
   const routeLocations = JSON.parse(_routeLocations)
-  const isEvenMinute = new Date().getMinutes() % 2
 
   Object.keys(currentSchedules).forEach(line => {
     const _routes = linesList[line].routes
     _routes.forEach(route => routes.add(route))
   })
-  console.log('AWS: routes median: ', median([...routes]))
-  const routesToFetch = [...routes].filter(route =>
-    isEvenMinute ? route > ROUTES_MEDIAN : route < ROUTES_MEDIAN
-  )
+
+  // Split requests into half, because OASA servers cannot take full burdun at the moment
+  const routesToFetch = [...routes].filter(getRequestsFilter)
+  Object.keys(routeLocations).forEach(location => {
+    if (getRequestsFilter(routeLocations[location]['ROUTE_CODE'])) {
+      delete routeLocations[location]
+    }
+  })
 
   await Promise.map(
     routesToFetch,
