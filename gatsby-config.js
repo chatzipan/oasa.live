@@ -68,6 +68,16 @@ module.exports = {
         postCssPlugins: [require(`postcss-preset-env`)({ stage: 0 })],
       },
     },
+    {
+      resolve: 'gatsby-plugin-sentry',
+      options: {
+        dsn: 'https://2c40bea4fa1b409c939a059cb6722bb7@sentry.io/1420468',
+        // Optional settings, see https://docs.sentry.io/clients/node/config/#optional-settings
+        // environment: process.env.NODE_ENV,
+        // enabled: (() =>
+        //  ['production', 'stage'].indexOf(process.env.NODE_ENV) !== -1)(),
+      },
+    },
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.app/offline
     // 'gatsby-plugin-offline',

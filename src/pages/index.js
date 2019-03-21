@@ -39,6 +39,7 @@ const files = [
 class IndexPage extends Component {
   styleHasChanged = false
   state = {
+    hasError: false,
     isNightMode: getCookie('isNightMode') === 'true' || false,
     language: getCookie('language') || 'gr',
     map: null,
@@ -49,7 +50,15 @@ class IndexPage extends Component {
     this.fetchStaticData()
     this.initEventHandlers()
   }
-
+  componentDidCatch(error, errorInfo) {
+    this.setState({ hasError: true })
+    window.Sentry.configureScope(scope => {
+      Object.keys(errorInfo).forEach(key => {
+        scope.setExtra(key, errorInfo[key])
+      })
+    })
+    window.Sentry.captureException(error)
+  }
   componentDidUpdate(prevProps, prevState) {
     const { selectedTrack } = this.props
     const { isNightMode } = this.state

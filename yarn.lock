@@ -926,6 +926,58 @@
     react-lifecycles-compat "^3.0.4"
     warning "^3.0.0"
 
+"@sentry/browser@latest":
+  version "5.0.0-beta1"
+  resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-5.0.0-beta1.tgz#790d822d4847ceed2973a1718061ba829774b60d"
+  integrity sha512-/eHaCCYpq9/cFRpUcrhjOvkyutYC1hI/N59NTPAUBefLxWc3p4aIuDyaP6knKSwpMTa9RKv7XC4j2KERPtwyyQ==
+  dependencies:
+    "@sentry/core" "5.0.0-beta1"
+    "@sentry/types" "5.0.0-beta1"
+    "@sentry/utils" "5.0.0-beta1"
+    tslib "^1.9.3"
+
+"@sentry/core@5.0.0-beta1":
+  version "5.0.0-beta1"
+  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-5.0.0-beta1.tgz#f884a3acc1b90b7a76a3f70976427742cb771fd7"
+  integrity sha512-qNOt2cv07CFtWZMuYXF2i5XJtdGWwNWY86MdLbHel2I3LdosUsK3GCxirS6E9UbmV2Te1Vp+lfS381uO/yzrJA==
+  dependencies:
+    "@sentry/hub" "5.0.0-beta1"
+    "@sentry/minimal" "5.0.0-beta1"
+    "@sentry/types" "5.0.0-beta1"
+    "@sentry/utils" "5.0.0-beta1"
+    tslib "^1.9.3"
+
+"@sentry/hub@5.0.0-beta1":
+  version "5.0.0-beta1"
+  resolved "https://registry.yarnpkg.com/@sentry/hub/-/hub-5.0.0-beta1.tgz#9818721182c07d0568d93ad594f44f597cd1c3b7"
+  integrity sha512-vvUBvzYKW/uV9fDT+k+tsZb6jZAkrTBOHtSxXvMV9pEXzS3AZGIxsig4CR9Md6HfQa3I6wi6/heuRcCdaEQ5pA==
+  dependencies:
+    "@sentry/types" "5.0.0-beta1"
+    "@sentry/utils" "5.0.0-beta1"
+    tslib "^1.9.3"
+
+"@sentry/minimal@5.0.0-beta1":
+  version "5.0.0-beta1"
+  resolved "https://registry.yarnpkg.com/@sentry/minimal/-/minimal-5.0.0-beta1.tgz#16a9131490aca9a5568a5a3a1dd409df63a10fec"
+  integrity sha512-X0+tSxELgbNUzn1weLC1gEto8TsyH/DGx7XEraCSLl2NJ9vi7pdFaM2KCfUp1rS6p9F3v7z0Sfb6V6DlKutoRQ==
+  dependencies:
+    "@sentry/hub" "5.0.0-beta1"
+    "@sentry/types" "5.0.0-beta1"
+    tslib "^1.9.3"
+
+"@sentry/types@5.0.0-beta1":
+  version "5.0.0-beta1"
+  resolved "https://registry.yarnpkg.com/@sentry/types/-/types-5.0.0-beta1.tgz#26e52c5e8725d56f062f7b5b31945258785a995e"
+  integrity sha512-1jGT+/e2BEvd8fTBpGChjiwND7G0RIPwXWfJ4wnYrR9L61DQYjtzA6uOL2fZlSZmYoEJWQVqKMLOz7ORVRg2LA==
+
+"@sentry/utils@5.0.0-beta1":
+  version "5.0.0-beta1"
+  resolved "https://registry.yarnpkg.com/@sentry/utils/-/utils-5.0.0-beta1.tgz#f1403105d88f9d292f2439f9b7ff32763356cea5"
+  integrity sha512-yJs0+YRB+A4xiUz7y0hdVl18cSoclUidh22zk8ZlHzW2qZY8r3s7LG2EFDAstsoEP3rcvAtmp4bT8mu1+VJDYw==
+  dependencies:
+    "@sentry/types" "5.0.0-beta1"
+    tslib "^1.9.3"
+
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
@@ -6879,6 +6931,13 @@ gatsby-plugin-sass@^2.0.7:
   dependencies:
     "@babel/runtime" "^7.0.0"
     sass-loader "^7.0.1"
+
+gatsby-plugin-sentry@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/gatsby-plugin-sentry/-/gatsby-plugin-sentry-1.0.1.tgz#d146e3851488c9545f2c0689cad62bf6e7d1c653"
+  integrity sha512-rKIngbFbBwwGYJi1ayUtEz34tXxpLXvSMD3WWVmdtXs0wrYrlGs30nFJ4JJIxcA7fWtx3hQ2yd5O2ZyQ832G2g==
+  dependencies:
+    "@sentry/browser" latest
 
 gatsby-plugin-sharp@^2.0.14:
   version "2.0.16"
@@ -13736,7 +13795,7 @@ trim@0.0.1:
   dependencies:
     glob "^7.1.2"
 
-tslib@^1.6.0, tslib@^1.9.0:
+tslib@^1.6.0, tslib@^1.9.0, tslib@^1.9.3:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
   integrity sha512-4krF8scpejhaOgqzBEcGM7yDIEfi0/8+8zDRZhNZZ2kjmHJ4hv3zCbQWxoJGz1iw5U0Jl0nma13xzHXcncMavQ==
