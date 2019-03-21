@@ -86,6 +86,7 @@ class SelectedFeature extends React.Component {
 
   getNextStop = () => {
     const {
+      lang,
       selectedTrack: {
         properties: { distanceCovered, routeCode, speed, timestamp },
       },
@@ -97,9 +98,8 @@ class SelectedFeature extends React.Component {
     const distanceDriven = distanceCovered + diff
     const routeStops = stops[routeCode]
     const nextStop = routeStops.find(stop => stop.dfs > distanceDriven)
-    const stopNames = { gr: nextStop.d, en: nextStop.d_en }
 
-    return nextStop ? stopNames[this.props.lang] : ''
+    return nextStop ? { gr: nextStop.d, en: nextStop.d_en }[lang] : ''
   }
   /**
    * Fetches track data
