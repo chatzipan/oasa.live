@@ -40,19 +40,23 @@ class IndexPage extends Component {
   styleHasChanged = false
   state = {
     hasError: false,
-    isNightMode: getCookie('isNightMode') === 'true' || false,
+    isNightMode: false,
     language: 'gr',
     map: null,
     sidebarOpen: false,
   }
 
   componentDidMount() {
-    this.setState({
-      isNightMode: getCookie('isNightMode') === 'true' || false,
-      language: getCookie('language') || 'gr',
-    })
-    this.fetchStaticData()
-    this.initEventHandlers()
+    this.setState(
+      {
+        isNightMode: getCookie('isNightMode') === 'true' || false,
+        language: getCookie('language') || 'gr',
+      },
+      () => {
+        this.fetchStaticData()
+        this.initEventHandlers()
+      }
+    )
   }
 
   componentDidCatch(error, errorInfo) {
