@@ -14,6 +14,7 @@ import TrackManager from '../lib/track-manager'
 import { getCookie, setCookie } from '../lib/cookies'
 
 import { fetchedRouteData } from '../redux/routes'
+import { toggleMenu } from '../redux/ui'
 import { selectFeature } from '../redux/selected-feature'
 
 import styles from './index.module.css'
@@ -43,7 +44,6 @@ class IndexPage extends Component {
     isNightMode: false,
     language: 'gr',
     map: null,
-    sidebarOpen: false,
   }
 
   componentDidMount() {
@@ -149,7 +149,7 @@ class IndexPage extends Component {
   initEventHandlers() {
     window.addEventListener('keydown', event => {
       if (event.keyCode === ESC_KEY && !this.state.sidebarOpen) {
-        this.toggleSidebar()
+        this.props.toggleMenu()
       }
     })
   }
@@ -170,28 +170,19 @@ class IndexPage extends Component {
     setCookie('isNightMode', isNightMode, 30)
   }
 
-  toggleSidebar = () => {
-    this.setState({
-      sidebarOpen: !this.state.sidebarOpen,
-    })
-  }
-
   render() {
-    const { isNightMode, map, language, sidebarOpen } = this.state
+    const { isNightMode, map, language } = this.state
+    const { isMenuOpen, toggleMenu } = this.props
 
     return (
       <Layout>
         <SEO />
-        <Header
-          isMenuOpen={sidebarOpen}
-          map={map}
-          onClick={this.toggleSidebar}
-        />
+        <Header map={map} />
         <Sidebar
           isNightMode={isNightMode}
-          isOpen={sidebarOpen}
+          isOpen={isMenuOpen}
           lang={language}
-          onClick={this.toggleSidebar}
+          onClick={toggleMenu}
           onLanguageChange={this.handleLanguageChange}
           onNightModeChange={this.handleNightModeChange}
         />
@@ -208,16 +199,25 @@ class IndexPage extends Component {
   }
 }
 
-const mapStateToProps = ({ mapCenter, routes, selectedTrack }) => ({
+const mapStateToProps = ({
+  mapCenter,
+  routes,
+  selectedTrack,
+  ui: { isMenuOpen },
+}) => ({
+  isMenuOpen,
   mapCenter,
   routes,
   selectedTrack,
 })
 
+const mapDispatchToProps = {
+  fetchedRouteData,
+  selectFeature,
+  toggleMenu,
+}
+
 export default connect(
   mapStateToProps,
-  {
-    fetchedRouteData,
-    selectFeature,
-  }
+  mapDispatchToProps
 )(IndexPage)

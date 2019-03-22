@@ -34,7 +34,7 @@
     z-index: 3;
     width: calc(100% - 16px);
     left: 50%;
-    top: 64px;
+    top: 74px;
     bottom: 0;
     height: auto;
     overflow: scroll;
@@ -155,7 +155,6 @@
 
   @media screen and (max-width: 680px) {
     padding: 0 16px;
-    margin-top: 22px;
   }
 }
 
