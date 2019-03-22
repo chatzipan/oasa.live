@@ -1,7 +1,7 @@
 {
-  "name": "gatsby-starter-default",
+  "name": "oasa-live",
   "private": true,
-  "description": "A simple starter to get up and developing quickly with Gatsby",
+  "description": "A live map of real-time bus information of Athens, Greece. Data are taken from OASA API.",
   "version": "0.1.0",
   "author": "Vasilis Chatzipanagiotis <vchatzipan@gmail.com>",
   "keywords": [

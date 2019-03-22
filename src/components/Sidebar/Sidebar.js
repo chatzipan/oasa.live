@@ -1,9 +1,11 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import cx from 'classnames'
 import Select from '@material-ui/core/NativeSelect'
 import Switch from '@material-ui/core/Switch'
 
 import translations from '../../../translations'
+import { selectLanguage, setNightMode, toggleMenu } from '../../redux/ui'
 
 import styles from './Sidebar.module.css'
 import InfoIcon from '../../assets/svgs/info.svg'
@@ -13,22 +15,22 @@ import InfoIcon from '../../assets/svgs/info.svg'
  */
 const Sidebar = ({
   isNightMode,
-  isOpen,
-  lang,
-  onClick,
-  onLanguageChange,
-  onNightModeChange,
+  isMenuOpen,
+  language,
+  toggleMenu,
+  selectLanguage,
+  setNightMode,
 }) => {
-  const t = translations[lang]
+  const t = translations[language]
   const classNames = cx(styles.sidebar, {
-    [styles.hidden]: !isOpen,
+    [styles.hidden]: !isMenuOpen,
   })
 
   return (
     <div className={classNames}>
       <div className={cx(styles.title, styles.box)}>
         <h1 className={styles.heading}>Athens Live Map</h1>
-        <button className={styles.button} onClick={onClick}>
+        <button className={styles.button} onClick={toggleMenu}>
           <InfoIcon />
         </button>
       </div>
@@ -40,8 +42,8 @@ const Sidebar = ({
           <p className={styles.label}>{t['CHOOSE_LANG']}</p>
           <Select
             inputProps={{ name: 'language' }}
-            onChange={onLanguageChange}
-            value={lang}
+            onChange={selectLanguage}
+            value={language}
           >
             <option value="gr">Ελληνικά</option>
             <option value="en">English</option>
@@ -51,8 +53,8 @@ const Sidebar = ({
           <p className={styles.label}>Night Mode:</p>
           <Switch
             checked={isNightMode}
-            onChange={onNightModeChange}
-            value="nighrMode"
+            onChange={setNightMode}
+            value="nightMode"
           />
         </div>
       </div>
@@ -69,4 +71,21 @@ const Sidebar = ({
   )
 }
 
-export default Sidebar
+const mapStateToProps = ({ ui: { isMenuOpen, isNightMode, language } }) => ({
+  isMenuOpen,
+  isNightMode,
+  language,
+})
+
+const mapDispatchToProps = dispatch => {
+  return {
+    selectLanguage: e => dispatch(selectLanguage(e.target.value)),
+    setNightMode: e => dispatch(setNightMode(e.target.checked)),
+    toggleMenu: x => dispatch(toggleMenu()),
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Sidebar)

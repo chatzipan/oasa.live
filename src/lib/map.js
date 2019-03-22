@@ -25,22 +25,9 @@ function loadIcons() {
 /**
  * Click handler for the map.
  * @param  {Event} event  The mapbox-gl click event
- * @param  {mapboxgl.Map} map  The map instance
+ * @param  {mapboxgl.Map} map  The map instance //TODO: pass only props
  */
-function onMapClick(event, map, selectFeature) {
-  const selectedFeature = map.queryRenderedFeatures(event.point, {
-    layers: [mapConfig.VEHICLE_LAYER_ID, mapConfig.STOPS_LAYER_ID],
-  })
-
-  selectFeature(selectedFeature[0] || null)
-}
-
-/**
- * Click handler for the map.
- * @param  {Event} event  The mapbox-gl click event
- * @param  {mapboxgl.Map} map  The map instance
- */
-export function addMapLayers(map, selectFeature, language) {
+export function addMapLayers(map, props) {
   return new Promise((resolve, reject) => {
     // Line segments
     map.addSource(mapConfig.LINE_SOURCE_ID, {
@@ -83,7 +70,7 @@ export function addMapLayers(map, selectFeature, language) {
       minzoom: mapConfig.SYMBOL_MIN_ZOOM + 1,
       type: 'symbol',
       layout: {
-        'text-field': language === 'gr' ? '{descr}' : '{descr_en}',
+        'text-field': props.language === 'gr' ? '{descr}' : '{descr_en}',
         'text-anchor': 'top',
         'text-offset': [0, 0.5],
       },
@@ -188,7 +175,14 @@ export function addMapLayers(map, selectFeature, language) {
       data: emptyCollection,
     })
 
-    map.on('click', event => onMapClick(event, map, selectFeature))
+    map.on('click', event => {
+      const selectedFeature = map.queryRenderedFeatures(event.point, {
+        layers: [mapConfig.VEHICLE_LAYER_ID, mapConfig.STOPS_LAYER_ID],
+      })
+
+      props.selectFeature(selectedFeature[0] || null)
+      props.closeMenu()
+    })
 
     loadIcons()
       .then(icons => {
@@ -225,8 +219,9 @@ export function addMapLayers(map, selectFeature, language) {
   })
 }
 
-export default function(container, selectFeature, language, isNightMode) {
+export default function(container, props) {
   return new Promise((resolve, reject) => {
+    const { isNightMode } = props
     const style = isNightMode ? mapConfig.STYLE_NIGHT_MODE : mapConfig.STYLE
 
     const map = new mapboxgl.Map({
@@ -239,7 +234,7 @@ export default function(container, selectFeature, language, isNightMode) {
     map.touchZoomRotate.disableRotation()
 
     map.on('load', async () => {
-      await addMapLayers(map, selectFeature, language)
+      await addMapLayers(map, props)
       resolve(map)
     })
   })

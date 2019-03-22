@@ -11,8 +11,8 @@ import Sidebar from '../components/Sidebar'
 import mapConfig from '../config/map'
 import createMap, { addMapLayers } from '../lib/map'
 import TrackManager from '../lib/track-manager'
-import { getCookie, setCookie } from '../lib/cookies'
-
+import { getCookie } from '../lib/cookies'
+import { closeMenu, selectLanguage, setNightMode } from '../redux/ui'
 import { fetchedRouteData } from '../redux/routes'
 import { selectFeature } from '../redux/selected-feature'
 
@@ -40,23 +40,14 @@ class IndexPage extends Component {
   styleHasChanged = false
   state = {
     hasError: false,
-    isNightMode: false,
-    language: 'gr',
     map: null,
-    sidebarOpen: false,
   }
 
   componentDidMount() {
-    this.setState(
-      {
-        isNightMode: getCookie('isNightMode') === 'true' || false,
-        language: getCookie('language') || 'gr',
-      },
-      () => {
-        this.fetchStaticData()
-        this.initEventHandlers()
-      }
-    )
+    this.props.selectLanguage(getCookie('language') || 'gr')
+    this.props.setNightMode(getCookie('isNightMode') === 'true' || false)
+    this.fetchStaticData()
+    this.initEventHandlers()
   }
 
   componentDidCatch(error, errorInfo) {
@@ -69,11 +60,10 @@ class IndexPage extends Component {
     window.Sentry.captureException(error)
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { selectedTrack } = this.props
-    const { isNightMode } = this.state
+  componentDidUpdate(prevProps) {
+    const { isNightMode, selectedTrack } = this.props
 
-    if (isNightMode !== prevState.isNightMode && this.map) {
+    if (isNightMode !== prevProps.isNightMode && this.map) {
       const mapStyle = isNightMode
         ? mapConfig.STYLE_NIGHT_MODE
         : mapConfig.STYLE
@@ -95,24 +85,13 @@ class IndexPage extends Component {
   }
 
   createMap = async () => {
-    this.map = await createMap(
-      this.mapRoot,
-      this.props.selectFeature,
-      this.state.language,
-      this.state.isNightMode
-    )
-    this.trackManager = new TrackManager(this.map, this.props)
-    this.trackManager.fetchTracks()
-    this.trackManager.renderStops()
+    this.map = await createMap(this.mapRoot, this.props)
+    this.trackManager = new TrackManager(this.map, this.props).init()
 
     this.map.on('styledata', async event => {
       if (this.styleHasChanged) {
         this.styleHasChanged = false
-        await addMapLayers(
-          this.map,
-          this.props.selectFeature,
-          this.state.language
-        )
+        await addMapLayers(this.map, this.props)
         this.trackManager.resumeAnimation()
         this.trackManager.renderStops(this.props.selectedTrack)
       }
@@ -148,76 +127,48 @@ class IndexPage extends Component {
 
   initEventHandlers() {
     window.addEventListener('keydown', event => {
-      if (event.keyCode === ESC_KEY && !this.state.sidebarOpen) {
-        this.toggleSidebar()
+      if (event.keyCode === ESC_KEY && !this.props.isMenuOpen) {
+        this.props.toggleMenu()
       }
     })
   }
 
-  handleLanguageChange = e => {
-    this.setState({
-      language: e.target.value,
-    })
-    setCookie('language', e.target.value, 30)
-  }
-
-  handleNightModeChange = () => {
-    const isNightMode = !this.state.isNightMode
-    this.setState({
-      isNightMode,
-    })
-
-    setCookie('isNightMode', isNightMode, 30)
-  }
-
-  toggleSidebar = () => {
-    this.setState({
-      sidebarOpen: !this.state.sidebarOpen,
-    })
-  }
-
   render() {
-    const { isNightMode, map, language, sidebarOpen } = this.state
+    const { map } = this.state
 
     return (
       <Layout>
         <SEO />
-        <Header
-          isMenuOpen={sidebarOpen}
-          map={map}
-          onClick={this.toggleSidebar}
-        />
-        <Sidebar
-          isNightMode={isNightMode}
-          isOpen={sidebarOpen}
-          lang={language}
-          onClick={this.toggleSidebar}
-          onLanguageChange={this.handleLanguageChange}
-          onNightModeChange={this.handleNightModeChange}
-        />
+        <Header map={map} />
+        <Sidebar />
         <div className={styles.map} ref={this.createRef} />
-        {map && (
-          <SelectedFeature
-            isNightMode={isNightMode}
-            lang={language}
-            map={map}
-          />
-        )}
+        <SelectedFeature map={map} />
       </Layout>
     )
   }
 }
 
-const mapStateToProps = ({ mapCenter, routes, selectedTrack }) => ({
+const mapStateToProps = ({
+  mapCenter,
+  routes,
+  selectedTrack,
+  ui: { isNightMode },
+}) => ({
+  isNightMode,
   mapCenter,
   routes,
   selectedTrack,
 })
 
+const mapDispatchToProps = {
+  closeMenu,
+  fetchedRouteData,
+  selectLanguage,
+  setNightMode,
+  selectFeature,
+}
+
 export default connect(
   mapStateToProps,
-  {
-    fetchedRouteData,
-    selectFeature,
-  }
+  mapDispatchToProps
 )(IndexPage)

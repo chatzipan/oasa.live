@@ -2,6 +2,7 @@ import { applyMiddleware, combineReducers, compose, createStore } from 'redux'
 
 import routes from './routes'
 import selectedTrack from './selected-feature'
+import ui from './ui'
 import userPosition, { userPositionMiddleware } from './user-position'
 
 const composeEnhancers =
@@ -13,6 +14,7 @@ const reducers = combineReducers({
   routes,
   selectedTrack,
   userPosition,
+  ui,
 })
 
 const enhancer = composeEnhancers(applyMiddleware(userPositionMiddleware))
