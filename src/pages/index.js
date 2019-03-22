@@ -13,7 +13,7 @@ import createMap, { addMapLayers } from '../lib/map'
 import TrackManager from '../lib/track-manager'
 import { getCookie, setCookie } from '../lib/cookies'
 
-import { closeMenu } from '../redux/ui'
+import { selectLanguage, closeMenu } from '../redux/ui'
 import { fetchedRouteData } from '../redux/routes'
 import { selectFeature } from '../redux/selected-feature'
 
@@ -46,6 +46,9 @@ class IndexPage extends Component {
   }
 
   componentDidMount() {
+    const language = getCookie('language') || false
+    this.props.selectLanguage(language)
+
     this.setState(
       {
         isNightMode: getCookie('isNightMode') === 'true' || false,
@@ -177,6 +180,7 @@ const mapStateToProps = ({ mapCenter, routes, selectedTrack }) => ({
 })
 
 const mapDispatchToProps = {
+  selectLanguage,
   closeMenu,
   fetchedRouteData,
   selectFeature,

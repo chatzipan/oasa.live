@@ -1,4 +1,4 @@
-import { getCookie, setCookie } from '../lib/cookies'
+import { setCookie } from '../lib/cookies'
 
 const CHANCE_LANGUAGE = 'ui/CHANCE_LANGUAGE'
 const CLOSE_MENU = 'ui/CLOSE_MENU'
@@ -6,7 +6,7 @@ const TOGGLE_MENU = 'ui/TOGGLE_MENU'
 
 const initialState = {
   isNightMode: false,
-  language: getCookie('language') || 'gr',
+  language: 'gr',
   isMenuOpen: false,
 }
 
@@ -33,15 +33,14 @@ export default function(state = initialState, action = {}) {
   return state
 }
 
-export function changeLanguage(e) {
-  const payload = e.target.value
+export function closeMenu(feature) {
+  return { type: CLOSE_MENU }
+}
+
+export function selectLanguage(payload) {
   setCookie('language', payload, 30)
 
   return { type: CHANCE_LANGUAGE, payload }
-}
-
-export function closeMenu(feature) {
-  return { type: CLOSE_MENU }
 }
 
 export function toggleMenu(feature) {
