@@ -168,7 +168,7 @@ class IndexPage extends Component {
 
   render() {
     const { isNightMode, map, language, sidebarOpen } = this.state
-
+    console.log('Home', { isNightMode })
     return (
       <Layout>
         <SEO />
