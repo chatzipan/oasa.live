@@ -1,9 +1,11 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import cx from 'classnames'
 import Select from '@material-ui/core/NativeSelect'
 import Switch from '@material-ui/core/Switch'
 
 import translations from '../../../translations'
+import { toggleMenu } from '../../redux/ui'
 
 import styles from './Sidebar.module.css'
 import InfoIcon from '../../assets/svgs/info.svg'
@@ -13,22 +15,22 @@ import InfoIcon from '../../assets/svgs/info.svg'
  */
 const Sidebar = ({
   isNightMode,
-  isOpen,
+  isMenuOpen,
   lang,
-  onClick,
+  toggleMenu,
   onLanguageChange,
   onNightModeChange,
 }) => {
   const t = translations[lang]
   const classNames = cx(styles.sidebar, {
-    [styles.hidden]: !isOpen,
+    [styles.hidden]: !isMenuOpen,
   })
 
   return (
     <div className={classNames}>
       <div className={cx(styles.title, styles.box)}>
         <h1 className={styles.heading}>Athens Live Map</h1>
-        <button className={styles.button} onClick={onClick}>
+        <button className={styles.button} onClick={toggleMenu}>
           <InfoIcon />
         </button>
       </div>
@@ -69,4 +71,15 @@ const Sidebar = ({
   )
 }
 
-export default Sidebar
+const mapStateToProps = ({ ui: { isMenuOpen } }) => ({
+  isMenuOpen,
+})
+
+const mapDispatchToProps = {
+  toggleMenu,
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Sidebar)
