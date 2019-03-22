@@ -47,6 +47,8 @@ class IndexPage extends Component {
   }
 
   componentDidMount() {
+    console.log('getCookie(isNightMode)', getCookie('isNightMode'))
+    console.log('getCookie(language)', getCookie('language'))
     this.fetchStaticData()
     this.initEventHandlers()
   }
