@@ -79,7 +79,11 @@ export default class TrackManager {
     const bounds = this.map.getBounds().toArray()
     return this.pointGenerator.getPoints(bounds)
   }
-
+  init = () => {
+    this.fetchTracks()
+    this.renderStops()
+    return this
+  }
   /**
    * Handles a network error, resets the timer.
    * @param  {string} statusText  The response status text

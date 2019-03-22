@@ -44,11 +44,8 @@ class IndexPage extends Component {
   }
 
   componentDidMount() {
-    const language = getCookie('language') || 'gr'
-    const isNightMode = getCookie('isNightMode') === 'true' || false
-    this.props.selectLanguage(language)
-    this.props.setNightMode(isNightMode)
-
+    this.props.selectLanguage(getCookie('language') || 'gr')
+    this.props.setNightMode(getCookie('isNightMode') === 'true' || false)
     this.fetchStaticData()
     this.initEventHandlers()
   }
@@ -89,9 +86,7 @@ class IndexPage extends Component {
 
   createMap = async () => {
     this.map = await createMap(this.mapRoot, this.props)
-    this.trackManager = new TrackManager(this.map, this.props)
-    this.trackManager.fetchTracks()
-    this.trackManager.renderStops()
+    this.trackManager = new TrackManager(this.map, this.props).init()
 
     this.map.on('styledata', async event => {
       if (this.styleHasChanged) {
@@ -147,7 +142,7 @@ class IndexPage extends Component {
         <Header map={map} />
         <Sidebar />
         <div className={styles.map} ref={this.createRef} />
-        {map && <SelectedFeature map={map} />}
+        <SelectedFeature map={map} />
       </Layout>
     )
   }
