@@ -17,10 +17,11 @@ class SelectedStop extends React.Component {
     this.stopInterval = setInterval(this.fetchStopArrivals, 15000)
   }
 
+  componentWillUnmount() {
+    clearInterval(this.stopInterval)
+  }
   componentDidUpdate(prevProps) {
-    const { selected } = this.props
-
-    if (selected !== prevProps.selected) {
+    if (this.props.selected !== prevProps.selected) {
       clearInterval(this.stopInterval)
       this.stopInterval = setInterval(this.fetchStopArrivals, 15000)
       this.fetchStopArrivals()
