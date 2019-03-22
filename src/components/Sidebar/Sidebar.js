@@ -50,7 +50,7 @@ const Sidebar = ({
         <div className={styles.nightmode}>
           <p className={styles.label}>Night Mode:</p>
           <Switch
-            checked={isNightMode}
+            checked={isNightMode || false}
             onChange={onNightModeChange}
             value="nightMode"
           />
