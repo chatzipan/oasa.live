@@ -40,7 +40,7 @@ class IndexPage extends Component {
   styleHasChanged = false
   state = {
     hasError: false,
-    isNightMode: getCookie('isNightMode') === 'true' || false,
+    isNightMode: true,
     language: getCookie('language') || 'gr',
     map: null,
     sidebarOpen: false,
