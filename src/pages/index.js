@@ -40,6 +40,7 @@ class IndexPage extends Component {
   styleHasChanged = false
   state = {
     hasError: false,
+    language: 'gr',
     map: null,
     sidebarOpen: false,
   }
