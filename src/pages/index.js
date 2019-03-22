@@ -42,7 +42,6 @@ class IndexPage extends Component {
   state = {
     hasError: false,
     isNightMode: false,
-    language: 'gr',
     map: null,
   }
 
@@ -50,7 +49,6 @@ class IndexPage extends Component {
     this.setState(
       {
         isNightMode: getCookie('isNightMode') === 'true' || false,
-        language: getCookie('language') || 'gr',
       },
       () => {
         this.fetchStaticData()
@@ -103,7 +101,7 @@ class IndexPage extends Component {
     this.map.on('styledata', async event => {
       if (this.styleHasChanged) {
         this.styleHasChanged = false
-        await addMapLayers(this.map, this.props, this.state.language)
+        await addMapLayers(this.map, this.props)
         this.trackManager.resumeAnimation()
         this.trackManager.renderStops(this.props.selectedTrack)
       }
@@ -155,7 +153,7 @@ class IndexPage extends Component {
   }
 
   render() {
-    const { isNightMode, map, language } = this.state
+    const { isNightMode, map } = this.state
 
     return (
       <Layout>
@@ -163,18 +161,10 @@ class IndexPage extends Component {
         <Header map={map} />
         <Sidebar
           isNightMode={isNightMode}
-          lang={language}
-          onLanguageChange={this.handleLanguageChange}
           onNightModeChange={this.handleNightModeChange}
         />
         <div className={styles.map} ref={this.createRef} />
-        {map && (
-          <SelectedFeature
-            isNightMode={isNightMode}
-            lang={language}
-            map={map}
-          />
-        )}
+        {map && <SelectedFeature isNightMode={isNightMode} map={map} />}
       </Layout>
     )
   }

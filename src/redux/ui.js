@@ -6,7 +6,7 @@ const TOGGLE_MENU = 'ui/TOGGLE_MENU'
 
 const initialState = {
   isNightMode: false,
-  language: 'gr',
+  language: getCookie('language') || 'gr',
   isMenuOpen: false,
 }
 

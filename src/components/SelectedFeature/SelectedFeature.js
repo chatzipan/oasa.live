@@ -86,7 +86,7 @@ class SelectedFeature extends React.Component {
 
   getNextStop = () => {
     const {
-      lang,
+      language,
       selectedTrack: {
         properties: { distanceCovered, routeCode, speed, timestamp },
       },
@@ -99,7 +99,7 @@ class SelectedFeature extends React.Component {
     const routeStops = stops[routeCode]
     const nextStop = routeStops.find(stop => stop.dfs > distanceDriven)
 
-    return nextStop ? { gr: nextStop.d, en: nextStop.d_en }[lang] : ''
+    return nextStop ? { gr: nextStop.d, en: nextStop.d_en }[language] : ''
   }
   /**
    * Fetches track data
@@ -164,7 +164,7 @@ class SelectedFeature extends React.Component {
     this.setState({ secondsToLastPos })
   }
 
-  isGreek = () => this.props.lang === 'gr'
+  isGreek = () => this.props.language === 'gr'
 
   /**
    * Updates the selected journey track.
@@ -201,14 +201,14 @@ class SelectedFeature extends React.Component {
   }
 
   timeToLastPosition = () => {
-    const { lang } = this.props
-    const t = translations[lang]
+    const { language } = this.props
+    const t = translations[language]
     const { secondsToLastPos } = this.state
     const minutes = Math.floor(secondsToLastPos / 60)
     const seconds = (secondsToLastPos % 60).toString().padStart(2, '0')
     const ago = t['AGO']
     const copy =
-      lang === 'en'
+      language === 'en'
         ? `${minutes}:${seconds} ${ago}`
         : `${ago} ${minutes}:${seconds}`
 
@@ -309,7 +309,7 @@ class SelectedFeature extends React.Component {
   }
 
   render() {
-    const t = translations[this.props.lang]
+    const t = translations[this.props.language]
     const { selectedTrack: selected } = this.props
     const classNames = cx(styles.bar, { [styles.hidden]: !selected })
     if (!selected) return <div className={classNames} />
@@ -326,9 +326,11 @@ class SelectedFeature extends React.Component {
 const mapStateToProps = ({
   routes: { coordinates, details, lines, routeStops },
   selectedTrack,
+  ui: { language },
 }) => ({
   coordinates,
   details,
+  language,
   lines,
   selectedTrack,
   stops: routeStops,

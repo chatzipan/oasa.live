@@ -5,7 +5,7 @@ import Select from '@material-ui/core/NativeSelect'
 import Switch from '@material-ui/core/Switch'
 
 import translations from '../../../translations'
-import { toggleMenu } from '../../redux/ui'
+import { changeLanguage, toggleMenu } from '../../redux/ui'
 
 import styles from './Sidebar.module.css'
 import InfoIcon from '../../assets/svgs/info.svg'
@@ -16,12 +16,12 @@ import InfoIcon from '../../assets/svgs/info.svg'
 const Sidebar = ({
   isNightMode,
   isMenuOpen,
-  lang,
+  language,
   toggleMenu,
-  onLanguageChange,
+  changeLanguage,
   onNightModeChange,
 }) => {
-  const t = translations[lang]
+  const t = translations[language]
   const classNames = cx(styles.sidebar, {
     [styles.hidden]: !isMenuOpen,
   })
@@ -42,8 +42,8 @@ const Sidebar = ({
           <p className={styles.label}>{t['CHOOSE_LANG']}</p>
           <Select
             inputProps={{ name: 'language' }}
-            onChange={onLanguageChange}
-            value={lang}
+            onChange={changeLanguage}
+            value={language}
           >
             <option value="gr">Ελληνικά</option>
             <option value="en">English</option>
@@ -71,11 +71,13 @@ const Sidebar = ({
   )
 }
 
-const mapStateToProps = ({ ui: { isMenuOpen } }) => ({
+const mapStateToProps = ({ ui: { isMenuOpen, language } }) => ({
   isMenuOpen,
+  language,
 })
 
 const mapDispatchToProps = {
+  changeLanguage,
   toggleMenu,
 }
 

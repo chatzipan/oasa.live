@@ -27,7 +27,7 @@ function loadIcons() {
  * @param  {Event} event  The mapbox-gl click event
  * @param  {mapboxgl.Map} map  The map instance //TODO: pass only props
  */
-export function addMapLayers(map, props, language) {
+export function addMapLayers(map, props) {
   return new Promise((resolve, reject) => {
     // Line segments
     map.addSource(mapConfig.LINE_SOURCE_ID, {
@@ -70,7 +70,7 @@ export function addMapLayers(map, props, language) {
       minzoom: mapConfig.SYMBOL_MIN_ZOOM + 1,
       type: 'symbol',
       layout: {
-        'text-field': language === 'gr' ? '{descr}' : '{descr_en}',
+        'text-field': props.language === 'gr' ? '{descr}' : '{descr_en}',
         'text-anchor': 'top',
         'text-offset': [0, 0.5],
       },
@@ -221,7 +221,7 @@ export function addMapLayers(map, props, language) {
 
 export default function(container, props, state) {
   return new Promise((resolve, reject) => {
-    const { language, isNightMode } = state
+    const { isNightMode } = state
     const style = isNightMode ? mapConfig.STYLE_NIGHT_MODE : mapConfig.STYLE
 
     const map = new mapboxgl.Map({
@@ -234,7 +234,7 @@ export default function(container, props, state) {
     map.touchZoomRotate.disableRotation()
 
     map.on('load', async () => {
-      await addMapLayers(map, props, language)
+      await addMapLayers(map, props)
       resolve(map)
     })
   })
