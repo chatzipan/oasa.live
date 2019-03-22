@@ -40,6 +40,7 @@ class IndexPage extends Component {
   styleHasChanged = false
   state = {
     hasError: false,
+    isNightMode: getCookie('isNightMode') === 'true' || false,
     language: 'gr',
     map: null,
     sidebarOpen: false,
@@ -53,6 +54,7 @@ class IndexPage extends Component {
     this.fetchStaticData()
     this.initEventHandlers()
   }
+
   componentDidCatch(error, errorInfo) {
     this.setState({ hasError: true })
     window.Sentry.configureScope(scope => {
@@ -62,11 +64,12 @@ class IndexPage extends Component {
     })
     window.Sentry.captureException(error)
   }
+
   componentDidUpdate(prevProps, prevState) {
     const { selectedTrack } = this.props
     const { isNightMode } = this.state
 
-    if (isNightMode !== prevState.isNightMode) {
+    if (isNightMode !== prevState.isNightMode && this.map) {
       const mapStyle = isNightMode
         ? mapConfig.STYLE_NIGHT_MODE
         : mapConfig.STYLE
