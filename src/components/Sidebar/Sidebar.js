@@ -23,7 +23,7 @@ const Sidebar = ({
   const classNames = cx(styles.sidebar, {
     [styles.hidden]: !isOpen,
   })
-  console.log('Sidebar', { isNightMode })
+
   return (
     <div className={classNames}>
       <div className={cx(styles.title, styles.box)}>

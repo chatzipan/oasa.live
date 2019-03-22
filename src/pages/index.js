@@ -40,15 +40,15 @@ class IndexPage extends Component {
   styleHasChanged = false
   state = {
     hasError: false,
-    isNightMode: true,
-    language: getCookie('language') || 'gr',
     map: null,
     sidebarOpen: false,
   }
 
   componentDidMount() {
-    console.log('getCookie(isNightMode)', getCookie('isNightMode'))
-    console.log('getCookie(language)', getCookie('language'))
+    this.setState({
+      isNightMode: getCookie('isNightMode') === 'true' || false,
+      language: getCookie('language') || 'gr',
+    })
     this.fetchStaticData()
     this.initEventHandlers()
   }
@@ -170,7 +170,7 @@ class IndexPage extends Component {
 
   render() {
     const { isNightMode, map, language, sidebarOpen } = this.state
-    console.log('Home', { isNightMode })
+
     return (
       <Layout>
         <SEO />
