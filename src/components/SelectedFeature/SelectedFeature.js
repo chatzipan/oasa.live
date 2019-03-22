@@ -326,10 +326,11 @@ class SelectedFeature extends React.Component {
 const mapStateToProps = ({
   routes: { coordinates, details, lines, routeStops },
   selectedTrack,
-  ui: { language },
+  ui: { isNightMode, language },
 }) => ({
   coordinates,
   details,
+  isNightMode,
   language,
   lines,
   selectedTrack,

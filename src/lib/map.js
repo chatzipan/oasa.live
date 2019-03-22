@@ -219,9 +219,9 @@ export function addMapLayers(map, props) {
   })
 }
 
-export default function(container, props, state) {
+export default function(container, props) {
   return new Promise((resolve, reject) => {
-    const { isNightMode } = state
+    const { isNightMode } = props
     const style = isNightMode ? mapConfig.STYLE_NIGHT_MODE : mapConfig.STYLE
 
     const map = new mapboxgl.Map({

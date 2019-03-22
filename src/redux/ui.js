@@ -1,7 +1,8 @@
 import { setCookie } from '../lib/cookies'
 
-const CHANCE_LANGUAGE = 'ui/CHANCE_LANGUAGE'
 const CLOSE_MENU = 'ui/CLOSE_MENU'
+const SET_LANGUAGE = 'ui/SET_LANGUAGE'
+const SET_NIGHTMODE = 'ui/SET_NIGHTMODE'
 const TOGGLE_MENU = 'ui/TOGGLE_MENU'
 
 const initialState = {
@@ -11,10 +12,16 @@ const initialState = {
 }
 
 export default function(state = initialState, action = {}) {
-  if (action.type === CHANCE_LANGUAGE) {
+  if (action.type === SET_LANGUAGE) {
     return {
       ...state,
       language: action.payload,
+    }
+  }
+  if (action.type === SET_NIGHTMODE) {
+    return {
+      ...state,
+      isNightMode: action.payload,
     }
   }
   if (action.type === TOGGLE_MENU) {
@@ -40,7 +47,12 @@ export function closeMenu(feature) {
 export function selectLanguage(payload) {
   setCookie('language', payload, 30)
 
-  return { type: CHANCE_LANGUAGE, payload }
+  return { type: SET_LANGUAGE, payload }
+}
+export function setNightMode(payload) {
+  setCookie('isNightMode', payload, 30)
+
+  return { type: SET_NIGHTMODE, payload }
 }
 
 export function toggleMenu(feature) {
