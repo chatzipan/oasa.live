@@ -9,7 +9,7 @@ import SelectedFeature from '../components/SelectedFeature'
 import Sidebar from '../components/Sidebar'
 
 import mapConfig from '../config/map'
-import createMap, { addMapLayers } from '../lib/map'
+import createMap, { addMapLayers, setStopsLabelName } from '../lib/map'
 import TrackManager from '../lib/track-manager'
 import { getCookie } from '../lib/cookies'
 import { closeMenu, selectLanguage, setNightMode } from '../redux/ui'
@@ -61,9 +61,21 @@ class IndexPage extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { isNightMode, selectedTrack } = this.props
+    if (!this.map) {
+      return
+    }
 
-    if (isNightMode !== prevProps.isNightMode && this.map) {
+    const { isNightMode, language, selectedTrack } = this.props
+
+    if (language !== prevProps.language) {
+      this.map.setLayoutProperty(
+        mapConfig.STOPS_LABEL_LAYER_ID,
+        'text-field',
+        setStopsLabelName(language)
+      )
+    }
+
+    if (isNightMode !== prevProps.isNightMode) {
       const mapStyle = isNightMode
         ? mapConfig.STYLE_NIGHT_MODE
         : mapConfig.STYLE
@@ -152,9 +164,10 @@ const mapStateToProps = ({
   mapCenter,
   routes,
   selectedTrack,
-  ui: { isNightMode },
+  ui: { isNightMode, language },
 }) => ({
   isNightMode,
+  language,
   mapCenter,
   routes,
   selectedTrack,

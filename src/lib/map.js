@@ -22,6 +22,16 @@ function loadIcons() {
   return Promise.all(Object.entries(images).map(loadIcon))
 }
 
+export const setStopsLabelName = language =>
+  language === 'gr'
+    ? '{descr}'
+    : [
+        'case',
+        ['==', ['get', 'descr_en'], null],
+        ['get', 'descr'],
+        ['get', 'descr_en'],
+      ]
+
 /**
  * Click handler for the map.
  * @param  {Event} event  The mapbox-gl click event
@@ -70,15 +80,7 @@ export function addMapLayers(map, props) {
       minzoom: mapConfig.SYMBOL_MIN_ZOOM + 1,
       type: 'symbol',
       layout: {
-        'text-field':
-          props.language === 'gr'
-            ? '{descr}'
-            : [
-                'case',
-                ['==', ['get', 'descr_en'], null],
-                ['get', 'descr'],
-                ['get', 'descr_en'],
-              ],
+        'text-field': setStopsLabelName(props.language),
         'text-anchor': 'top',
         'text-offset': [0, 0.5],
       },
