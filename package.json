@@ -44,7 +44,6 @@
     "gatsby-plugin-sharp": "^2.0.14",
     "gatsby-source-filesystem": "^2.0.8",
     "gatsby-transformer-sharp": "^2.1.8",
-    "http-proxy-middleware": "^0.19.1",
     "lodash.set": "^4.3.2",
     "mapbox-gl": "^0.52.0",
     "netlify-lambda": "^1.1.1",
