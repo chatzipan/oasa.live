@@ -140,7 +140,7 @@ class IndexPage extends Component {
   initEventHandlers() {
     window.addEventListener('keydown', event => {
       if (event.keyCode === ESC_KEY && !this.props.isMenuOpen) {
-        this.props.toggleMenu()
+        this.props.closeMenu()
       }
     })
   }
