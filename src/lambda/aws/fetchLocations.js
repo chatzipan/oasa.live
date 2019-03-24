@@ -5,7 +5,6 @@ const lineSlice = require('@turf/line-slice')
 const length = require('@turf/length').default
 
 const { fetch } = require('./helpers/fetch')
-const { median } = require('./helpers/utils')
 const { fetchFromS3, uploadToS3 } = require('./helpers/s3')
 const { GET_BUS_LOCATION } = require('./helpers/api')
 
@@ -163,13 +162,8 @@ const fetchLocations = async () => {
     _routes.forEach(route => routes.add(route))
   })
 
-  // Split requests into half, because OASA servers cannot take full burdun at the moment
+  // Split requests into half, because OASA servers cannot take full burden at the moment
   const routesToFetch = [...routes].filter(getRequestsFilter)
-  Object.keys(routeLocations).forEach(location => {
-    if (getRequestsFilter(routeLocations[location]['ROUTE_CODE'])) {
-      delete routeLocations[location]
-    }
-  })
 
   await Promise.map(
     routesToFetch,
