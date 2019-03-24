@@ -1,7 +1,7 @@
-const { fetch } = require('../aws/helpers/fetch.js')
-const { GET_STOP_ARRIVALS } = require('../aws/helpers/api.js')
+const { fetch } = require('./helpers/fetch.js')
+const { GET_STOP_ARRIVALS } = require('./helpers/api.js')
 
-export async function handler(event, context) {
+exports.handler = async (event, context) => {
   try {
     const {
       queryStringParameters: { stopCode },
@@ -10,6 +10,9 @@ export async function handler(event, context) {
 
     return {
       statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
       body: JSON.stringify(arrivals),
     }
   } catch (err) {

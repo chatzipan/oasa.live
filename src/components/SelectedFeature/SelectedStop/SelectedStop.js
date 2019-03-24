@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { connect } from 'react-redux'
 
 import translations from '../../../../translations'
-import sleep from '../../../lambda/aws/helpers/sleep'
+import sleep from '../../../lambda/helpers/sleep'
 import NoConnectionIcon from '../../../assets/svgs/cloud_off.svg'
 import RefreshIcon from '../../../assets/svgs/refresh.svg'
 
@@ -36,7 +36,7 @@ class SelectedStop extends React.Component {
    */
   fetchStopArrivals = async () => {
     const stopCode = this.props.selected.properties.code
-    const oasaUrl = `/.netlify/functions/getStopArrivals?stopCode=${stopCode}`
+    const oasaUrl = `https://ccyshwm5tj.execute-api.eu-central-1.amazonaws.com/default/fetchStopArrivals?stopCode=${stopCode}`
     let arrivals = null
     this.setState({ loading: true, networkError: false })
 

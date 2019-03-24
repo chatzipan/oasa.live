@@ -7,7 +7,7 @@ fi
 
 lambda=${1%/}; // # Removes trailing slashes
 echo "Deploying $lambda";
-cd ./src/lambda/aws;
+cd ./src/lambda;
 if [ $? -eq 0 ]; then
   echo "...."
 else
