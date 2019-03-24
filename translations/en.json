@@ -8,6 +8,7 @@
   "MENU_INFO": "Real-time info of Athens' public bus network. Select and see the current position of your bus as well as upcoming arrivals for bus stops.<br><br>This project does not take responsibility for the accuracy of location data provided by OASA.",
   "NEXT_STOP": "Next Stop",
   "NO_ARRIVALS": "No upcoming arrivals",
+  "REFRESH": "Refresh",
   "ROUTE": "Route",
   "STOP_NAME": "Stop Name",
   "TITLE": "Athens Live Map",

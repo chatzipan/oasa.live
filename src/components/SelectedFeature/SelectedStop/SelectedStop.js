@@ -135,7 +135,7 @@ class SelectedStop extends React.Component {
             onClick={this.fetchStopArrivals}
           >
             <RefreshIcon />
-            Refresh
+            {t['REFRESH']}
           </button>
         </div>
         <div className={styles.arrivals}>
