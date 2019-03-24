@@ -95,13 +95,18 @@ class SelectedStop extends React.Component {
     const { language, selected } = this.props
     const t = translations[language]
     const { descr, descr_en: descrEn } = selected.properties
+    const stopName = this.isGreek()
+      ? descr
+      : descrEn !== 'null'
+      ? descrEn
+      : descr
 
     return (
       <div className={cx(styles.row, styles.stops)}>
         <div className={styles.stopName}>
           <div className={styles.label}>{t['STOP_NAME']}</div>
           <div className={styles.value} title={descr}>
-            {this.isGreek() ? descr : descrEn}
+            {stopName}
           </div>
         </div>
         <div className={styles.arrivals}>

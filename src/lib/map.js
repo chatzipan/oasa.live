@@ -70,7 +70,15 @@ export function addMapLayers(map, props) {
       minzoom: mapConfig.SYMBOL_MIN_ZOOM + 1,
       type: 'symbol',
       layout: {
-        'text-field': props.language === 'gr' ? '{descr}' : '{descr_en}',
+        'text-field':
+          props.language === 'gr'
+            ? '{descr}'
+            : [
+                'case',
+                ['==', ['get', 'descr_en'], null],
+                ['get', 'descr'],
+                ['get', 'descr_en'],
+              ],
         'text-anchor': 'top',
         'text-offset': [0, 0.5],
       },
