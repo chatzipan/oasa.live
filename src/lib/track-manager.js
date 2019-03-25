@@ -5,6 +5,8 @@ import mapConfig from '../config/map'
 import isMobile from '../config/is-mobile'
 
 const DEFAULT_INTERVAL = 20000
+const TIMESTAMP_THRESHOLD = 30 * 60 * 1000 // 30 minutes
+
 const locationsUrl =
   'https://s3.eu-central-1.amazonaws.com/oasa/routeLocations.json'
 
@@ -42,37 +44,42 @@ export default class TrackManager {
    */
   getPointData = data => {
     const { details, lines, coordinates } = this.routes
+    const now = new Date().getTime()
 
-    return Object.entries(data).map(([vehicleNum, location]) => {
-      const { CS_LAT, CS_LNG, ROUTE_CODE, speed, timestamp } = location
-      const { descr, descr_en: descrEn, line } = details[ROUTE_CODE]
+    return Object.entries(data)
+      .filter(([_, { timestamp }]) => {
+        return now - timestamp < TIMESTAMP_THRESHOLD
+      })
+      .map(([vehicleNum, location]) => {
+        const { CS_LAT, CS_LNG, ROUTE_CODE, speed, timestamp } = location
+        const { descr, descr_en: descrEn, line } = details[ROUTE_CODE]
 
-      return {
-        currentLocation: {
-          type: 'Point',
-          coordinates: [parseFloat(CS_LNG), parseFloat(CS_LAT)],
-        },
-        delay: 2,
-        descr,
-        descrEn,
-        distanceCovered: location.covered,
-        id: vehicleNum,
-        line: {
-          geometry: {
-            type: 'LineString',
-            coordinates: coordinates[ROUTE_CODE],
+        return {
+          currentLocation: {
+            type: 'Point',
+            coordinates: [parseFloat(CS_LNG), parseFloat(CS_LAT)],
           },
-          properties: {},
-          type: 'Feature',
-        },
-        name: lines[line].id,
-        routeCode: ROUTE_CODE,
-        routeName: details[ROUTE_CODE].line,
-        speed,
-        timestamp,
-        type: 'bus',
-      }
-    })
+          delay: 2,
+          descr,
+          descrEn,
+          distanceCovered: location.covered,
+          id: vehicleNum,
+          line: {
+            geometry: {
+              type: 'LineString',
+              coordinates: coordinates[ROUTE_CODE],
+            },
+            properties: {},
+            type: 'Feature',
+          },
+          name: lines[line].id,
+          routeCode: ROUTE_CODE,
+          routeName: details[ROUTE_CODE].line,
+          speed,
+          timestamp,
+          type: 'bus',
+        }
+      })
   }
 
   getPointsInViewport = () => {
