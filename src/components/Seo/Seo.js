@@ -31,6 +31,10 @@ function SEO({ description, lang, meta }) {
                 content: data.site.siteMetadata.title,
               },
               {
+                property: ` og:url`,
+                content: 'https://oasa.live',
+              },
+              {
                 property: `og:description`,
                 content: metaDescription,
               },
