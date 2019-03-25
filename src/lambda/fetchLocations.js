@@ -8,6 +8,9 @@ const { fetch } = require('./helpers/fetch')
 const { fetchFromS3, uploadToS3 } = require('./helpers/s3')
 const { GET_BUS_LOCATION } = require('./helpers/api')
 
+const DEFAULT_SPEED = 35 / (60 * 60000) // 35 kmh
+const ROUTES_MEDIAN = 2162
+const TIMESTAMP_THRESHOLD = 7 * 60 * 1000 // 7 minutes
 const WEEKDAYS = [
   'Monday',
   'Tuesday',
@@ -17,7 +20,7 @@ const WEEKDAYS = [
   'Saturday',
   'Sunday',
 ]
-const ROUTES_MEDIAN = 2162
+
 const routeTypeScheduleMap = {
   1: 'go',
   2: 'come',
@@ -95,19 +98,21 @@ const getFeature = coordinates => ({
   type: 'Feature',
 })
 
-const getRouteSpeed = (route, schedules, covered) => {
-  const DEFAULT_SPEED = 35 / (60 * 60000) // 35 kmh
+const getRouteSpeed = (route, timestamp, schedules, covered) => {
   const { distance, line, type } = route
   const scheduleType = routeTypeScheduleMap[type]
   const routeSchedules = schedules[line][scheduleType]
+  const now = new Date()
+
+  if (now.getTime() - timestamp > TIMESTAMP_THRESHOLD) return 0 // Last signal > 7min ago, better show signal position
   if (covered < 0.05) return 0 // 50m of covered, consider still not started
+
   if (!routeSchedules) {
     // Bus could still get signal much after its last schedule
     return DEFAULT_SPEED
   }
 
   const routeCovered = covered / distance
-  const now = new Date()
   const { hour, minutes } = getDayParts(getTimeInAthens(now))
   const fractions = routeSchedules.map(({ start, end, duration }) => {
     const [_hour, _minutes] = start.split(':')
@@ -187,23 +192,27 @@ const fetchLocations = async () => {
               parseFloat(location.CS_LAT),
             ],
           }
-          location.timestamp = Date.parse(
+
+          const timestamp = Date.parse(
             location.CS_DATE.replace('PM', ' PM GMT+0200').replace(
               'AM',
               ' AM GMT+0200'
             )
           )
+
           const start = turf.point(track.geometry.coordinates[0])
           const sliced = lineSlice(start, current, track)
           const covered = length(sliced)
           const speed = getRouteSpeed(
             routeDetails[route],
+            timestamp,
             currentSchedules,
             covered
           )
 
           routeLocations[location['VEH_NO']] = {
             ...location,
+            timestamp,
             covered,
             speed,
           }
