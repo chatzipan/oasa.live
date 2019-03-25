@@ -53,6 +53,7 @@ const fetchRouteDetails = async () => {
       routeStops[route] = stops
         .map(transformStop)
         .map(stop => getDistanceFromStart(stop, routePath))
+        .sort((a, b) => a.dfs - b.dfs)
     },
     { concurrency: 1 }
   )
