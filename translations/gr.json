@@ -1,6 +1,6 @@
 {
-  "ARRIVALS_NETWORK_ERROR": "Οι σερβερς του ΟΑΣΑ δεν απαντούν.",
-  "ARRIVALS_NETWORK_ERROR_BTN": "Πατηστε εδώ για να ξαναπροσπαθήσετε.",
+  "ARRIVALS_NETWORK_ERROR": "Η λήψη δεδομένων δεν ήταν δυνατή.",
+  "ARRIVALS_NETWORK_ERROR_BTN": "Πατήστε εδώ για να ξαναπροσπαθήσετε.",
   "AGO": "Πριν",
   "CHOOSE_LANG": "Επιλογή Γλώσσας:",
   "LAST_SEEN": "Τελευταίο Σήμα",
