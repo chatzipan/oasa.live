@@ -35,6 +35,11 @@ function SEO({ description, lang, meta }) {
                 content: metaDescription,
               },
               {
+                property: `og:image`,
+                content:
+                  'https://s3.eu-central-1.amazonaws.com/oasa/map_image.png',
+              },
+              {
                 property: `og:type`,
                 content: `website`,
               },
