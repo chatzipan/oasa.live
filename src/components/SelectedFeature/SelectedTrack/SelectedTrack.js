@@ -80,6 +80,7 @@ class SelectedTrack extends React.Component {
       },
       stops,
     } = this.props
+
     const now = new Date().getTime()
     const timeSpan = now - timestamp
     const diff = timeSpan * speed

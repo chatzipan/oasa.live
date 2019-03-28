@@ -64,6 +64,12 @@ module.exports = {
           ['production', 'stage'].indexOf(process.env.NODE_ENV) !== -1)(),
       },
     },
+    {
+      resolve: `gatsby-plugin-google-analytics`,
+      options: {
+        trackingId: 'UA-136581091-1',
+      },
+    },
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.app/offline
     // 'gatsby-plugin-offline',
