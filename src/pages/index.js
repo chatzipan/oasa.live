@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import unfetch from 'unfetch'
 import { connect } from 'react-redux'
 
+import Error from '../components/Error'
 import Header from '../components/Header'
 import Layout from '../components/Layout'
 import SEO from '../components/Seo'
@@ -146,7 +147,10 @@ class IndexPage extends Component {
   }
 
   render() {
-    const { map } = this.state
+    const { map, hasError } = this.state
+    if (hasError) {
+      return <Error />
+    }
 
     return (
       <Layout>

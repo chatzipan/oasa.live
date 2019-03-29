@@ -1,11 +1,13 @@
 module.exports = {
   siteMetadata: {
     title: 'Athens live bus telematics',
-    description: `A live map of real-time bus information of Athens, Greece.
+    description: `An interactive map of real-time bus information of Athens, Greece.
       Data are taken from OASA API.`,
     keywords: [
       'telematics',
       'Athens',
+      'Αθήνα',
+      'χάρτης',
       'bus',
       'traffic',
       'live',
