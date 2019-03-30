@@ -17,8 +17,6 @@ module.exports = function(body) {
     }
 
     console.log('===SENDING EMAIL===')
-    resolve()
-
     transporter.sendMail(mailOptions, function(err, data) {
       if (err) {
         console.log(err)
