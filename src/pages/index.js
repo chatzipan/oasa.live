@@ -3,6 +3,7 @@ import unfetch from 'unfetch'
 import { connect } from 'react-redux'
 
 import Error from '../components/Error'
+import FakeContent from '../components/FakeContent'
 import Header from '../components/Header'
 import Layout from '../components/Layout'
 import SEO from '../components/Seo'
@@ -159,6 +160,7 @@ class IndexPage extends Component {
         <Sidebar />
         <div className={styles.map} ref={this.createRef} />
         <SelectedFeature map={map} />
+        <FakeContent />
       </Layout>
     )
   }

@@ -75,7 +75,9 @@ function SEO({ description, lang, meta }) {
                 /* eslint-enable indent */
               )
               .concat(meta)}
-          />
+          >
+            <link rel="canonical" href="https://oasa.live/" />
+          </Helmet>
         )
       }}
     />
