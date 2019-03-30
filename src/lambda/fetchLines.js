@@ -4,6 +4,7 @@ const { fetch } = require('./helpers/fetch')
 const { checkForDiff } = require('./helpers/diff')
 const sleep = require('./helpers/sleep')
 const { uploadToS3 } = require('./helpers/s3')
+const logger = require('./helpers/logger')
 const { transformLine } = require('./helpers/transform')
 const { GET_LINES, GET_SCHEDULE_CODES_BY_LINE } = require('./helpers/api')
 
@@ -19,8 +20,8 @@ const proxyLines = {
 }
 
 const fetchLines = async () => {
-  console.log('Fetching lines.')
-  console.time('fetch lines and line schedule codes time')
+  logger.log('Fetching lines.')
+  logger.time('fetch lines and line schedule codes time')
   const lines = await fetch(GET_LINES)
   const linesList = lines.reduce((acc, line) => {
     acc[line.line_code] = transformLine(line)
@@ -31,7 +32,7 @@ const fetchLines = async () => {
 }
 
 const fetchLineScheduleCodes = async linesList => {
-  console.log('Fetching lines schedule codes')
+  logger.log('Fetching lines schedule codes')
   const scheduleCodes = {}
 
   await Promise.map(
@@ -54,14 +55,14 @@ const fetchLineScheduleCodes = async linesList => {
 
   const diff = await checkForDiff('scheduleCodes.json', scheduleCodes)
   if (diff) {
-    console.log('Diff found: ', diff)
+    logger.log('Diff found: ', diff)
     await uploadToS3('scheduleCodes.json', scheduleCodes)
     await uploadToS3('linesList.json', linesList)
-    console.log('Updated linesList and scheduleCodes successfully!')
+    logger.log('Updated linesList and scheduleCodes successfully!')
   } else {
-    console.log('Skipping...')
+    logger.log('Skipping...')
   }
-  console.timeEnd('fetch lines and line schedule codes time')
+  logger.timeEnd('fetch lines and line schedule codes time')
   await sleep(5)
 
   return true

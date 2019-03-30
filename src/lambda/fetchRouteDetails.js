@@ -3,6 +3,7 @@ const turf = require('@turf/helpers')
 const lineSlice = require('@turf/line-slice')
 const length = require('@turf/length').default
 
+const logger = require('./helpers/logger')
 const { fetch } = require('./helpers/fetch')
 const { transformStop } = require('./helpers/transform')
 const { fetchFromS3, uploadToS3 } = require('./helpers/s3')
@@ -33,8 +34,8 @@ const getDistanceFromStart = (stop, coordinates) => {
   }
 }
 const fetchRouteDetails = async () => {
-  console.log('Fetching routes details')
-  console.time('fetch route details')
+  logger.log('Fetching routes details')
+  logger.time('fetch route details')
   const routeList = JSON.parse(await fetchFromS3('routeList.json'))
   const routePaths = {}
   const routeStops = {}
@@ -62,21 +63,21 @@ const fetchRouteDetails = async () => {
 
   if (pathDiff) {
     await uploadToS3('routePaths.json', routePaths)
-    console.log('Diff found: ', routePaths)
-    console.log('Updated route paths successfully!')
+    logger.log('Diff found: ', routePaths)
+    logger.log('Updated route paths successfully!')
   } else {
-    console.log('Skipping...')
+    logger.log('Skipping...')
   }
 
   if (stopsDiff) {
-    console.log('Diff found: ', stopsDiff)
+    logger.log('Diff found: ', stopsDiff)
     await uploadToS3('routeStops.json', routeStops)
-    console.log('Updated route stops successfully!')
+    logger.log('Updated route stops successfully!')
   } else {
-    console.log('Skipping...')
+    logger.log('Skipping...')
   }
 
-  console.timeEnd('fetch route details')
+  logger.timeEnd('fetch route details')
   return true
 }
 

@@ -1,8 +1,10 @@
+const logger = require('./helpers/logger')
 const fetchLines = require('./fetchLines')
 const fetchRoutes = require('./fetchRoutes')
 const fetchLineSchedules = require('./fetchLineSchedules')
 const fetchRouteDetails = require('./fetchRouteDetails')
 const sleep = require('./helpers/sleep')
+const email = require('./helpers/email')
 
 let failed = 0
 
@@ -13,7 +15,7 @@ const fetchStatic = async (_lines, _schedules, _routes, _details) => {
   let details = _details
 
   try {
-    console.log('Fetching route data from OASA API.')
+    logger.log('Fetching route data from OASA API.')
     lines = lines || (await fetchLines())
     schedules = schedules || (await fetchLineSchedules())
     routes = routes || (await fetchRoutes())
@@ -25,12 +27,13 @@ const fetchStatic = async (_lines, _schedules, _routes, _details) => {
 
     fetchStatic(lines, schedules, routes, details)
   }
+  await email(logger.printAll())
 }
 
 exports.handler = async event => {
   try {
     await fetchStatic()
   } catch (err) {
-    console.log(err)
+    logger.log(err)
   }
 }

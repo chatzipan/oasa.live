@@ -2,6 +2,7 @@ const Promise = require('bluebird')
 const setwith = require('lodash.setwith')
 const { hasPath } = require('ramda')
 
+const logger = require('./helpers/logger')
 const { isDateFormat } = require('./helpers/utils')
 const { fetch } = require('./helpers/fetch')
 const { fetchFromS3, uploadToS3 } = require('./helpers/s3')
@@ -29,8 +30,8 @@ const getDuration = (start, end) =>
   new Date(end).getTime() - new Date(start).getTime()
 
 const fetchLineSchedules = async () => {
-  console.log('Fetching line schedules')
-  console.time('fetch line schedules')
+  logger.log('Fetching line schedules')
+  logger.time('fetch line schedules')
   const linesList = JSON.parse(await fetchFromS3('linesList.json'))
   const scheduleCombinations = getScheduleCombinations(linesList)
   const flattenedCombinations = [].concat(...scheduleCombinations)
@@ -84,7 +85,7 @@ const fetchLineSchedules = async () => {
       uploadToS3(`schedules/${day}_${hour}.json`, allSchedules[day][hour]),
     { concurrency: 5 }
   )
-  console.timeEnd('fetch line schedules')
+  logger.timeEnd('fetch line schedules')
   await sleep(5)
   return true
 }

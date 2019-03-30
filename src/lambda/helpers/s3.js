@@ -51,7 +51,7 @@ const uploadToS3 = async (Key, data) => {
         Bucket,
         Key,
         Body: JSON.stringify(data),
-        ACL: 'public-read'
+        ACL: 'public-read',
       },
       (err, data) => {
         if (err) {
