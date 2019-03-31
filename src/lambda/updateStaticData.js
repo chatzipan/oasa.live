@@ -20,6 +20,7 @@ const fetchStatic = async (_lines, _schedules, _routes, _details) => {
     schedules = schedules || (await fetchLineSchedules())
     routes = routes || (await fetchRoutes())
     details = details || (await fetchRouteDetails())
+    await email(logger.printAll())
   } catch (err) {
     failed += 5
     console.log(err)
@@ -27,7 +28,6 @@ const fetchStatic = async (_lines, _schedules, _routes, _details) => {
 
     fetchStatic(lines, schedules, routes, details)
   }
-  await email(logger.printAll())
 }
 
 exports.handler = async event => {

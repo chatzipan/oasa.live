@@ -1,10 +1,10 @@
 const Promise = require('bluebird')
 
+const logger = require('./helpers/logger')
 const { fetch } = require('./helpers/fetch')
 const { checkForDiff } = require('./helpers/diff')
 const sleep = require('./helpers/sleep')
 const { uploadToS3 } = require('./helpers/s3')
-const logger = require('./helpers/logger')
 const { transformLine } = require('./helpers/transform')
 const { GET_LINES, GET_SCHEDULE_CODES_BY_LINE } = require('./helpers/api')
 
@@ -28,7 +28,7 @@ const fetchLines = async () => {
     return acc
   }, {})
 
-  await fetchLineScheduleCodes(linesList)
+  return fetchLineScheduleCodes(linesList)
 }
 
 const fetchLineScheduleCodes = async linesList => {

@@ -1,11 +1,11 @@
 require('dotenv').config()
+const logger = require('./helpers/logger')
 const fetchLines = require('./fetchLines')
 const fetchRoutes = require('./fetchRoutes')
 const fetchLineSchedules = require('./fetchLineSchedules')
 const fetchRouteDetails = require('./fetchRouteDetails')
 const sleep = require('./helpers/sleep')
 const email = require('./helpers/email')
-const logger = require('./helpers/logger')
 
 let failed = 0
 
@@ -21,6 +21,7 @@ const fetchStatic = async (_lines, _schedules, _routes, _details) => {
     schedules = schedules || (await fetchLineSchedules())
     routes = routes || (await fetchRoutes())
     details = details || (await fetchRouteDetails())
+    await email(logger.printAll())
   } catch (err) {
     failed += 5
     logger.log(err)
@@ -28,7 +29,6 @@ const fetchStatic = async (_lines, _schedules, _routes, _details) => {
 
     fetchStatic(lines, schedules, routes, details)
   }
-  await email(logger.printAll())
 }
 
 ;(async event => {

@@ -4,15 +4,18 @@ function Logger() {
 }
 
 Logger.prototype.log = function(msg) {
-  this.stack.push(msg)
-  console.log(msg)
+  const message = `${new Date()}: ${msg}`
+  this.stack.push(message)
+  console.log(message)
 }
 
 Logger.prototype.printAll = function(msg) {
+  const allLogs = this.stack.join('<br/><br/>')
   console.log('\n')
   console.log('Printing all logs...')
   console.log('\n')
-  console.log(this.stack.join('\n'))
+  console.log(allLogs)
+  return allLogs
 }
 
 Logger.prototype.time = function(msg) {
@@ -22,7 +25,7 @@ Logger.prototype.time = function(msg) {
 
 Logger.prototype.timeEnd = function(msg) {
   const diff = Date.now() - this.timers.get(msg)
-  this.stack.push(`${msg}: ${diff}ms`)
+  this.stack.push(`${new Date()}: ${msg}: ${diff}ms`)
   console.timeEnd(msg)
 }
 
