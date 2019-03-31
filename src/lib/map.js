@@ -3,6 +3,7 @@ import * as turf from '@turf/turf'
 
 import createImage from './create-image'
 import mapConfig from '../config/map'
+import track from './track'
 import * as images from '../assets/images'
 
 mapboxgl.accessToken = mapConfig.TOKEN
@@ -189,8 +190,26 @@ export function addMapLayers(map, props) {
       const selectedFeature = map.queryRenderedFeatures(event.point, {
         layers: [mapConfig.VEHICLE_LAYER_ID, mapConfig.STOPS_LAYER_ID],
       })
+      const selected = selectedFeature[0]
 
-      props.selectFeature(selectedFeature[0] || null)
+      if (!selected) {
+        track('clear_map', {
+          event_category: 'click_on_map',
+        })
+      } else if (selected.properties.type === 'stop') {
+        track('select_stop', {
+          event_category: 'click_on_map',
+          stop: selected.properties.descr,
+        })
+      } else if (selected.properties.type === 'bus') {
+        track('select_bus', {
+          event_category: 'click_on_map',
+          line: selected.properties.name,
+          descr: selected.properties.descr,
+        })
+      }
+
+      props.selectFeature(selected || null)
       props.closeMenu()
     })
 

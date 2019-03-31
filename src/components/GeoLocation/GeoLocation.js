@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import mapConfig from '../../config/map'
 import { updateUserPosition } from '../../redux/user-position'
 import selectPosition from '../../selectors/select-position'
+import track from '../../lib/track'
 
 import GeoLocationIcon from '../../assets/svgs/geolocation.svg'
 import styles from './GeoLocation.module.css'
@@ -76,6 +77,10 @@ class GeoLocation extends Component {
   }
 
   getCurrentPosition = () => {
+    track('click_geolocation', {
+      event_category: 'click',
+    })
+
     navigator.geolocation.getCurrentPosition(
       this.onPositionSuccess,
       this.onPositionError,

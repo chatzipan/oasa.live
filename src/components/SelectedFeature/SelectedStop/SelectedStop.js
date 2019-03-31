@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 
 import translations from '../../../../translations'
 import sleep from '../../../lambda/helpers/sleep'
+import track from '../../../lib/track'
 import NoConnectionIcon from '../../../assets/svgs/cloud_off.svg'
 import RefreshIcon from '../../../assets/svgs/refresh.svg'
 
@@ -83,6 +84,14 @@ class SelectedStop extends React.Component {
     ))
   }
 
+  handleRefresh = () => {
+    track('select_stop', {
+      event_category: 'click_on_map',
+      stop: this.props.selected.properties.descr,
+    })
+    this.fetchStopArrivals()
+  }
+
   renderNetworkError = () => {
     const { language } = this.props
     const t = translations[language]
@@ -90,7 +99,7 @@ class SelectedStop extends React.Component {
       <div className={styles.networkError}>
         <NoConnectionIcon />
         <div>
-          <button className={styles.btn} onClick={this.fetchStopArrivals}>
+          <button className={styles.btn} onClick={this.handleRefresh}>
             {t['ARRIVALS_NETWORK_ERROR']}
             <br />
             {t['ARRIVALS_NETWORK_ERROR_BTN']}
@@ -132,7 +141,7 @@ class SelectedStop extends React.Component {
           </div>
           <button
             className={cx(styles.btn, styles.refresh)}
-            onClick={this.fetchStopArrivals}
+            onClick={this.handleRefresh}
           >
             <RefreshIcon />
             {t['REFRESH']}

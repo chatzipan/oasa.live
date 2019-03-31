@@ -11,10 +11,10 @@ const SelectedFeature = ({ map, selected }) => {
   const classNames = cx(styles.bar, { [styles.hidden]: !selected })
   if (!selected || !map) return <div className={classNames} />
   const { type } = selected.properties
-  const isBus = type === 'bus'
+
   return (
     <div className={styles.bar}>
-      {isBus ? (
+      {type === 'bus' ? (
         <SelectedTrack map={map} selected={selected} />
       ) : (
         <SelectedStop selected={selected} />

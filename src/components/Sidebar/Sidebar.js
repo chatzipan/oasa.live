@@ -6,6 +6,7 @@ import Switch from '@material-ui/core/Switch'
 
 import translations from '../../../translations'
 import { selectLanguage, setNightMode, toggleMenu } from '../../redux/ui'
+import track from '../../lib/track'
 
 import styles from './Sidebar.module.css'
 import InfoIcon from '../../assets/svgs/info.svg'
@@ -25,12 +26,34 @@ const Sidebar = ({
   const classNames = cx(styles.sidebar, {
     [styles.hidden]: !isMenuOpen,
   })
+  const handleSelectLanguage = e => {
+    track('select_language', {
+      event_category: 'select_ui_options',
+      event_value: e.target.value,
+    })
+    selectLanguage(e.target.value)
+  }
+
+  const handleSelectNightMode = e => {
+    track('select_nightmode', {
+      event_category: 'select_ui_options',
+      event_value: e.target.checked,
+    })
+    setNightMode(e.target.checked)
+  }
+
+  const handleToggleMenu = e => {
+    track('toggle_menu', {
+      event_category: 'select_ui_options',
+    })
+    toggleMenu()
+  }
 
   return (
     <div className={classNames}>
       <div className={cx(styles.title, styles.box)}>
         <h1 className={styles.heading}>Athens Live Map</h1>
-        <button className={styles.button} onClick={toggleMenu}>
+        <button className={styles.button} onClick={handleToggleMenu}>
           <InfoIcon />
         </button>
       </div>
@@ -42,7 +65,7 @@ const Sidebar = ({
           <p className={styles.label}>{t['CHOOSE_LANG']}</p>
           <Select
             inputProps={{ name: 'language' }}
-            onChange={selectLanguage}
+            onChange={handleSelectLanguage}
             value={language}
           >
             <option value="gr">Ελληνικά</option>
@@ -53,7 +76,7 @@ const Sidebar = ({
           <p className={styles.label}>Night Mode:</p>
           <Switch
             checked={isNightMode}
-            onChange={setNightMode}
+            onChange={handleSelectNightMode}
             value="nightMode"
           />
         </div>
@@ -77,12 +100,10 @@ const mapStateToProps = ({ ui: { isMenuOpen, isNightMode, language } }) => ({
   language,
 })
 
-const mapDispatchToProps = dispatch => {
-  return {
-    selectLanguage: e => dispatch(selectLanguage(e.target.value)),
-    setNightMode: e => dispatch(setNightMode(e.target.checked)),
-    toggleMenu: x => dispatch(toggleMenu()),
-  }
+const mapDispatchToProps = {
+  selectLanguage,
+  setNightMode,
+  toggleMenu,
 }
 
 export default connect(
