@@ -66,7 +66,9 @@ class SelectedTrack extends React.Component {
    */
   clearTrack() {
     const source = this.map.getSource(lineSourceId)
-    source.setData(emptyCollection)
+    console.log({ source })
+
+    source && source.setData(emptyCollection)
     if (this.map.getLayer(beforeLayer)) {
       this.map.getLayer(beforeLayer).setLayoutProperty('visibility', 'visible')
     }
