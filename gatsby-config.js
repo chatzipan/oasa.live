@@ -4,7 +4,10 @@ module.exports = {
     description: `An interactive map of real-time bus information of Athens, Greece.
       Data are taken from OASA API.`,
     keywords: [
+      'oasa',
+      'map',
       'telematics',
+      'δρομολόγια',
       'Athens',
       'Αθήνα',
       'χάρτης',

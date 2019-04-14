@@ -1,5 +1,3 @@
-// const document =
-//   typeof window !== 'undefined' ? window.localStorage : mockStorage
 function setCookie(name, value, days) {
   let expires = ''
   if (days) {
