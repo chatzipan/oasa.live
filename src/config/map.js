@@ -9,7 +9,7 @@ const radius = [[0, 0.5], [13, 6]]
 const stopRadius = [[0, 0.5], [9, 4]]
 const stopRadiusMobile = [[8, 4], [10, 7], [11, 8]]
 const radiusMobile = [[12, 6], [12, 6], [14, 9]]
-const symbolMinZoom = 15
+const symbolMinZoom = 14
 const symbolMinZoomMobile = 14
 const config = {
   TOKEN:
