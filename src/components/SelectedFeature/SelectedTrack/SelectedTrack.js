@@ -66,7 +66,6 @@ class SelectedTrack extends React.Component {
    */
   clearTrack() {
     const source = this.map.getSource(lineSourceId)
-    console.log({ source })
 
     source && source.setData(emptyCollection)
     if (this.map.getLayer(beforeLayer)) {

@@ -17,6 +17,7 @@ const proxyLines = {
   1190: 846,
   1196: 846,
   1195: 977,
+  1212: 914,
 }
 
 const fetchLines = async () => {
@@ -41,9 +42,10 @@ const fetchLineScheduleCodes = async linesList => {
       const lineCode = proxyLines[line] || line
       const schedules = await fetch(`${GET_SCHEDULE_CODES_BY_LINE}${lineCode}`)
       if (!schedules) {
-        console.log(linesList[line], `${GET_SCHEDULE_CODES_BY_LINE}${lineCode}`)
+        logger.log(`No Schedule for: ${GET_SCHEDULE_CODES_BY_LINE}${lineCode}`)
         return
       }
+
       linesList[line].sdcs = schedules.map(({ sdc_code }) => sdc_code) // eslint-disable-line  camelcase
 
       schedules.forEach(schedule => {

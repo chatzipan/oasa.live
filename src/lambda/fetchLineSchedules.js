@@ -40,6 +40,11 @@ const fetchLineSchedules = async () => {
     flattenedCombinations,
     async ([mlCode, sdcCode, lineCode]) => {
       const weekDays = scheduleWeekDays[sdcCode]
+      if (!weekDays) {
+        logger.log(`Missing Weekday configuration for sdcCode: ${sdcCode}`)
+        return false
+      }
+
       const url = GET_SCHEDULES_BY_LINE.replace('mlCode', mlCode)
         .replace('sdcCode', sdcCode)
         .replace('lineCode', lineCode)
