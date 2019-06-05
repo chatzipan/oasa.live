@@ -18,6 +18,8 @@ const proxyLines = {
   1196: 846,
   1195: 977,
   1212: 914,
+  1329: 1065,
+  1330: 1065,
 }
 
 const fetchLines = async () => {
@@ -42,6 +44,7 @@ const fetchLineScheduleCodes = async linesList => {
       const lineCode = proxyLines[line] || line
       const schedules = await fetch(`${GET_SCHEDULE_CODES_BY_LINE}${lineCode}`)
       if (!schedules) {
+        logger.log(JSON.stringify(linesList[line]))
         logger.log(`No Schedule for: ${GET_SCHEDULE_CODES_BY_LINE}${lineCode}`)
         return
       }
