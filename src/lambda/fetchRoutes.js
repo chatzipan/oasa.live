@@ -29,7 +29,7 @@ const fetchRoutes = async () => {
       })
       return _routes
     },
-    { concurrency: 1 }
+    { concurrency: 5 }
   )
   const routeList = indexBy(prop('RouteCode'), reject(n => !n, flatten(routes)))
 

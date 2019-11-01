@@ -58,7 +58,7 @@ const fetchLineScheduleCodes = async linesList => {
         scheduleCodes[schedule.sdc_code] = schedule
       })
     },
-    { concurrency: 1 }
+    { concurrency: 10 }
   )
 
   const diff = await checkForDiff('scheduleCodes.json', scheduleCodes)

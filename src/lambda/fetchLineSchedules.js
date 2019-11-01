@@ -80,7 +80,7 @@ const fetchLineSchedules = async () => {
         }
       })
     },
-    { concurrency: 1 }
+    { concurrency: 5 }
   )
 
   const uploadCombinations = getUploadCombinations(allSchedules)
@@ -89,7 +89,7 @@ const fetchLineSchedules = async () => {
     async ([day, hour]) =>
       uploadToS3(`schedules/${day}_${hour}.json`, allSchedules[day][hour]),
     {
-      concurrency: 1,
+      concurrency: 5,
     }
   )
   logger.timeEnd('fetch line schedules')

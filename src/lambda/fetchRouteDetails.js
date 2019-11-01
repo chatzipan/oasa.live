@@ -56,7 +56,7 @@ const fetchRouteDetails = async () => {
         .map(stop => getDistanceFromStart(stop, routePath))
         .sort((a, b) => a.dfs - b.dfs)
     },
-    { concurrency: 1 }
+    { concurrency: 2 }
   )
   const pathDiff = await checkForDiff('routePaths.json', routePaths)
   const stopsDiff = await checkForDiff('routeStops.json', routeStops)
