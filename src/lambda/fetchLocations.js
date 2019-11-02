@@ -228,6 +228,7 @@ const fetchLocations = async () => {
   console.log('AWS: Total fetch successes: ', fetchSuccesses)
   console.log('AWS: Total fetchs: ', fetchSuccesses + fetchErrors)
   console.log('Updated route locations successfully!')
+  return Promise.resolve()
 }
 
 module.exports = fetchLocations

@@ -6,5 +6,4 @@ const fetchLive = async () => {
 
 ;(async () => {
   await fetchLive()
-  setInterval(fetchLive, 60 * 1000)
 })()

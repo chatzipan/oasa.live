@@ -7,9 +7,9 @@ const fetchRouteDetails = require('./fetchRouteDetails')
 
 const fetchStatic = async () => {
   logger.log('Fetching route data from OASA API.')
-  await fetchLines()
-  await fetchLineSchedules()
-  await fetchRoutes()
+  // await fetchLines()
+  //  await fetchLineSchedules()
+  //  await fetchRoutes()
   await fetchRouteDetails()
 }
 
