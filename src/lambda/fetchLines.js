@@ -73,7 +73,7 @@ const fetchLineScheduleCodes = async linesList => {
   logger.timeEnd('fetch lines and line schedule codes time')
   await sleep(5)
 
-  return true
+  return Promise.resolve()
 }
 
 module.exports = fetchLines

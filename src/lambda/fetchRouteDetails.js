@@ -43,18 +43,22 @@ const fetchRouteDetails = async () => {
   await Promise.map(
     Object.keys(routeList),
     async route => {
-      const { details, stops } = await fetch(`${GET_ROUTE_DETAILS}${route}`)
-      /* eslint-disable no-alert, camelcase */
-      const routePath = details.map(({ routed_x, routed_y }) => [
-        /* eslint-enable no-alert, camelcase */
-        parseFloat(routed_x),
-        parseFloat(routed_y),
-      ])
-      routePaths[route] = routePath
-      routeStops[route] = stops
-        .map(transformStop)
-        .map(stop => getDistanceFromStart(stop, routePath))
-        .sort((a, b) => a.dfs - b.dfs)
+      try {
+        const { details, stops } = await fetch(`${GET_ROUTE_DETAILS}${route}`)
+        /* eslint-disable no-alert, camelcase */
+        const routePath = details.map(({ routed_x, routed_y }) => [
+          /* eslint-enable no-alert, camelcase */
+          parseFloat(routed_x),
+          parseFloat(routed_y),
+        ])
+        routePaths[route] = routePath
+        routeStops[route] = stops
+          .map(transformStop)
+          .map(stop => getDistanceFromStart(stop, routePath))
+          .sort((a, b) => a.dfs - b.dfs)
+      } catch (e) {
+        logger.log('ERROR in fetchRouteDetails:', e)
+      }
     },
     { concurrency: 2 }
   )
@@ -78,7 +82,7 @@ const fetchRouteDetails = async () => {
   }
 
   logger.timeEnd('fetch route details')
-  return true
+  return Promise.resolve()
 }
 
 module.exports = fetchRouteDetails

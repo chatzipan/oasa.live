@@ -17,17 +17,21 @@ const fetchRoutes = async () => {
   const routes = await Promise.map(
     Object.keys(linesList),
     async line => {
-      const _routes = await fetch(`${GET_ROUTES_BY_LINE}${line}`)
-      if (!_routes) {
-        linesList[line].routes = null
-        return null
-      }
+      try {
+        const _routes = await fetch(`${GET_ROUTES_BY_LINE}${line}`)
+        if (!_routes) {
+          linesList[line].routes = null
+          return null
+        }
 
-      _routes.forEach(({ RouteCode }) => {
-        linesList[line].routes = linesList[line].routes || []
-        linesList[line].routes.push(RouteCode)
-      })
-      return _routes
+        _routes.forEach(({ RouteCode }) => {
+          linesList[line].routes = linesList[line].routes || []
+          linesList[line].routes.push(RouteCode)
+        })
+        return _routes
+      } catch (e) {
+        logger.log('ERROR in fetchRoutes:', e)
+      }
     },
     { concurrency: 5 }
   )
@@ -50,7 +54,7 @@ const fetchRoutes = async () => {
   await uploadToS3('linesList.json', linesList)
   logger.timeEnd('fetch routes')
   await sleep(10)
-  return true
+  return Promise.resolve()
 }
 
 module.exports = fetchRoutes

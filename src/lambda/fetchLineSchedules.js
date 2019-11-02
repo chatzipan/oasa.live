@@ -32,6 +32,7 @@ const getDuration = (start, end) =>
 const fetchLineSchedules = async () => {
   logger.log('Fetching line schedules')
   logger.time('fetch line schedules')
+
   const linesList = JSON.parse(await fetchFromS3('linesList.json'))
   const scheduleCombinations = getScheduleCombinations(linesList)
   const flattenedCombinations = [].concat(...scheduleCombinations)
@@ -49,36 +50,42 @@ const fetchLineSchedules = async () => {
         .replace('sdcCode', sdcCode)
         .replace('lineCode', lineCode)
 
-      const schedules = await fetch(url)
+      try {
+        const schedules = await fetch(url)
 
-      ;['go', 'come'].forEach(op => {
-        if (schedules[op].length) {
-          schedules[op].forEach(
-            /* eslint-disable no-alert, camelcase */
-            ({ sde_start1, sde_end1, sde_start2, sde_end2 }) => {
-              const start = op === 'go' ? sde_start1 : sde_start2
-              const end = op === 'go' ? sde_end1 : sde_end2
-              const duration = getDuration(start, end)
-              /* eslint-enable no-alert, camelcase */
-              if (!isDateFormat(start) || !isDateFormat(end)) {
-                throw new Error(`Wrong date format ${start}, ${end} in ${url}`)
-              }
-
-              const hour = start.slice(11, 13)
-              weekDays.forEach(day => {
-                if (!hasPath([day, hour, lineCode, op], allSchedules)) {
-                  setwith(allSchedules, [day, hour, lineCode, op], [], Object)
+        ;['go', 'come'].forEach(op => {
+          if (schedules[op].length) {
+            schedules[op].forEach(
+              /* eslint-disable no-alert, camelcase */
+              ({ sde_start1, sde_end1, sde_start2, sde_end2 }) => {
+                const start = op === 'go' ? sde_start1 : sde_start2
+                const end = op === 'go' ? sde_end1 : sde_end2
+                const duration = getDuration(start, end)
+                /* eslint-enable no-alert, camelcase */
+                if (!isDateFormat(start) || !isDateFormat(end)) {
+                  throw new Error(
+                    `Wrong date format ${start}, ${end} in ${url}`
+                  )
                 }
-                allSchedules[day][hour][lineCode][op].push({
-                  start: start.slice(11, 16),
-                  end: end.slice(11, 16),
-                  duration,
+
+                const hour = start.slice(11, 13)
+                weekDays.forEach(day => {
+                  if (!hasPath([day, hour, lineCode, op], allSchedules)) {
+                    setwith(allSchedules, [day, hour, lineCode, op], [], Object)
+                  }
+                  allSchedules[day][hour][lineCode][op].push({
+                    start: start.slice(11, 16),
+                    end: end.slice(11, 16),
+                    duration,
+                  })
                 })
-              })
-            }
-          )
-        }
-      })
+              }
+            )
+          }
+        })
+      } catch (e) {
+        logger.log('ERROR in fetchLineSchedules:', e)
+      }
     },
     { concurrency: 5 }
   )
@@ -92,9 +99,11 @@ const fetchLineSchedules = async () => {
       concurrency: 5,
     }
   )
+  logger.log('Updated line schedules successfully!')
   logger.timeEnd('fetch line schedules')
   await sleep(5)
-  return true
+
+  return Promise.resolve()
 }
 
 module.exports = fetchLineSchedules

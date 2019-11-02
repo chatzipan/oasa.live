@@ -175,7 +175,7 @@ const fetchLocations = async () => {
     async route => {
       let locations = null
       try {
-        locations = await fetch(`${GET_BUS_LOCATION}${route}`)
+        locations = await fetch(`${GET_BUS_LOCATION}${route}`, true)
       } catch (e) {
         locations = null
         fetchErrors += 1
