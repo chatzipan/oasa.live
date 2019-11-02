@@ -1,3 +1,6 @@
+const fs = require('fs')
+const path = require('path')
+
 function Logger() {
   this.stack = []
   this.timers = new Map()
@@ -9,13 +12,21 @@ Logger.prototype.log = function(msg) {
   console.log(message)
 }
 
-Logger.prototype.printAll = function(msg) {
+Logger.prototype.printAll = function() {
   const allLogs = this.stack.join('<br/><br/>')
   console.log('\n')
   console.log('Printing all logs...')
   console.log('\n')
   console.log(allLogs)
   return allLogs
+}
+
+Logger.prototype.saveLogs = function() {
+  const allLogs = this.stack.join('\n')
+  fs.writeFile(path.join(__dirname, '/../LOGS.txt'), allLogs, function(err) {
+    if (err) throw err
+    console.log('Saved LOGS!')
+  })
 }
 
 Logger.prototype.time = function(msg) {

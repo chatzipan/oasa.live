@@ -1,5 +1,6 @@
 const https = require('https')
 const http = require('http')
+const logger = require('./logger')
 
 const request = url => {
   // return new pending promise
@@ -32,10 +33,10 @@ const fetch = async (url, timeout) => {
       ? await withTimeout(request(url), 8000)
       : await request(url)
 
-    console.log(' FETCHED! : URL:' + url)
+    logger.log(' FETCHED! : URL:' + url)
     return await JSON.parse(response)
   } catch (e) {
-    console.log('ERROR! : URL:' + url, e)
+    logger.log('ERROR! : URL:' + url, e)
     if (timeout) {
       throw new Error(e)
     }

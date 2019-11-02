@@ -4,6 +4,7 @@ const turf = require('@turf/helpers')
 const lineSlice = require('@turf/line-slice')
 const length = require('@turf/length').default
 
+const logger = require('./helpers/logger')
 const { fetch } = require('./helpers/fetch')
 const { fetchFromS3, uploadToS3 } = require('./helpers/s3')
 const { GET_BUS_LOCATION } = require('./helpers/api')
@@ -139,8 +140,8 @@ const getRequestsFilter = route => {
   return isEvenMinute ? route > ROUTES_MEDIAN : route < ROUTES_MEDIAN
 }
 const fetchLocations = async () => {
-  console.log('Fetching locations.')
-  console.time('AWS: fetch locations time')
+  logger.log('Fetching locations.')
+  logger.time('AWS: fetch locations time')
   let fetchErrors = 0
   let fetchSuccesses = 0
   const routes = new Set()
@@ -223,11 +224,11 @@ const fetchLocations = async () => {
   )
 
   await uploadToS3('routeLocations.json', routeLocations)
-  console.timeEnd('AWS: fetch locations time')
-  console.log('AWS: Total fetch errors: ', fetchErrors)
-  console.log('AWS: Total fetch successes: ', fetchSuccesses)
-  console.log('AWS: Total fetchs: ', fetchSuccesses + fetchErrors)
-  console.log('Updated route locations successfully!')
+  logger.timeEnd('AWS: fetch locations time')
+  logger.log('AWS: Total fetch errors: ' + fetchErrors)
+  logger.log('AWS: Total fetch successes: ' + fetchSuccesses)
+  logger.log('AWS: Total fetchs: ' + (fetchSuccesses + fetchErrors))
+  logger.log('Updated route locations successfully!')
   return Promise.resolve()
 }
 
