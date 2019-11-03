@@ -17,6 +17,7 @@
     "fetch-static-data": "node ./src/lambda/updateStaticData.js",
     "fetch-locations": "node ./src/lambda/updateLocations.js",
     "format": "prettier --write \"src/**/*.js\"",
+    "start-stops-api": "forever start src/lambda/server.js",
     "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\""
   },
   "dependencies": {
