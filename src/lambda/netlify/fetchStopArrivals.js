@@ -1,5 +1,5 @@
-const { fetch } = require('../helpers/fetch.js')
-const { GET_STOP_ARRIVALS } = require('../helpers/api.js')
+const { fetch } = require('./fetch.js')
+const { GET_STOP_ARRIVALS } = require('./api.js')
 
 exports.handler = async (event, context) => {
   console.time('AWS: fetch stop arrivals time')
