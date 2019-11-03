@@ -1,5 +1,4 @@
 const { fetch } = require('./fetch.js')
-const { GET_STOP_ARRIVALS } = require('./api.js')
 
 exports.handler = async (event, context) => {
   console.time('AWS: fetch stop arrivals time')
@@ -7,7 +6,9 @@ exports.handler = async (event, context) => {
     const {
       queryStringParameters: { stopCode },
     } = event
-    const arrivals = await fetch(`${GET_STOP_ARRIVALS}${stopCode}`)
+    const arrivals = await fetch(
+      `${process.env.GATSBY_STOP_API_URL}?stopCode=${stopCode}`
+    )
     console.timeEnd('AWS: fetch stop arrivals time')
     return {
       statusCode: 200,

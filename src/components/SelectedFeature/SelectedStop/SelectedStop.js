@@ -37,7 +37,7 @@ class SelectedStop extends React.Component {
    */
   fetchStopArrivals = async () => {
     const stopCode = this.props.selected.properties.code
-    const oasaUrl = `${process.env.GATSBY_STOP_API_URL}?stopCode=${stopCode}`
+    const oasaUrl = `/.netlify/functions/fetchStopArrivals?stopCode=${stopCode}`
     let arrivals = null
     this.setState({ loading: true, networkError: false })
 
