@@ -1,3 +1,7 @@
+require('dotenv').config({
+  path: '.env',
+})
+
 /**
  * Implement Gatsby's Node APIs in this file.
  *

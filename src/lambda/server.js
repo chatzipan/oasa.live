@@ -16,6 +16,7 @@ const requestHandler = async (request, response) => {
       : null
 
     console.timeEnd('AWS: fetch stop arrivals time')
+    response.setHeader('Access-Control-Allow-Origin', '*')
     response.end(JSON.stringify(arrivals))
   } catch (err) {
     console.log(err)
