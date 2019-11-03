@@ -1,6 +1,6 @@
 module.exports = {
   siteMetadata: {
-    title: 'Athens live bus telematics',
+    title: 'Athens live bus map',
     description: `An interactive map of real-time bus information of Athens,
     Greece. Data are taken from OASA API.`,
     keywords: [
@@ -21,10 +21,10 @@ module.exports = {
       'λεωφορεία',
       'ΟΑΣΑ',
     ],
-    author: `https://github.com/chatzipan`,
+    author: 'https://github.com/chatzipan',
   },
   plugins: [
-    `gatsby-plugin-react-helmet`,
+    'gatsby-plugin-react-helmet',
     {
       resolve: 'gatsby-plugin-react-svg',
       options: {
@@ -34,30 +34,30 @@ module.exports = {
       },
     },
     {
-      resolve: `gatsby-source-filesystem`,
+      resolve: 'gatsby-source-filesystem',
       options: {
-        name: `images`,
+        name: 'images',
         path: `${__dirname}/src/assets/images`,
       },
     },
-    `gatsby-transformer-sharp`,
-    `gatsby-plugin-sharp`,
+    'gatsby-transformer-sharp',
+    'gatsby-plugin-sharp',
     {
-      resolve: `gatsby-plugin-manifest`,
+      resolve: 'gatsby-plugin-manifest',
       options: {
-        name: `gatsby-starter-default`,
-        short_name: `starter`,
-        start_url: `/`,
-        background_color: `#663399`,
-        theme_color: `#663399`,
-        display: `minimal-ui`,
-        icon: `src/assets/images/favicon.png`, // This path is relative to the root of the site.
+        name: 'Oasa.Live',
+        short_name: 'Oasa.live ',
+        start_url: '/',
+        background_color: '#FFF',
+        theme_color: '#F0008C',
+        display: 'standalone',
+        icon: 'src/assets/images/favicon.png',
       },
     },
     {
-      resolve: `gatsby-plugin-postcss`,
+      resolve: 'gatsby-plugin-postcss',
       options: {
-        postCssPlugins: [require(`postcss-preset-env`)({ stage: 0 })],
+        postCssPlugins: [require('postcss-preset-env')({ stage: 0 })],
       },
     },
     {
@@ -77,6 +77,6 @@ module.exports = {
     },
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.app/offline
-    // 'gatsby-plugin-offline',
+    'gatsby-plugin-offline',
   ],
 }
