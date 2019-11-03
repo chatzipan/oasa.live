@@ -14,8 +14,8 @@
     "deploy-lambda": "./scripts/deploy-lambda.sh updateLocations && ./scripts/deploy-lambda.sh updateStaticData && ./scripts/deploy-lambda.sh fetchStopArrivals",
     "build": "gatsby build",
     "serve": "gatsby serve",
-    "fetch-static-data": "node ./src/lambda/updateStaticDataLocal.js",
-    "fetch-locations": "node ./src/lambda/updateLocationsLocal.js",
+    "fetch-static-data": "node ./src/lambda/updateStaticData.js",
+    "fetch-locations": "node ./src/lambda/updateLocations.js",
     "format": "prettier --write \"src/**/*.js\"",
     "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\""
   },
