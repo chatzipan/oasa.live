@@ -33,7 +33,6 @@ const fetch = async (url, timeout) => {
       ? await withTimeout(request(url), 8000)
       : await request(url)
 
-    logger.log(' FETCHED! : URL:' + url)
     return await JSON.parse(response)
   } catch (e) {
     logger.log('ERROR! : URL:' + url, e)
