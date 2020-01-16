@@ -12,6 +12,7 @@ const fetchStatic = async () => {
   await fetchLineSchedules()
   await fetchRoutes()
   await fetchRouteDetails()
+  logger.saveLogs()
   await email(logger.printAll())
 }
 

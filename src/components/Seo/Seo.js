@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 import { StaticQuery, graphql } from 'gatsby'
 
+import screenshot from '../../assets/images/screenshot.png'
+
 function SEO({ description, lang, meta }) {
   return (
     <StaticQuery
@@ -16,66 +18,26 @@ function SEO({ description, lang, meta }) {
               lang,
             }}
             title={data.site.siteMetadata.title}
-            meta={[
-              {
-                name: `viewport`,
-                content:
-                  'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no',
-              },
-              {
-                name: `description`,
-                content: metaDescription,
-              },
-              {
-                property: `og:title`,
-                content: data.site.siteMetadata.title,
-              },
-              {
-                property: ` og:url`,
-                content: 'https://oasa.live',
-              },
-              {
-                property: `og:description`,
-                content: metaDescription,
-              },
-              {
-                property: `og:image`,
-                content:
-                  'https://s3.eu-central-1.amazonaws.com/oasa/map_image.png',
-              },
-              {
-                property: `og:type`,
-                content: `website`,
-              },
-              {
-                name: `twitter:card`,
-                content: `summary`,
-              },
-              {
-                name: `twitter:creator`,
-                content: data.site.siteMetadata.author,
-              },
-              {
-                name: `twitter:title`,
-                content: data.site.siteMetadata.title,
-              },
-              {
-                name: `twitter:description`,
-                content: metaDescription,
-              },
-            ]
-              .concat(
-                /* eslint-disable indent */
-                data.site.siteMetadata.keywords.length > 0
-                  ? {
-                      name: 'keywords',
-                      content: data.site.siteMetadata.keywords.join(', '),
-                    }
-                  : []
-                /* eslint-enable indent */
-              )
-              .concat(meta)}
           >
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+            />
+            <meta name="description" content={metaDescription} />
+            <meta name="og:description" content={metaDescription} />
+            <meta
+              name="keywords"
+              content={data.site.siteMetadata.keywords.join(', ')}
+            />
+            <meta property="og:url" content="https://oasa.live" />
+            <meta property="og:type" content="website" />
+            <meta property="og:title" content={data.site.siteMetadata.title} />
+            <meta property="og:image" content={screenshot} />
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:creator" content="@__vasilis" />
+            <meta name="twitter:title" content={data.site.siteMetadata.title} />
+            <meta name="twitter:description" content={metaDescription} />
+            <meta name="twitter:image" content={screenshot} />
             <link rel="canonical" href="https://oasa.live/" />
           </Helmet>
         )

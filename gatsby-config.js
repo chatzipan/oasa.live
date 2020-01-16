@@ -46,7 +46,7 @@ module.exports = {
       resolve: 'gatsby-plugin-manifest',
       options: {
         name: 'Oasa.Live',
-        short_name: 'Oasa.live ',
+        short_name: 'Oasa.live',
         start_url: '/',
         background_color: '#FFF',
         theme_color: '#F0008C',
