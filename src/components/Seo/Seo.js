@@ -32,7 +32,10 @@ function SEO({ description, lang, meta }) {
             <meta property="og:url" content="https://oasa.live" />
             <meta property="og:type" content="website" />
             <meta property="og:title" content={data.site.siteMetadata.title} />
-            <meta property="og:image" content={screenshot} />
+            <meta
+              property="og:image"
+              content={`https://oasa.live${screenshot}`}
+            />
             <meta name="twitter:card" content="summary_large_image" />
             <meta name="twitter:creator" content="@__vasilis" />
             <meta name="twitter:title" content={data.site.siteMetadata.title} />
