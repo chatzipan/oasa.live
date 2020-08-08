@@ -43,7 +43,7 @@ const fetchLineSchedules = async () => {
       const weekDays = scheduleWeekDays[sdcCode]
       if (!weekDays) {
         logger.log(
-          `Missing Weekday configuration for sdcCode: ${sdcCode}. mlCode: ${mlCode}, sdcCode: ${sdcCode}`
+          `Missing Weekday configuration for sdcCode: ${sdcCode}. mlCode: ${mlCode}, lineCode: ${lineCode}`
         )
         return false
       }
