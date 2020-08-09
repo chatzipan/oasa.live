@@ -1,4 +1,5 @@
 const scheduleWeekDays = {
+  '-2': [0, 1, 2, 3],
   54: [0, 1, 2, 3, 4],
   55: [0, 2],
   58: [4],
@@ -55,6 +56,8 @@ const scheduleWeekDays = {
   133: [6],
   141: [1, 2, 3, 4],
   142: [0],
+  148: [3],
+  149: [0, 1, 3, 4],
 }
 
 module.exports = { scheduleWeekDays }
