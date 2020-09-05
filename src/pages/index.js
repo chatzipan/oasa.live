@@ -30,6 +30,7 @@ if (typeof window !== 'undefined') {
 }
 
 const ESC_KEY = 27
+const ONE_DAY = 24 * 60 * 60 * 1000
 const s3 = 'https://s3.eu-central-1.amazonaws.com/oasa/'
 const files = [
   'linesList.json',
@@ -43,13 +44,21 @@ class IndexPage extends Component {
   state = {
     hasError: false,
     map: null,
+    mountDate: 0,
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const mountDate = new Date().getTime()
+    this.setState({ mountDate })
     this.props.selectLanguage(getCookie('language') || 'gr')
     this.props.setNightMode(getCookie('isNightMode') === 'true' || false)
-    this.fetchStaticData()
+
+    await this.fetchStaticData()
+    this.createMap()
+
     this.initEventHandlers()
+
+    document.addEventListener('visibilitychange', this.handleVisibilityChange)
   }
 
   componentDidCatch(error, errorInfo) {
@@ -135,8 +144,14 @@ class IndexPage extends Component {
       lines,
       routeDetails,
     })
+  }
 
-    this.createMap()
+  handleVisibilityChange = async () => {
+    const now = new Date().getTime()
+    if (!document.hidden && now - this.state.mountDate > ONE_DAY) {
+      // refetch basic data when reactivating tab or PWA after 1 day
+      this.fetchStaticData()
+    }
   }
 
   initEventHandlers() {
