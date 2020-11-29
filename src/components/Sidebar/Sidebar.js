@@ -85,8 +85,8 @@ const Sidebar = ({
       <footer className={cx(styles.box, styles.footer)}>
         <p>
           Developed by{' '}
-          <a href="https://twitter.com/__vasilis" target="_blank">
-            @vasilis
+          <a href="https://vasil.is" target="_blank">
+            vasil.is
           </a>
         </p>
       </footer>
