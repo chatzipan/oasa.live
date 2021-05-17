@@ -84,11 +84,20 @@ const Sidebar = ({
 
       <footer className={cx(styles.box, styles.footer)}>
         <p>
-          Developed by{' '}
+          Developed by&nbsp;
           <a href="https://vasil.is" target="_blank">
             vasil.is
           </a>
+          .&nbsp;&nbsp;-&nbsp;&nbsp;Tips:
         </p>
+        <ul className={styles.donations}>
+          <li className={styles.item}>
+            &#8383;: 39sSadVgDZNnz7nJCcSk3R6cmY9Uwq51ZC
+          </li>
+          <li className={styles.item}>
+            &ETH;:0x437883fFe75Efa387a339F9a0640cdFFECfAfBe9
+          </li>
+        </ul>
       </footer>
     </div>
   )
