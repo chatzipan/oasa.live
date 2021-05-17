@@ -195,9 +195,9 @@ const fetchLocations = async () => {
           }
 
           const timestamp = Date.parse(
-            location.CS_DATE.replace('PM', ' PM GMT+0200').replace(
+            location.CS_DATE.replace('PM', ' PM GMT+0300').replace(
               'AM',
-              ' AM GMT+0200'
+              ' AM GMT+0300'
             )
           )
 
