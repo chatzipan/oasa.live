@@ -124,7 +124,7 @@
   border-top: var(--box-border);
   font-style: italic;
   font-size: 13px;
-  padding: 20px 37px;
+  padding: 10px 37px;
   width: 100%;
 
   & p {
