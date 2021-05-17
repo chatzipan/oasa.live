@@ -95,7 +95,7 @@ const Sidebar = ({
             &#8383;: 39sSadVgDZNnz7nJCcSk3R6cmY9Uwq51ZC
           </li>
           <li className={styles.item}>
-            &ETH;:0x437883fFe75Efa387a339F9a0640cdFFECfAfBe9
+            &ETH;: 0x437883fFe75Efa387a339F9a0640cdFFECfAfBe9
           </li>
         </ul>
       </footer>
