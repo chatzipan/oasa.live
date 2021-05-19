@@ -200,26 +200,25 @@ const fetchLocations = async () => {
               ' AM GMT+0300'
             )
           )
-          let start, sliced, covered, speed
+
           try {
-            start = turf.point(track.geometry.coordinates[0])
-            sliced = lineSlice(start, current, track)
-            covered = length(sliced)
-            speed = getRouteSpeed(
+            const start = turf.point(track.geometry.coordinates[0])
+            const sliced = lineSlice(start, current, track)
+            const covered = length(sliced)
+            const speed = getRouteSpeed(
               routeDetails[route],
               timestamp,
               currentSchedules,
               covered
             )
+            routeLocations[location['VEH_NO']] = {
+              ...location,
+              timestamp,
+              covered,
+              speed,
+            }
           } catch (e) {
             logger.log(e)
-          }
-
-          routeLocations[location['VEH_NO']] = {
-            ...location,
-            timestamp,
-            covered,
-            speed,
           }
         })
       }

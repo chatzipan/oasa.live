@@ -108,7 +108,9 @@ export default class TrackManager {
     this.updateSelectedTrack(data)
     const points = this.getPointData(data)
     this.setTimer()
-    this.pointGenerator.clear().setTracks(Object.values(points))
+    this.pointGenerator
+      .clear()
+      .setTracks(Object.values(points).filter(p => p.line.geometry.coordinates))
     animation.startLoop(this.getPointsInViewport, this.map)
   }
 
