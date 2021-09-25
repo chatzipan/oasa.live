@@ -1,16 +1,16 @@
 const nodemailer = require('nodemailer')
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.live.com',
   auth: {
-    user: 'vchatzipan@gmail.com',
-    pass: process.env.GMAIL_PASS,
+    user: 'chatzipan@hotmail.com',
+    pass: process.env.HOTMAIL_PASS
   },
 })
 
 module.exports = function(body) {
   return new Promise((resolve, reject) => {
     const mailOptions = {
-      from: 'vchatzipan@gmail.com', // sender address
+      from: 'chatzipan@hotmail.com', // sender address
       to: 'vchatzipan@gmail.com', // list of receivers
       subject: 'Logs of updateStaticData Function', // Subject line
       html: `<p>${body}</p>`, // plain text body
