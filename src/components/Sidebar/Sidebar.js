@@ -92,10 +92,10 @@ const Sidebar = ({
         </p>
         <ul className={styles.donations}>
           <li className={styles.item}>
-            &#8383;: 39sSadVgDZNnz7nJCcSk3R6cmY9Uwq51ZC
+            &#8383;: 3AApU9AGub8yXUwqFLS6aEVt5tKrB3E8oB
           </li>
           <li className={styles.item}>
-            &ETH;: 0x437883fFe75Efa387a339F9a0640cdFFECfAfBe9
+            ETH: 0x6e348D7EC541081130cB92601963Cb0Fdd3eb317
           </li>
         </ul>
       </footer>
