@@ -12,7 +12,7 @@ const fetchStatic = async () => {
   await fetchLineSchedules()
   await fetchRoutes()
   await fetchRouteDetails()
-  logger.saveLogs()
+  logger.saveLogs('/../LOGS_NIGHTLY.txt')
   await email(logger.printAll())
 }
 

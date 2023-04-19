@@ -21,9 +21,9 @@ Logger.prototype.printAll = function() {
   return allLogs
 }
 
-Logger.prototype.saveLogs = function() {
+Logger.prototype.saveLogs = function(fileName) {
   const allLogs = this.stack.join('\n')
-  fs.appendFile(path.join(__dirname, '/../LOGS.txt'), allLogs, function(err) {
+  fs.appendFile(path.join(__dirname, fileName || '/../LOGS.txt'), allLogs, function(err) {
     if (err) throw err
     console.log('Saved LOGS!')
   })
