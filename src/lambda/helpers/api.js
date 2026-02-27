@@ -1,5 +1,5 @@
 /* eslint-disable */
-const API_URL = 'http://telematics.oasa.gr/api/'
+const API_URL = 'https://telematics.oasa.gr/api/'
 const GET_BUS_LOCATION = `${API_URL}?act=getBusLocation&p1=`
 const GET_LINES = `${API_URL}?act=webGetLinesWithMLInfo`
 const GET_ROUTES_BY_LINE = `${API_URL}?act=webGetRoutes&p1=`
