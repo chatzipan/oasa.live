@@ -165,7 +165,7 @@ const fetchLocations = async () => {
 
   Object.keys(currentSchedules).forEach(line => {
     const _routes = linesList[line].routes
-    _routes.forEach(route => routes.add(route))
+    _routes?.forEach(route => routes.add(route))
   })
 
   // Split requests into half, because OASA servers cannot take full burden at the moment
