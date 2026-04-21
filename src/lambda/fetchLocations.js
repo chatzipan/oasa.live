@@ -36,6 +36,14 @@ const getTimeInAthens = dateObj =>
     minute: '2-digit',
   })
 
+const getAthensOffset = (date = new Date()) => {
+  return new Intl.DateTimeFormat('en', {
+    timeZone: 'Europe/Athens',
+    timeZoneName: 'shortOffset'
+  }).formatToParts(date)
+    .find(part => part.type === 'timeZoneName')?.value || 'GMT+02'
+}
+
 const getDayParts = time => {
   const [_day, _hour] = time.split(' ')
   const [hour, minutes] = _hour.split(':')
@@ -170,6 +178,7 @@ const fetchLocations = async () => {
 
   // Split requests into half, because OASA servers cannot take full burden at the moment
   const routesToFetch = [...routes].filter(getRequestsFilter)
+  const athensOffset = getAthensOffset()
 
   await Promise.map(
     routesToFetch,
@@ -195,12 +204,10 @@ const fetchLocations = async () => {
           }
 
           const timestamp = Date.parse(
-            location.CS_DATE.replace('PM', ' PM GMT+0200').replace(
-              'AM',
-              ' AM GMT+0200'
-            )
+            location.CS_DATE
+              .replace('PM', ` PM ${athensOffset}`)
+              .replace('AM', ` AM ${athensOffset}`)
           )
-
           try {
             const start = turf.point(track.geometry.coordinates[0])
             const sliced = lineSlice(start, current, track)
