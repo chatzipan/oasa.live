@@ -37,11 +37,15 @@ const getTimeInAthens = dateObj =>
   })
 
 const getAthensOffset = (date = new Date()) => {
-  return new Intl.DateTimeFormat('en', {
-    timeZone: 'Europe/Athens',
-    timeZoneName: 'shortOffset'
-  }).formatToParts(date)
-    .find(part => part.type === 'timeZoneName')?.value || 'GMT+02'
+  // Node 8 compatible: derive the UTC offset by comparing the hour in
+  // Athens with the hour in UTC (Athens is UTC+2, or UTC+3 during DST)
+  const hourIn = timeZone =>
+    parseInt(
+      date.toLocaleString('en-GB', { timeZone, hour12: false, hour: '2-digit' }),
+      10
+    )
+  const diff = (hourIn('Europe/Athens') - hourIn('UTC') + 24) % 24
+  return 'GMT+0' + diff + '00'
 }
 
 const getDayParts = time => {
@@ -173,7 +177,7 @@ const fetchLocations = async () => {
 
   Object.keys(currentSchedules).forEach(line => {
     const _routes = linesList[line].routes
-    _routes?.forEach(route => routes.add(route))
+    _routes && _routes.forEach(route => routes.add(route))
   })
 
   // Split requests into half, because OASA servers cannot take full burden at the moment
@@ -208,6 +212,7 @@ const fetchLocations = async () => {
               .replace('PM', ` PM ${athensOffset}`)
               .replace('AM', ` AM ${athensOffset}`)
           )
+
           try {
             const start = turf.point(track.geometry.coordinates[0])
             const sliced = lineSlice(start, current, track)

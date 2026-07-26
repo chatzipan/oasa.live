@@ -12,7 +12,7 @@ const requestHandler = async (request, response) => {
     const url_parts = url.parse(request.url, true)
     const { stopCode } = url_parts.query
     const arrivals = stopCode
-      ? await fetch(`${GET_STOP_ARRIVALS}${stopCode}`)
+      ? await fetch(`${GET_STOP_ARRIVALS}${stopCode}`, true) // timeout, fail fast
       : null
 
     console.timeEnd('AWS: fetch stop arrivals time')
@@ -20,9 +20,9 @@ const requestHandler = async (request, response) => {
     response.end(JSON.stringify(arrivals))
   } catch (err) {
     console.log(err)
-    res.statusCode = 500
-    res.write({ msg: err.message }) //write a response to the client
-    res.end()
+    response.statusCode = 500
+    response.setHeader('Access-Control-Allow-Origin', '*')
+    response.end(JSON.stringify({ msg: err.message }))
   }
 }
 

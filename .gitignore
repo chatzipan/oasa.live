@@ -74,3 +74,11 @@ yarn-error.log
 .pnp.js
 # Yarn Integrity file
 .yarn-integrity
+
+# server runtime logs — written by cron on the VPS, never commit
+src/lambda/LOGS.txt
+src/lambda/LOGS_NIGHTLY.txt
+src/lambda/*.bak
+
+# private ops documentation — contains server IPs, never commit
+OPERATIONS.md
