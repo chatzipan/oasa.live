@@ -1,3 +1,29 @@
+// The three image plugins below need `sharp`, and `sharp` cannot be built on
+// an Apple Silicon Mac with this lockfile: neither 0.21 nor 0.27 ships an
+// arm64 binary, so npm falls back to compiling, which needs Python 2.
+//
+// Nothing in src/ queries childImageSharp. The plugins are only here for the
+// PWA icon, which Netlify builds fine on Linux. Set SKIP_SHARP=true to run
+// `gatsby develop` or `gatsby build` locally without them.
+const skipSharp = process.env.SKIP_SHARP === 'true'
+
+const imagePlugins = [
+  'gatsby-transformer-sharp',
+  'gatsby-plugin-sharp',
+  {
+    resolve: 'gatsby-plugin-manifest',
+    options: {
+      name: 'Oasa.Live',
+      short_name: 'Oasa.live',
+      start_url: '/',
+      background_color: '#FFF',
+      theme_color: '#F0008C',
+      display: 'standalone',
+      icon: 'src/assets/images/favicon.png',
+    },
+  },
+]
+
 module.exports = {
   siteMetadata: {
     title: 'Athens live bus map',
@@ -40,20 +66,7 @@ module.exports = {
         path: `${__dirname}/src/assets/images`,
       },
     },
-    'gatsby-transformer-sharp',
-    'gatsby-plugin-sharp',
-    {
-      resolve: 'gatsby-plugin-manifest',
-      options: {
-        name: 'Oasa.Live',
-        short_name: 'Oasa.live',
-        start_url: '/',
-        background_color: '#FFF',
-        theme_color: '#F0008C',
-        display: 'standalone',
-        icon: 'src/assets/images/favicon.png',
-      },
-    },
+    ...(skipSharp ? [] : imagePlugins),
     {
       resolve: 'gatsby-plugin-postcss',
       options: {

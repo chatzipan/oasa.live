@@ -11,6 +11,7 @@
   "scripts": {
     "start": "npm run develop",
     "develop": "gatsby develop",
+    "develop:no-sharp": "SKIP_SHARP=true gatsby develop",
     "deploy-lambda": "./scripts/deploy-lambda.sh updateLocations && ./scripts/deploy-lambda.sh updateStaticData && ./scripts/deploy-lambda.sh fetchStopArrivals",
     "build": "gatsby build",
     "serve": "gatsby serve",
