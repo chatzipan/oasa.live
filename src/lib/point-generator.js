@@ -1,7 +1,7 @@
 // @flow
 import cheapRuler from 'cheap-ruler'
 import turfBbox from '@turf/bbox'
-import rbush from 'rbush'
+import RBush from 'rbush'
 
 import getFeatureFromTrack from './get-feature-from-track'
 import mapConfig from '../config/map'
@@ -50,7 +50,9 @@ function getTrackBounds(track) {
 export default class PointGenerator {
   points = new Map()
   tracks = []
-  tree = rbush(4)
+  // `new` is required by rbush 3.x and also supported by 2.x, so this works
+  // whichever version gets hoisted. rbush is not declared in package.json.
+  tree = new RBush(4)
 
   constructor(selectedTrack) {
     this.selectedTrack = selectedTrack
