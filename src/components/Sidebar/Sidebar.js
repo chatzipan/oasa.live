@@ -5,6 +5,7 @@ import Select from '@material-ui/core/NativeSelect'
 import Switch from '@material-ui/core/Switch'
 
 import translations from '../../../translations'
+import { DonationMenu } from '../DonationAsk'
 import { selectLanguage, setNightMode, toggleMenu } from '../../redux/ui'
 import track from '../../lib/track'
 
@@ -83,21 +84,13 @@ const Sidebar = ({
       </div>
 
       <footer className={cx(styles.box, styles.footer)}>
-        <p>
+        <DonationMenu t={t} />
+        <p className={styles.credit}>
           Developed by&nbsp;
-          <a href="https://vasil.is" target="_blank">
+          <a href="https://vasil.is" rel="noopener noreferrer" target="_blank">
             vasil.is
           </a>
-          .&nbsp;&nbsp;-&nbsp;&nbsp;Tips:
         </p>
-        <ul className={styles.donations}>
-          <li className={styles.item}>
-            &#8383;: 3AApU9AGub8yXUwqFLS6aEVt5tKrB3E8oB
-          </li>
-          <li className={styles.item}>
-            ETH: 0x6e348D7EC541081130cB92601963Cb0Fdd3eb317
-          </li>
-        </ul>
       </footer>
     </div>
   )
@@ -115,7 +108,4 @@ const mapDispatchToProps = {
   toggleMenu,
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Sidebar)
+export default connect(mapStateToProps, mapDispatchToProps)(Sidebar)

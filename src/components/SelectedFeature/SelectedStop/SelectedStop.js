@@ -3,6 +3,7 @@ import cx from 'classnames'
 import { connect } from 'react-redux'
 
 import translations from '../../../../translations'
+import DonationAsk from '../../DonationAsk'
 import sleep from '../../../lambda/helpers/sleep'
 import track from '../../../lib/track'
 import NoConnectionIcon from '../../../assets/svgs/cloud_off.svg'
@@ -132,38 +133,43 @@ class SelectedStop extends React.Component {
     const { language } = this.props
     const t = translations[language]
 
+    const hasArrivals = !networkError && !loading && !!(arrivals || []).length
+
     return (
-      <div className={cx(styles.row, styles.stops)}>
-        <div className={styles.stopName}>
-          <div className={styles.label}>{t['STOP_NAME']}</div>
-          <div className={styles.value} title={this.getStopName()}>
-            {this.getStopName()}
+      <React.Fragment>
+        <div className={cx(styles.row, styles.stops)}>
+          <div className={styles.stopName}>
+            <div className={styles.label}>{t['STOP_NAME']}</div>
+            <div className={styles.value} title={this.getStopName()}>
+              {this.getStopName()}
+            </div>
+            <button
+              className={cx(styles.btn, styles.refresh)}
+              onClick={this.handleRefresh}
+            >
+              <RefreshIcon />
+              {t['REFRESH']}
+            </button>
           </div>
-          <button
-            className={cx(styles.btn, styles.refresh)}
-            onClick={this.handleRefresh}
-          >
-            <RefreshIcon />
-            {t['REFRESH']}
-          </button>
+          <div className={styles.arrivals}>
+            <div className={cx(styles.row, styles.label)}>
+              <div className={styles.line}>{t['LINE']}</div>
+              <div className={styles.lineDescr}>{t['ROUTE']}</div>
+              <div className={styles.arrivalTime}>{t['WHEN']}</div>
+            </div>
+            <div className={styles.arrivalsTable}>
+              {networkError
+                ? this.renderNetworkError()
+                : loading
+                ? this.renderLoading()
+                : arrivals
+                ? this.renderStopArrivals()
+                : t['NO_ARRIVALS']}
+            </div>
+          </div>
         </div>
-        <div className={styles.arrivals}>
-          <div className={cx(styles.row, styles.label)}>
-            <div className={styles.line}>{t['LINE']}</div>
-            <div className={styles.lineDescr}>{t['ROUTE']}</div>
-            <div className={styles.arrivalTime}>{t['WHEN']}</div>
-          </div>
-          <div className={styles.arrivalsTable}>
-            {networkError
-              ? this.renderNetworkError()
-              : loading
-              ? this.renderLoading()
-              : arrivals
-              ? this.renderStopArrivals()
-              : t['NO_ARRIVALS']}
-          </div>
-        </div>
-      </div>
+        {hasArrivals && <DonationAsk />}
+      </React.Fragment>
     )
   }
 }
@@ -174,7 +180,4 @@ const mapStateToProps = ({ routes: { details, lines }, ui: { language } }) => ({
   lines,
 })
 
-export default connect(
-  mapStateToProps,
-  null
-)(SelectedStop)
+export default connect(mapStateToProps, null)(SelectedStop)

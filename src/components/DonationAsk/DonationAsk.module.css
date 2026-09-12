@@ -1,0 +1,136 @@
+:root {
+  --label-color: rgba(0, 0, 0, 0.5);
+  --value-color: #333;
+  --donate-color: #b00468;
+  --box-border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.ask {
+  display: flex;
+  animation: fadein 240ms ease both;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: var(--box-border);
+  line-height: 1.35;
+
+  /* On a phone there is no room for text and button side by side: the Greek
+     wraps to three lines. Give the text the full width and put the button and
+     the dismiss control on their own row. */
+  @media screen and (max-width: 680px) {
+    flex-wrap: wrap;
+  }
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+  margin-right: 12px;
+  font-size: 13px;
+  color: var(--value-color);
+
+  @media screen and (max-width: 680px) {
+    flex: 1 0 100%;
+    margin-right: 0;
+    margin-bottom: 8px;
+    font-size: 12px;
+  }
+}
+
+.signature {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--label-color);
+}
+
+.donate {
+  flex: none;
+  /* 40px tall, to match the dismiss control and stay thumb-sized. */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  background: var(--donate-color);
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  padding: 0 14px;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    background: #8c0353;
+  }
+
+  @media screen and (max-width: 680px) {
+    font-size: 12px;
+  }
+}
+
+.dismiss {
+  flex: none;
+  /* 40px square: a thumb has to be able to hit this. */
+  width: 40px;
+  height: 40px;
+  margin-left: 4px;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--label-color);
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    color: var(--value-color);
+  }
+
+  @media screen and (max-width: 680px) {
+    margin-left: auto;
+  }
+}
+
+/* The permanent block in the info menu. Never dismissed. */
+.menuAsk {
+  font-style: normal;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--value-color);
+}
+
+.menuText {
+  margin: 0 0 10px;
+}
+
+/* Selectable fallback, for anyone who cannot follow the button. */
+.menuLink {
+  margin: 8px 0 0;
+  font-size: 11px;
+  color: var(--label-color);
+  word-break: break-all;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ask {
+    animation: none;
+  }
+}

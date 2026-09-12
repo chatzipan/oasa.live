@@ -82,3 +82,9 @@ src/lambda/*.bak
 
 # private ops documentation — contains server IPs, never commit
 OPERATIONS.md
+
+# wayfinder maps — private planning notes
+.scratch/
+
+# Local Netlify folder
+.netlify
